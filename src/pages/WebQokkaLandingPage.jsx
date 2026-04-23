@@ -178,10 +178,10 @@ function HeroSection() {
   const stats = [['50+', 'Projects delivered'], ['100%', 'Client satisfaction'], ['24h', 'Response time']]
 
   return (
-    <section style={{ background: 'linear-gradient(160deg, #111816 0%, #1c1008 40%, #2a1205 100%)', minHeight: '100vh', display: 'flex', alignItems: 'center', padding: '120px 32px 80px', position: 'relative', overflow: 'hidden' }}>
+    <section className="hero-section-pad" style={{ background: 'linear-gradient(160deg, #111816 0%, #1c1008 40%, #2a1205 100%)', minHeight: '100vh', display: 'flex', alignItems: 'center', position: 'relative', overflow: 'hidden' }}>
       <div style={{ position: 'absolute', top: '15%', right: '10%', width: 500, height: 500, borderRadius: '50%', background: 'radial-gradient(circle, #fde8d0 0%, transparent 70%)', opacity: 0.06, pointerEvents: 'none' }} />
       <div style={{ position: 'absolute', bottom: '10%', left: '5%', width: 360, height: 360, borderRadius: '50%', background: 'radial-gradient(circle, #f5dbb8 0%, transparent 70%)', opacity: 0.04, pointerEvents: 'none' }} />
-      <div style={{ maxWidth: 1200, margin: '0 auto', width: '100%', display: 'flex', alignItems: 'center', gap: 60, flexWrap: 'wrap' }}>
+      <div className="hero-flex">
         <div style={{ maxWidth: 580, flex: '1 1 400px' }}>
           <div className={`fade-up ${visible ? 'visible' : ''}`} style={{ marginBottom: 20 }}>
             <span style={{ display: 'inline-block', background: 'rgba(194,119,58,0.15)', border: '1px solid rgba(194,119,58,0.3)', borderRadius: 100, padding: '6px 16px', fontSize: 13, fontWeight: 600, color: '#e8a96a', letterSpacing: '0.06em', textTransform: 'uppercase' }}>Websites for every business</span>
@@ -202,12 +202,12 @@ function HeroSection() {
             We build affordable, high-quality websites and apps for small businesses — so you can focus on what you do best. No bloat, no jargon, no surprises.
           </p>
 
-          <div className={`fade-up d3 ${visible ? 'visible' : ''}`} style={{ display: 'flex', gap: 16, flexWrap: 'wrap', marginBottom: 64 }}>
+          <div className={`hero-cta fade-up d3 ${visible ? 'visible' : ''}`}>
             <a href="#contact" className="btn-dark">Start Your Project →</a>
             <a href="#services" className="btn-outline">View Services</a>
           </div>
 
-          <div className={`fade-up d4 ${visible ? 'visible' : ''}`} style={{ display: 'flex', gap: 48, flexWrap: 'wrap' }}>
+          <div className={`hero-stats fade-up d4 ${visible ? 'visible' : ''}`}>
             {stats.map(([num, label]) => (
               <div key={label}>
                 <div style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontSize: 36, fontWeight: 800, color: '#fff', lineHeight: 1 }}>{num}</div>
@@ -256,7 +256,7 @@ function ServicesSection() {
           <p className={`fade-up d2 ${visible ? 'visible' : ''}`} style={{ fontSize: 17, color: '#6b7280', marginTop: 16 }}>Everything you need to get online — and stay ahead.</p>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 24 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 24 }}>
           {services.map((s, i) => (
             <div key={s.title} className={`card-lift fade-up ${visible ? 'visible' : ''}`} style={{ transitionDelay: `${0.05 + i * 0.07}s`, background: 'linear-gradient(135deg, #fdf5ec 0%, #fde8d0 100%)', borderRadius: 20, padding: 32, position: 'relative', boxShadow: '0 4px 20px rgba(0,0,0,0.07)' }}>
               {s.badge && <span className="pill" style={{ position: 'absolute', top: 20, right: 20 }}>{s.badge}</span>}
@@ -506,7 +506,7 @@ function BlogModal({ post, onClose }) {
 
   return (
     <div onClick={onClose} style={{ position: 'fixed', inset: 0, zIndex: 9000, background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(4px)', display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '40px 16px', overflowY: 'auto' }}>
-      <div onClick={e => e.stopPropagation()} style={{ background: '#fff', borderRadius: 24, maxWidth: 720, width: '100%', padding: '48px 52px', position: 'relative', marginBottom: 40 }}>
+      <div onClick={e => e.stopPropagation()} className="blog-modal-box">
         {/* Close */}
         <button onClick={onClose} style={{ position: 'absolute', top: 20, right: 20, width: 36, height: 36, borderRadius: '50%', border: 'none', background: '#f3f4f6', cursor: 'pointer', fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#6b7280' }}>×</button>
 
@@ -567,7 +567,7 @@ function BlogSection() {
               Insights & resources
             </h2>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: 24 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 24 }}>
             {blogPosts.map((p, i) => (
               <div key={p.title} className={`card-lift fade-up ${visible ? 'visible' : ''}`} onClick={() => setActivePost(p)} style={{ transitionDelay: `${i * 0.1}s`, background: 'linear-gradient(135deg, #fdf5ec 0%, #fde8d0 100%)', borderRadius: 20, padding: 32, boxShadow: '0 4px 20px rgba(0,0,0,0.06)', cursor: 'pointer', display: 'flex', flexDirection: 'column' }}>
                 <div style={{ fontSize: 36, marginBottom: 16 }}>{p.emoji}</div>
@@ -726,7 +726,7 @@ function ContactSection() {
 
   return (
     <section id="contact" ref={ref} style={{ background: '#0a0f0d', padding: '100px 32px' }}>
-      <div style={{ maxWidth: 1100, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1.4fr', gap: 80, alignItems: 'start' }}>
+      <div className="contact-grid">
         <div>
           <p className={`fade-up ${visible ? 'visible' : ''}`} style={{ fontSize: 13, fontWeight: 700, color: '#c2773a', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: 12 }}>Get in touch</p>
           <h2 className={`fade-up d1 ${visible ? 'visible' : ''}`} style={{ fontFamily: "'Bricolage Grotesque', sans-serif", fontSize: 'clamp(28px, 3vw, 44px)', fontWeight: 800, color: '#fff', lineHeight: 1.15, letterSpacing: '-0.02em', marginBottom: 20 }}>
@@ -753,8 +753,8 @@ function ContactSection() {
           </div>
         </div>
 
-        <form className={`fade-up d2 ${visible ? 'visible' : ''}`} onSubmit={handleSubmit} style={{ background: '#fff', borderRadius: 24, padding: '40px 36px' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
+        <form className={`contact-form-box fade-up d2 ${visible ? 'visible' : ''}`} onSubmit={handleSubmit}>
+          <div className="form-2col">
             <div>
               <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 6 }}>Your Name *</label>
               <input className="form-input" placeholder="Jane Smith" required value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} />
@@ -764,7 +764,7 @@ function ContactSection() {
               <input className="form-input" placeholder="Smith & Co." value={form.business} onChange={e => setForm(f => ({ ...f, business: e.target.value }))} />
             </div>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 16 }}>
+          <div className="form-2col">
             <div>
               <label style={{ display: 'block', fontSize: 13, fontWeight: 600, color: '#374151', marginBottom: 6 }}>Email *</label>
               <input className="form-input" type="email" placeholder="jane@example.com" required value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} />
