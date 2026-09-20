@@ -668,19 +668,33 @@ function ContactSection() {
     e.preventDefault()
     setStatus('loading')
     setErrorMsg('')
+
     try {
-      const { error } = await supabase.from('enquiries').insert([{
-        name: form.name.trim(),
-        business: form.business.trim() || null,
-        email: form.email.trim().toLowerCase(),
-        phone: form.phone.trim() || null,
-        service: form.service,
-        message: form.message.trim(),
-      }])
-      if (error) throw error
+      const apiBaseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3001'
+      const response = await fetch(`${apiBaseUrl}/api/contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: form.name.trim(),
+          business: form.business.trim() || null,
+          email: form.email.trim().toLowerCase(),
+          phone: form.phone.trim() || null,
+          service: form.service,
+          message: form.message.trim(),
+        }),
+      })
+
+      const payload = await response.json().catch(() => ({}))
+
+      if (!response.ok) {
+        throw new Error(payload?.error || 'Failed to send your message. Please try again.')
+      }
+
       setStatus('success')
     } catch (err) {
-      console.error('Supabase error:', err)
+      console.error('Contact form error:', err)
       setErrorMsg(err?.message || 'Failed to send your message. Please try again.')
       setStatus('error')
     }

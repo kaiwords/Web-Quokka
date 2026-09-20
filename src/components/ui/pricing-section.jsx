@@ -22,7 +22,6 @@ const plans = [
     description:
       "Ideal for small businesses, trades, & startups wanting a high-converting, 5-page studio website.",
     price: 699,
-    carePrice: 899,
     buttonText: "Choose Starter Plan",
     buttonVariant: "outline",
     features: [
@@ -31,12 +30,6 @@ const plans = [
       "Google Maps & basic SEO setup",
       "Contact & lead enquiry form",
     ],
-    includes: [
-      "Starter Inclusions:",
-      "Custom brand color palette",
-      "14-day guaranteed delivery",
-      "100% full source code ownership",
-    ],
   },
   {
     name: "Growth Package",
@@ -44,7 +37,6 @@ const plans = [
     description:
       "Best value for growing businesses requiring a full studio site, CMS blog, or product catalog.",
     price: 1199,
-    carePrice: 1499,
     buttonText: "Get Started with Growth",
     buttonVariant: "default",
     popular: true,
@@ -55,12 +47,6 @@ const plans = [
       "Custom UI/UX studio design",
       "3 rounds of design revisions",
     ],
-    includes: [
-      "Everything in Starter, plus:",
-      "Interactive micro-animations & forms",
-      "21-day guaranteed delivery",
-      "Priority post-launch studio support",
-    ],
   },
   {
     name: "Pro Bespoke",
@@ -68,7 +54,6 @@ const plans = [
     description:
       "Advanced bespoke solution for web applications, client portals, e-commerce & complex integrations.",
     price: 2499,
-    carePrice: 2999,
     buttonText: "Talk to Us About Pro",
     buttonVariant: "outline",
     features: [
@@ -77,12 +62,6 @@ const plans = [
       "Stripe & custom payment integration",
       "Role-based user authentication",
       "Advanced SEO & custom analytics",
-    ],
-    includes: [
-      "Everything in Growth, plus:",
-      "Multi-platform responsive app setup",
-      "Dedicated staging environment",
-      "Priority 24/7 dedicated studio support",
     ],
   },
 ];
@@ -129,65 +108,7 @@ const faqs = [
   },
 ];
 
-const PricingSwitch = ({ isCarePlan, onToggle }) => {
-  return (
-    <div className="flex justify-center mb-10">
-      <div className="relative z-20 mx-auto flex items-center gap-1 rounded-full bg-[#F4F0EA] border border-[#E2DED7] p-1.5 shadow-inner">
-        <button
-          type="button"
-          onClick={() => onToggle(false)}
-          className={`relative z-10 sm:h-11 h-10 rounded-full sm:px-6 px-4 py-2 text-sm font-semibold transition-all duration-200 ${
-            !isCarePlan
-              ? "text-white"
-              : "text-[#6b635c] hover:text-[#422b1c]"
-          }`}
-        >
-          {!isCarePlan && (
-            <motion.span
-              layoutId="pricing-switch"
-              className="absolute inset-0 rounded-full bg-[#422b1c] shadow-md"
-              transition={{ type: "spring", stiffness: 450, damping: 30 }}
-            />
-          )}
-          <span className="relative">One-Time Build</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={() => onToggle(true)}
-          className={`relative z-10 sm:h-11 h-10 rounded-full sm:px-6 px-4 py-2 text-sm font-semibold transition-all duration-200 flex items-center gap-2 ${
-            isCarePlan
-              ? "text-white"
-              : "text-[#6b635c] hover:text-[#422b1c]"
-          }`}
-        >
-          {isCarePlan && (
-            <motion.span
-              layoutId="pricing-switch"
-              className="absolute inset-0 rounded-full bg-[#3A5A40] shadow-md"
-              transition={{ type: "spring", stiffness: 450, damping: 30 }}
-            />
-          )}
-          <span className="relative flex items-center gap-2">
-            Build + 1-Yr Care
-            <span
-              className={`rounded-full px-2 py-0.5 text-xs font-bold transition-colors ${
-                isCarePlan
-                  ? "bg-[#FAF8F5] text-[#3A5A40]"
-                  : "bg-[#3A5A40] text-white"
-              }`}
-            >
-              Save 20%
-            </span>
-          </span>
-        </button>
-      </div>
-    </div>
-  );
-};
-
 export default function PricingSection() {
-  const [isCarePlan, setIsCarePlan] = useState(false);
   const [openFaq, setOpenFaq] = useState(null);
   const pricingRef = useRef(null);
 
@@ -260,19 +181,6 @@ export default function PricingSection() {
           </TimelineContent>
         </div>
 
-        {/* Pricing Switcher */}
-        <TimelineContent
-          as="div"
-          animationNum={3}
-          timelineRef={pricingRef}
-          customVariants={revealVariants}
-        >
-          <PricingSwitch
-            isCarePlan={isCarePlan}
-            onToggle={(val) => setIsCarePlan(val)}
-          />
-        </TimelineContent>
-
         {/* Pricing Cards Grid */}
         <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-8 max-w-7xl mx-auto mb-16 items-stretch">
           {plans.map((plan, index) => (
@@ -319,12 +227,12 @@ export default function PricingSection() {
                       <span className="text-4xl sm:text-5xl font-serif font-bold text-[#422b1c] tracking-tight">
                         $
                         <NumberFlow
-                          value={isCarePlan ? plan.carePrice : plan.price}
+                          value={plan.price}
                           className="text-4xl sm:text-5xl font-serif font-bold text-[#422b1c]"
                         />
                       </span>
                       <span className="text-[#6b635c] ml-2.5 text-xs sm:text-sm font-semibold">
-                        {isCarePlan ? "AUD / build + 1yr care" : "AUD / one-time"}
+                        AUD / one-time
                       </span>
                     </div>
                   </CardHeader>
@@ -360,19 +268,6 @@ export default function PricingSection() {
                       </ul>
                     </div>
 
-                    <div className="pt-5 border-t border-[#E2DED7]">
-                      <h4 className="font-bold text-xs text-[#3A5A40] uppercase tracking-wider mb-3">
-                        {plan.includes[0]}
-                      </h4>
-                      <ul className="space-y-2.5 font-medium">
-                        {plan.includes.slice(1).map((inc, iIdx) => (
-                          <li key={iIdx} className="flex items-center text-left">
-                            <span className="h-1.5 w-1.5 bg-[#3A5A40] rounded-full mr-3 flex-shrink-0 ml-1.5" />
-                            <span className="text-xs text-[#6b635c]">{inc}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
                   </CardContent>
                 </div>
               </div>

@@ -1,12 +1,26 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import nodemailer from "nodemailer";
 import supabase from "./db/index.js";
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+const gmailUser = process.env.GMAIL_USER;
+const gmailTo = process.env.GMAIL_TO;
+const gmailPassword = (process.env.GMAIL_APP_PASSWORD || "").replace(/\s+/g, "");
+
+const transporter = gmailUser && gmailPassword
+  ? nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: gmailUser,
+        pass: gmailPassword,
+      },
+    })
+  : null;
 
 // ── Middleware ───────────────────────────────────────────────────────────────
 app.use(express.json());
@@ -51,6 +65,39 @@ app.post("/api/contact", async (req, res) => {
   if (error) {
     console.error("Supabase error saving enquiry:", error);
     return res.status(500).json({ error: "Failed to save your message. Please try again." });
+  }
+
+  if (transporter && gmailTo) {
+    try {
+      await transporter.sendMail({
+        from: gmailUser,
+        to: gmailTo,
+        subject: `New Web Quokka enquiry from ${name.trim()}`,
+        text: [
+          `Name: ${name.trim()}`,
+          `Business: ${business?.trim() || "N/A"}`,
+          `Email: ${email.trim().toLowerCase()}`,
+          `Phone: ${phone?.trim() || "N/A"}`,
+          `Service: ${service.trim()}`,
+          "",
+          "Project details:",
+          message.trim(),
+        ].join("\n"),
+        html: `
+          <h3>New Web Quokka enquiry</h3>
+          <p><strong>Name:</strong> ${name.trim()}</p>
+          <p><strong>Business:</strong> ${business?.trim() || "N/A"}</p>
+          <p><strong>Email:</strong> ${email.trim().toLowerCase()}</p>
+          <p><strong>Phone:</strong> ${phone?.trim() || "N/A"}</p>
+          <p><strong>Service:</strong> ${service.trim()}</p>
+          <p><strong>Message:</strong></p>
+          <p>${message.trim().replace(/\n/g, "<br>")}</p>
+        `,
+      });
+      console.log(`Email sent for enquiry #${data.id} to ${gmailTo}`);
+    } catch (mailError) {
+      console.error("Failed to send enquiry email:", mailError);
+    }
   }
 
   console.log(`[${data.created_at}] New enquiry #${data.id} from ${email}`);

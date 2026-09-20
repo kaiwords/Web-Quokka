@@ -14,7 +14,9 @@ dist-ssr
 
 # Secrets / env files
 .env
+.env.password
 backend/.env
+backend/.env.password
 backend/node_modules
 
 # Editor directories and files
