@@ -1,0 +1,6 @@
+# Production config comes from the Vercel project's environment variables;
+# local env files hold secrets and localhost values, so never upload them.
+.env
+.env.*
+!.env.example
+storage/
