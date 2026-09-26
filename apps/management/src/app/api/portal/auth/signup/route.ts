@@ -27,6 +27,12 @@ import { adminUserIds, notifyMany } from "@/lib/notify";
 //     or "sign up as Acme Pty Ltd" would be a data breach by design.
 const VERIFY_TTL_MS = 1000 * 60 * 60 * 24; // 24 hours
 
+/** True for Prisma's unique-constraint violation. Duck-typed rather than
+ *  importing Prisma's error class, which has moved between major versions. */
+function isUniqueViolation(error: unknown): boolean {
+  return typeof error === "object" && error !== null && "code" in error && error.code === "P2002";
+}
+
 function appUrl(): string {
   return (process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000").replace(/\/$/, "");
 }
@@ -101,37 +107,47 @@ export async function POST(req: NextRequest) {
 
     // One transaction: a Client with no Owner, or an Owner with no
     // verification token, would both be accounts nobody can ever use.
-    const { portalUser } = await prisma.$transaction(async (tx) => {
-      const client = await tx.client.create({
-        data: {
-          name: businessName,
-          company: businessName,
-          contactEmail: email,
-          source: "SelfSignup",
-          notes: "Self-registered through the website sign-up form.",
-        },
+    let portalUser;
+    try {
+      portalUser = await prisma.$transaction(async (tx) => {
+        const client = await tx.client.create({
+          data: {
+            name: businessName,
+            company: businessName,
+            contactEmail: email,
+            source: "SelfSignup",
+            notes: "Self-registered through the website sign-up form.",
+          },
+        });
+        const created = await tx.portalUser.create({
+          data: {
+            clientId: client.id,
+            name,
+            email,
+            passwordHash,
+            // Owner of their own business record — they are its only member
+            // until they invite others or staff take over.
+            role: "Owner",
+            status: "PendingVerification",
+          },
+        });
+        await tx.portalEmailVerification.create({
+          data: {
+            portalUserId: created.id,
+            token,
+            expiresAt: new Date(Date.now() + VERIFY_TTL_MS),
+          },
+        });
+        return created;
       });
-      const portalUser = await tx.portalUser.create({
-        data: {
-          clientId: client.id,
-          name,
-          email,
-          passwordHash,
-          // Owner of their own business record — they are its only member
-          // until they invite others or staff take over.
-          role: "Owner",
-          status: "PendingVerification",
-        },
-      });
-      await tx.portalEmailVerification.create({
-        data: {
-          portalUserId: portalUser.id,
-          token,
-          expiresAt: new Date(Date.now() + VERIFY_TTL_MS),
-        },
-      });
-      return { client, portalUser };
-    });
+    } catch (error) {
+      // Two sign-ups for this address raced past the findUnique above, or a
+      // successful request was retried. Either way the outcome matches the
+      // "already registered" branch, so answer identically — a 500 here would
+      // confuse a double-submit and leak that the address exists.
+      if (isUniqueViolation(error)) return success;
+      throw error;
+    }
 
     void sendMail({
       to: email,

@@ -93,6 +93,11 @@ export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ 
     const id = parseId((await params).id);
     if (id === null) return NextResponse.json({ error: "Invalid id" }, { status: 400 });
 
+    // Checked first so a missing row is a 404, matching PATCH above, rather
+    // than a Prisma P2025 surfacing as a 500.
+    const existing = await prisma.enquiry.findUnique({ where: { id }, select: { id: true } });
+    if (!existing) return NextResponse.json({ error: "Enquiry not found" }, { status: 404 });
+
     await prisma.enquiry.delete({ where: { id } });
     await logAudit({
       actorType: "Staff",

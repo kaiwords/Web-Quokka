@@ -46,10 +46,42 @@ npm run db:migrate      # applies prisma/migrations/0_init
 npm run db:seed         # demo data (optional, but gives you a login)
 ```
 
-`0_init` is a single Postgres baseline covering every table. The original
-SQLite migrations are kept for reference in
+Two migrations run:
+
+- `0_init` — a single Postgres baseline covering every table.
+- `20260926010000_enable_rls` — enables Row Level Security on all 26 tables.
+
+The original SQLite migrations are kept for reference in
 `apps/management/prisma/migrations-sqlite-archive/` and must **not** be run —
 they are SQLite SQL and will fail on Postgres.
+
+### Why the RLS migration matters
+
+Supabase serves an auto-generated REST API over the `public` schema and grants
+the `anon` and `authenticated` roles access to it. Row Level Security is the
+only thing gating that — and **Prisma creates tables with RLS disabled**.
+
+Without that second migration, every table is readable and writable through
+Supabase's REST API using the anon key, which is a public key designed to ship
+in browser code. That includes `User.passwordHash`, `PortalUser.passwordHash`,
+`Session`, `Invoice` and every client record.
+
+Enabling RLS with no policies denies those roles everything, because Postgres
+defaults to deny under RLS. The app is unaffected: it reaches Postgres through
+Prisma as the table owner, and an owner bypasses RLS.
+
+**Adding a model later re-opens this.** A new table arrives with RLS off, so
+every new model needs an `ALTER TABLE "X" ENABLE ROW LEVEL SECURITY;`. The
+Supabase dashboard flags any it finds as "Table is public, but RLS is disabled".
+
+Verify after migrating — this should return no rows:
+
+```sql
+select tablename from pg_tables
+where schemaname = 'public'
+  and tablename <> '_prisma_migrations'
+  and not rowsecurity;
+```
 
 Verify it worked:
 
@@ -99,6 +131,9 @@ server log. Set `RESEND_API_KEY` and `MAIL_FROM` before going live.
 - [ ] Seeded demo passwords changed or the demo accounts deleted
 - [ ] `ENQUIRY_NOTIFY_EMAIL` set if enquiries should also arrive by email
 - [ ] `WEBQUOKKA_ABN` set — an Australian tax invoice must show the seller's ABN
+- [ ] RLS confirmed on every table (the query above returns nothing)
+- [ ] The Supabase **service role key** is never used in `apps/web` or any
+      browser code — it bypasses RLS entirely
 
 ### Known limitation: rate limiting is per-instance
 

@@ -3,7 +3,7 @@
 import { Suspense, useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import PortalButton from "@/components/portal/ui/PortalButton";
+import { portalButtonClasses } from "@/components/portal/ui/PortalButton";
 
 type State = "working" | "ok" | "failed";
 
@@ -79,8 +79,11 @@ function VerifyEmailInner() {
             <p className="mt-4 text-xs text-sand-600">
               Confirmation links expire after 24 hours and can only be used once.
             </p>
-            <Link href="/portal/resend-verification">
-              <PortalButton className="mt-4 w-full">Send me a new link</PortalButton>
+            <Link
+              href="/portal/resend-verification"
+              className={`${portalButtonClasses()} mt-4 w-full`}
+            >
+              Send me a new link
             </Link>
             <p className="mt-4 text-center text-xs text-sand-600">
               <Link href="/portal/login" className="text-teal-700 hover:underline">

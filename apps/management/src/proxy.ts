@@ -4,7 +4,10 @@ import { getUserByToken, SESSION_COOKIE } from "@/lib/auth";
 import { getPortalUserByToken, PORTAL_SESSION_COOKIE } from "@/lib/portalAuth";
 
 // Paths reachable without a session.
-const PUBLIC_PATHS = ["/login", "/api/auth/login"];
+// "/unsubscribe" is reached from a link in a newsletter email, so the reader is
+// not signed in to anything — without it here the proxy would send people
+// trying to unsubscribe to a staff login screen.
+const PUBLIC_PATHS = ["/login", "/api/auth/login", "/unsubscribe"];
 
 // Everything under /api/public/ is unauthenticated by definition — it is what
 // the marketing site (apps/web) posts its contact, quote and newsletter forms

@@ -25,6 +25,22 @@ function clean(value: unknown, max: number): string {
   return value.trim().replace(/\s+/g, " ").slice(0, max);
 }
 
+/** Same, for the free-text message — but paragraph breaks survive. `clean`
+ *  collapses every run of whitespace including newlines, which flattens a
+ *  multi-paragraph project brief into one run-on line (and leaves nothing for
+ *  the notification email's newline-to-<br> pass to find). */
+function cleanMultiline(value: unknown, max: number): string {
+  if (typeof value !== "string") return "";
+  return value
+    .replace(/\r\n?/g, "\n")
+    // Runs of spaces and tabs, but not newlines.
+    .replace(/[^\S\n]+/g, " ")
+    // Any run of blank lines reads as one paragraph break.
+    .replace(/\n{3,}/g, "\n\n")
+    .trim()
+    .slice(0, max);
+}
+
 export function clientIp(req: NextRequest): string {
   return req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
 }
@@ -51,7 +67,7 @@ export async function handleEnquiry(
 
   const name = clean(raw.name, MAX.name);
   const email = normalizeEmail(raw.email);
-  const message = clean(raw.message ?? raw.details, MAX.message);
+  const message = cleanMultiline(raw.message ?? raw.details, MAX.message);
 
   if (!name) return { ok: false, status: 400, body: { error: "Please enter your name." } };
   if (!email) return { ok: false, status: 400, body: { error: "Please enter a valid email address." } };

@@ -20,6 +20,15 @@ datasource db {
 // Models
 // -----------------------------------------------
 //
+// ADDING A MODEL: also enable Row Level Security on its table, in the same
+// migration or a follow-up one:
+//
+//   ALTER TABLE "YourModel" ENABLE ROW LEVEL SECURITY;
+//
+// Supabase exposes the `public` schema through its REST API and RLS is the only
+// gate; Prisma creates tables with RLS off. A table without it is readable with
+// the public anon key. See prisma/migrations/20260926010000_enable_rls.
+//
 // The "enum" fields below are plain Strings whose allowed values are
 // defined and validated as TS union types in src/types/index.ts
 // (ClientStage, PaymentStatus, TaskStatus, MoscowPriority) — enforced at
