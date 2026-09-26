@@ -17,6 +17,7 @@
     "db:migrate:dev": "npm exec --prefix apps/management -- prisma migrate dev",
     "db:seed": "npm exec --prefix apps/management -- prisma db seed",
     "db:studio": "npm exec --prefix apps/management -- prisma studio",
-    "db:generate": "npm exec --prefix apps/management -- prisma generate"
+    "db:generate": "npm exec --prefix apps/management -- prisma generate",
+    "smoke:signup": "npm run smoke:signup --prefix apps/management"
   }
 }

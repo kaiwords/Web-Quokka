@@ -77,6 +77,7 @@ First-time database setup and the Supabase connection strings are in
 | `npm run db:migrate:dev` | Create + apply a migration (development) |
 | `npm run db:seed` | Demo data |
 | `npm run db:studio` | Browse the database |
+| `npm run smoke:signup` | End-to-end check of the client sign-up flow |
 
 ## Environment
 

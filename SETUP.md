@@ -108,7 +108,25 @@ npm run dev
 - Staff CRM → http://localhost:3000/login
 - Client portal → http://localhost:3000/portal/login
 
-## 5. Email — required before launch
+## 5. Verify the sign-up flow
+
+With the server running (`npm run dev`), in another terminal:
+
+```bash
+npm run smoke:signup
+```
+
+This drives the real flow against the real database — sign up, confirm that
+login is refused before the address is verified, redeem the emailed token,
+confirm the token cannot be replayed, log in, and confirm a duplicate sign-up
+does not reveal that the address is taken. It creates a throwaway account and
+deletes it afterwards either way.
+
+The flow spans an API route, a database row, an emailed token and a session
+cookie, and every part can look right while the chain is broken — so it is
+worth running once against Supabase before trusting it.
+
+## 6. Email — required before launch
 
 Invite, password-reset and **email-confirmation** messages log to the server
 console until `RESEND_API_KEY` is set (`apps/management/src/lib/mailer.ts`).
