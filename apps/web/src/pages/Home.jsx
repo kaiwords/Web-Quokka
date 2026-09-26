@@ -3,6 +3,7 @@ import SEO from '../components/layout/SEO'
 import Btn from '../components/horizon/Btn'
 import ChapterProgress from '../components/horizon/ChapterProgress'
 import Counter from '../components/horizon/Counter'
+import Deck from '../components/horizon/Deck'
 import HorizonContactForm from '../components/horizon/HorizonContactForm'
 import Orbit from '../components/horizon/Orbit'
 import Rotator from '../components/horizon/Rotator'
@@ -187,7 +188,7 @@ export default function Home() {
                 </Btn>
               </header>
 
-              <div className="card-row">
+              <Deck className="card-row" label="Our services" item="service" hint="Swipe for more">
                 {SERVICES.map((service, i) => (
                   <article className="card service" key={service.slug} data-tilt data-reveal>
                     {i === 0 && <span className="card-badge">Most popular</span>}
@@ -204,7 +205,7 @@ export default function Home() {
                     </ul>
                   </article>
                 ))}
-              </div>
+              </Deck>
             </section>
 
             {/* ========== 03 · WHY US ========== */}
@@ -225,7 +226,7 @@ export default function Home() {
                 </Btn>
               </header>
 
-              <div className="why-grid">
+              <Deck className="why-grid" label="Why WebQuokka" item="reason" hint="Swipe for more">
                 {WHY_CHOOSE_US.map((item, i) => (
                   <article className="why-item" key={item.title} data-reveal data-spotlight>
                     <span className="why-num">{String(i + 1).padStart(2, '0')}</span>
@@ -236,7 +237,7 @@ export default function Home() {
                     <p>{item.description}</p>
                   </article>
                 ))}
-              </div>
+              </Deck>
             </section>
 
             {/* ========== 04 · PROCESS ========== */}
@@ -266,7 +267,14 @@ export default function Home() {
                 <div className="timeline-line" aria-hidden="true">
                   <span className="timeline-fill" />
                 </div>
-                <ol className="steps">
+                <Deck
+                  as="ol"
+                  className="steps"
+                  label="How it works"
+                  item="step"
+                  hint="Swipe through the steps"
+                  fillsTimeline
+                >
                   {PROCESS_STEPS.map((step, i) => (
                     <li className="step" key={step.title} data-reveal>
                       <span className="step-node" aria-hidden="true" />
@@ -278,7 +286,7 @@ export default function Home() {
                       <p>{step.description}</p>
                     </li>
                   ))}
-                </ol>
+                </Deck>
               </div>
             </section>
 
@@ -302,7 +310,7 @@ export default function Home() {
                 </p>
               </header>
 
-              <div className="quote-row">
+              <Deck className="quote-row" label="Kind words" item="review" hint="Swipe for more">
                 {TESTIMONIALS.map((testimonial, i) => (
                   <figure className="quote" key={`${testimonial.name}-${i}`} data-reveal data-tilt>
                     <span className="quote-result">{testimonial.designation}</span>
@@ -315,7 +323,7 @@ export default function Home() {
                     </figcaption>
                   </figure>
                 ))}
-              </div>
+              </Deck>
             </section>
 
             {/* ========== 06 · PRICING ========== */}
@@ -345,7 +353,7 @@ export default function Home() {
                 </p>
               </header>
 
-              <div className="plans">
+              <Deck className="plans" label="Our packages" item="package" hint="Swipe to compare">
                 {PROJECT_PACKAGES.map((plan) => {
                   const { amount, comma, note } = parsePrice(plan.price)
                   return (
@@ -391,7 +399,7 @@ export default function Home() {
                     </article>
                   )
                 })}
-              </div>
+              </Deck>
             </section>
 
             {/* ========== 07 · CONTACT ========== */}

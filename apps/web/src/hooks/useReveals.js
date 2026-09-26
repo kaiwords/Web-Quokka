@@ -57,6 +57,12 @@ export default function useReveals() {
         if (!target || seen.has(target)) return
         seen.add(target)
         if (el.hasAttribute('data-wipe')) wipeOf.set(target, el)
+        // Vertical mode slides reveals in along the inline axis. Choosing the
+        // side per element means a column of cards arrives from alternating
+        // edges instead of reading like a single conveyor belt.
+        if (el.hasAttribute('data-reveal')) {
+          el.style.setProperty('--dir', Math.random() < 0.5 ? '-1' : '1')
+        }
         io.observe(target)
       })
     }

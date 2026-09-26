@@ -800,18 +800,8 @@ html:not(.is-h) .giant {
 html:not(.is-h) .giant--fill { padding-left: clamp(0px, -1rem + 5vw, 6rem); }
 html:not(.is-h) .manifesto-copy { margin: 2rem 0 0; }
 html:not(.is-h) .panel-head { margin-bottom: 2.4rem; }
-html:not(.is-h) .card-row, html:not(.is-h) .quote-row, html:not(.is-h) .plans {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 1rem;
-}
-html:not(.is-h) .card, html:not(.is-h) .quote, html:not(.is-h) .plan { width: auto; translate: none; }
-html:not(.is-h) .plan--featured { margin-top: .8rem; }
+/* The rail's own drag hint belongs to the rail; each deck carries its own. */
 html:not(.is-h) .drag-note { display: none; }
-html:not(.is-h) .why-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); max-width: none; }
-html:not(.is-h) .steps { flex-direction: column; gap: 1.6rem; padding-left: 2.6rem; }
-html:not(.is-h) .step { width: auto; padding-top: 0; }
-html:not(.is-h) .step-node { top: .3rem; left: -2.6rem; }
-html:not(.is-h) .timeline-line { top: 0; bottom: 0; left: 10px; right: auto; width: 2px; height: auto; }
-html:not(.is-h) .timeline-fill { transform-origin: top; transform: scaleY(var(--fill)); }
 html:not(.is-h) .contact { display: grid; gap: 2rem; }
 html:not(.is-h) .contact-info { max-width: none; }
 html:not(.is-h) .form-card { max-width: none; }
@@ -819,11 +809,61 @@ html:not(.is-h) .footer-panel { display: grid; gap: 1rem; overflow: hidden; max-
 html:not(.is-h) .footer-giant { font-size: clamp(2.2rem, .9rem + 7.5vw, 7rem); }
 html:not(.is-h) .footer-inner { max-width: 1200px; }
 
-/* In vertical mode content slides in from the left */
-html:not(.is-h) [data-reveal] { transform: translate3d(-44px, 0, 0); }
+/* Vertical mode slides content in along the inline axis, and `useReveals` deals
+   the sides out at random — so a column of cards arrives from alternating edges
+   instead of reading like one conveyor belt. */
+html:not(.is-h) [data-reveal] { transform: translate3d(calc(var(--dir, -1) * 44px), 0, 0); }
 html:not(.is-h) [data-reveal].is-in { transform: none; }
 html:not(.is-h) [data-tilt].is-in { transform: none; }
 html:not(.is-h) .fab-btn--top span { transform: rotate(90deg); }
+
+/* ---------- 18b. SWIPE DECKS (the vertical page's card rows) ---------- */
+/* Stacked, a five-card row becomes five screens to scroll past. So the rows the
+   rail carried sideways keep travelling sideways here: the deck runs right to
+   left under a native swipe, a mouse drag, the arrow keys or its dots, with the
+   next card peeking in from the edge so there is something to reach for. */
+html:not(.is-h) .deck {
+  display: flex; flex-direction: row; align-items: stretch;
+  grid-template-columns: none; max-width: none;
+  gap: 1rem;
+  /* Bleed to the panel's padding edge, and keep room above and below for the
+     featured plan's flag and glow, which sit outside its box. */
+  margin: -1rem calc(var(--gutter) * -1) -.5rem;
+  padding: 1rem var(--gutter) 1.5rem;
+  /* The end padding doubles as the landing space for a card revealing from the
+     right, so an un-revealed card never stretches the scrollable width. */
+  padding-inline-end: calc(var(--gutter) + 52px);
+  overflow-x: auto; overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory; scroll-padding-inline-start: var(--gutter);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+html:not(.is-h) .deck::-webkit-scrollbar { display: none; }
+html:not(.is-h) .deck[data-dragging] {
+  scroll-snap-type: none;
+  user-select: none; -webkit-user-select: none;
+}
+/* Where the custom cursor is running it shows the drag state itself, so the
+   native hand is only for pointers it never replaced. */
+html:not(.has-cursor):not(.is-h) .deck { cursor: grab; }
+html:not(.has-cursor):not(.is-h) .deck[data-dragging] { cursor: grabbing; }
+html:not(.is-h) .deck:focus-visible { outline: 2px solid var(--lime); outline-offset: 4px; border-radius: var(--r-lg); }
+/* One card per swipe, with a sliver of the next one showing. */
+html:not(.is-h) .deck > * {
+  flex: 0 0 clamp(236px, 78vw, 340px); width: auto; translate: none;
+  scroll-snap-align: start;
+}
+
+.deck-nav { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .8rem; margin-top: 1.1rem; }
+.deck-hint { display: inline-flex; align-items: center; gap: .6rem; margin: 0; font-size: var(--fs-xs); color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+.deck-dots { display: flex; align-items: center; gap: .15rem; }
+.deck-dot { display: grid; place-items: center; padding: .45rem .2rem; background: none; border: 0; cursor: pointer; }
+.deck-dot > span {
+  display: block; width: 7px; height: 7px; border-radius: var(--r-pill);
+  background: var(--line-strong); transition: width .3s var(--ease-out), background-color .3s;
+}
+.deck-dot.is-on > span { width: 22px; background: var(--lime); }
+.deck-dot:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; border-radius: var(--r-pill); }
 
 @media (max-width: 720px) {
   .logo-sub { display: none; }

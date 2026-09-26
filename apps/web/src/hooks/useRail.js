@@ -154,7 +154,9 @@ export default function useRail({ railRef, stickyRef, trackRef, fillRef, onChrom
           const t = geo.timeline
           setTimeline(clamp((x + vw * 0.8 - t.left) / t.width, 0, 1))
         }
-      } else if (timeline) {
+      } else if (timeline && !timeline.hasAttribute('data-swipe')) {
+        // A swipe deck marks the timeline as its own and fills it from how far
+        // the steps have been swiped, which reads better than page scroll there.
         const r = timeline.getBoundingClientRect()
         setTimeline(clamp((window.innerHeight * 0.7 - r.top) / r.height, 0, 1))
       }
@@ -176,7 +178,11 @@ export default function useRail({ railRef, stickyRef, trackRef, fillRef, onChrom
     }
 
     function setTimeline(f) {
-      if (!timeline || Math.abs(f - lastFill) < 0.001) return
+      // The value alone is not enough to skip on: a swipe deck that owned the line
+      // clears it when it lets go, and that cleanup can land after the rail has
+      // already written the same number. Missing inline value means rewrite.
+      if (!timeline) return
+      if (Math.abs(f - lastFill) < 0.001 && timeline.style.getPropertyValue('--fill')) return
       lastFill = f
       timeline.style.setProperty('--fill', f.toFixed(3))
       if (H.on && geo.timeline) {
@@ -353,6 +359,9 @@ export default function useRail({ railRef, stickyRef, trackRef, fillRef, onChrom
         return
       }
       const keep = geo.panels.length ? panels[currentPanelIndex()] : null
+      // Whoever owned the process line before the switch may have cleared it,
+      // so the next fill has to be written even if the number has not moved.
+      lastFill = -1
       H.on = want
       root.classList.toggle('is-h', want)
       measure()

@@ -1,5 +1,9 @@
 name: Deploy to GitHub Pages
 
+# Pages hosts the static marketing site only. The management app (apps/management)
+# is a Next.js/Prisma server app and cannot be served from Pages, so this builds
+# apps/web alone rather than the root `build` script, which builds both.
+
 on:
   push:
     branches: [main]
@@ -21,15 +25,17 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
-      - run: npm ci
-      - run: npm run build
+          # There is no lockfile at the repo root; each app carries its own.
+          cache-dependency-path: apps/web/package-lock.json
+      - run: npm ci --prefix apps/web
+      - run: npm run build:web
         env:
           VITE_API_URL: ${{ secrets.VITE_API_URL }}
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: apps/web/dist
 
   deploy:
     needs: build
