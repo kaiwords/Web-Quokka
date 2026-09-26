@@ -1,0 +1,525 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "darwin-arm64", "windows"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  // DATABASE_URL is Supabase's pooled connection (PgBouncer, port 6543) —
+  // what the app runs queries through. DIRECT_URL is the direct connection
+  // (port 5432); Prisma needs it for migrations, which PgBouncer's
+  // transaction pooling mode cannot carry.
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// -----------------------------------------------
+// Models
+// -----------------------------------------------
+//
+// The "enum" fields below are plain Strings whose allowed values are
+// defined and validated as TS union types in src/types/index.ts
+// (ClientStage, PaymentStatus, TaskStatus, MoscowPriority) — enforced at
+// the API boundary, not the database. This started as a SQLite constraint
+// (no native enum type); it is kept on Postgres deliberately, so adding a
+// status value stays a code change and never needs a migration.
+
+model Client {
+  id             Int             @id @default(autoincrement())
+  name           String
+  company        String          @default("")
+  contactEmail   String          @default("")
+  contactPhone   String          @default("")
+  notes          String          @default("")
+  stage          String          @default("Onboarding")
+  paymentStatus  String          @default("NotPaid")
+  amountPaid     String          @default("0")
+  totalAmount    String          @default("0")
+  mvpSentAt      DateTime?
+  mvpApprovedAt  DateTime?
+  requirements   Requirement[]
+  tasks          Task[]
+  documents      Document[]
+  tickets        Ticket[]
+  portalUsers    PortalUser[]
+  portalInvites  PortalInvite[]
+  projects       Project[]
+  changeRequests ChangeRequest[]
+  services       Service[]
+  invoices       Invoice[]
+  suggestions    Suggestion[]
+  // How this business record was created. "SelfSignup" rows come from the
+  // public website's client sign-up form and are NOT yet vetted staff
+  // clients: `approvedAt` stays null until a staff member reviews them in
+  // the CRM. Staff-created clients are "Staff" and count as approved on
+  // sight, so existing rows need no backfill.
+  source         String          @default("Staff")
+  approvedAt     DateTime?
+  approvedBy     String          @default("")
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  @@index([source, approvedAt])
+}
+
+model Requirement {
+  id            Int      @id @default(autoincrement())
+  client        Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId      Int
+  role          String
+  functionality String
+  value         String
+  priority      String   @default("Must")
+  createdAt     DateTime @default(now())
+}
+
+// An admin-assigned follow-up. Nobody approves a task — whoever it is
+// assigned to just reports where it got to, so the only lifecycle is
+// `status`: Todo -> InProgress -> Done, or Cancelled when it couldn't be
+// finished. Allowed values are the TaskStatus union in src/types/index.ts.
+model Task {
+  id             Int       @id @default(autoincrement())
+  client         Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId       Int
+  title          String
+  // Who the work actually sits with. `assigneeUserId` is the truth — it is
+  // what notifications are addressed to; `assignee` is a denormalized
+  // username kept alongside it so lists render without joining User, and
+  // so an unassigned task still has something to show. SetNull, not
+  // Cascade: deleting a staff account must not delete a client's tasks.
+  assignee       String    @default("Unassigned")
+  assigneeUser   User?     @relation("TaskAssignee", fields: [assigneeUserId], references: [id], onDelete: SetNull)
+  assigneeUserId Int?
+  status         String    @default("Todo")
+  dueDate        DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+// Uploaded during requirements gathering, or attached to a project/ticket/
+// change request from the client portal. The file itself lives on local
+// disk under storage/uploads/<clientId>/ (see src/lib/documents.ts) — this
+// row is just the metadata pointer; projectId/ticketId/changeRequestId are
+// optional extra query keys onto the same storage, not a separate store.
+model Document {
+  id              Int            @id @default(autoincrement())
+  client          Client         @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId        Int
+  fileName        String
+  originalName    String
+  mimeType        String
+  size            Int
+  uploadedBy      String
+  category        String         @default("Attachment")
+  project         Project?       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId       Int?
+  ticket          Ticket?        @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  ticketId        Int?
+  changeRequest   ChangeRequest? @relation(fields: [changeRequestId], references: [id], onDelete: Cascade)
+  changeRequestId Int?
+  suggestion      Suggestion?    @relation(fields: [suggestionId], references: [id], onDelete: Cascade)
+  suggestionId    Int?
+  createdAt       DateTime       @default(now())
+}
+
+// A single shape shared by two nav sections that differ only in who may
+// create one and what `source` they're tagged with:
+//   - "Requests": source="User" — raised by any logged-in staff user, e.g.
+//     "I need access to X". A user may also delete their own.
+//   - "Portal Tickets": source="Client" — raised by a portal user (a
+//     client's own business) as a support ticket. See PortalUser/Message below.
+// Every create route sets `source` explicitly, so the column default below
+// is never used. `clientId` is optional since a staff request need not
+// concern any one client (a Client ticket always has one).
+model Ticket {
+  id                    Int         @id @default(autoincrement())
+  source                String      @default("Business")
+  title                 String
+  description           String      @default("")
+  category              String      @default("")
+  priority              String      @default("Medium")
+  status                String      @default("New")
+  // Same assignee pair as Task above — the FK is what gets notified, the
+  // string is the denormalized label.
+  assignedTo            String      @default("Unassigned")
+  assignedToUser        User?       @relation("TicketAssignee", fields: [assignedToUserId], references: [id], onDelete: SetNull)
+  assignedToUserId      Int?
+  satisfactionRating    Int?
+  resolvedAt            DateTime?
+  client                Client?     @relation(fields: [clientId], references: [id], onDelete: SetNull)
+  clientId              Int?
+  createdByPortalUser   PortalUser? @relation(fields: [createdByPortalUserId], references: [id], onDelete: SetNull)
+  createdByPortalUserId Int?
+  createdBy             String
+  documents             Document[]
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+}
+
+// -----------------------------------------------
+// Client Portal (Phase 1: auth/RBAC, projects, tickets, change requests —
+// no billing yet). `Client` above doubles as the tenant/business record;
+// these models attach portal-specific data to it without renaming it, to
+// avoid churning the staff CRM that already depends on that name.
+// -----------------------------------------------
+
+// A logged-in member of a client business. Distinct from the staff `User`
+// model — fully separate trust boundary/session (see src/lib/portalAuth.ts)
+// so a staff session can never grant portal access or vice versa.
+model PortalUser {
+  id              Int             @id @default(autoincrement())
+  client          Client          @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId        Int
+  name            String
+  email           String          @unique
+  passwordHash    String
+  role            String          @default("Viewer") // Owner | Manager | Viewer
+  // PendingVerification | Invited | Active | Disabled.
+  // "PendingVerification" is the self-signup state: the account exists but
+  // cannot log in until the emailed link is followed. Staff-issued invites
+  // keep going straight to "Invited" (the invite token is itself proof of
+  // the address), so this adds a state rather than changing that flow.
+  status          String          @default("Invited")
+  emailVerifiedAt DateTime?
+  sessions        PortalSession[]
+  tickets         Ticket[]
+  changeRequests  ChangeRequest[]
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+}
+
+model PortalSession {
+  id           String     @id @default(cuid())
+  portalUser   PortalUser @relation(fields: [portalUserId], references: [id], onDelete: Cascade)
+  portalUserId Int
+  expiresAt    DateTime
+  createdAt    DateTime   @default(now())
+}
+
+// Issued by staff from a client's "Portal Access" tab. Since email sending
+// is stubbed this phase (see src/lib/mailer.ts), the accept link is also
+// shown directly to staff to copy/send manually.
+model PortalInvite {
+  id         Int       @id @default(autoincrement())
+  client     Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId   Int
+  email      String
+  role       String    @default("Viewer")
+  token      String    @unique
+  invitedBy  String
+  expiresAt  DateTime
+  acceptedAt DateTime?
+  createdAt  DateTime  @default(now())
+}
+
+model PortalPasswordReset {
+  id           Int       @id @default(autoincrement())
+  portalUserId Int
+  token        String    @unique
+  expiresAt    DateTime
+  usedAt       DateTime?
+  createdAt    DateTime  @default(now())
+}
+
+// Emailed to a self-signed-up portal user to prove they own the address.
+// Deliberately mirrors PortalPasswordReset (single-use, expiring, no FK) so
+// the two token flows are the same shape.
+model PortalEmailVerification {
+  id           Int       @id @default(autoincrement())
+  portalUserId Int
+  token        String    @unique
+  expiresAt    DateTime
+  usedAt       DateTime?
+  createdAt    DateTime  @default(now())
+}
+
+model Project {
+  id             Int             @id @default(autoincrement())
+  client         Client          @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId       Int
+  name           String
+  status         String          @default("Discovery") // Discovery|Design|Development|Testing|Deployed|Maintenance
+  stagingUrl     String          @default("")
+  liveUrl        String          @default("")
+  milestones     Milestone[]
+  updates        ProjectUpdate[]
+  documents      Document[]
+  changeRequests ChangeRequest[]
+  suggestions    Suggestion[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+}
+
+model Milestone {
+  id                     Int           @id @default(autoincrement())
+  project                Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId              Int
+  title                  String
+  status                 String        @default("Upcoming") // Upcoming|InProgress|Completed
+  dueDate                DateTime?
+  order                  Int           @default(0)
+  tasks                  ProjectTask[]
+  approvalStatus         String        @default("Pending") // Pending|Approved|ChangesRequested — only meaningful once status=Completed
+  approvalComment        String        @default("")
+  approvedByPortalUserId Int?
+  approvedAt             DateTime?
+  createdAt              DateTime      @default(now())
+  updatedAt              DateTime      @updatedAt
+}
+
+// The deliverables checklist under a milestone — distinct from the
+// staff-only `Task` model above, which is an internal follow-up list
+// unrelated to what's actually delivered on the project timeline.
+model ProjectTask {
+  id          Int       @id @default(autoincrement())
+  milestone   Milestone @relation(fields: [milestoneId], references: [id], onDelete: Cascade)
+  milestoneId Int
+  title       String
+  done        Boolean   @default(false)
+  order       Int       @default(0)
+}
+
+model ProjectUpdate {
+  id        Int      @id @default(autoincrement())
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  projectId Int
+  body      String
+  imageUrls String   @default("[]") // JSON string array — SQLite has no array type
+  links     String   @default("[]") // JSON string array
+  postedBy  String
+  createdAt DateTime @default(now())
+}
+
+model ChangeRequest {
+  id                    Int         @id @default(autoincrement())
+  client                Client      @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId              Int
+  project               Project?    @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  projectId             Int?
+  title                 String
+  description           String      @default("")
+  pageSection           String      @default("")
+  referenceLinks        String      @default("")
+  desiredDeadline       DateTime?
+  status                String      @default("Submitted") // Submitted|UnderReview|QuoteSent|Approved|Declined|InProgress|Completed
+  includedInPlan        Boolean     @default(false)
+  quoteAmount           String      @default("")
+  quoteEstimatedTime    String      @default("")
+  // SetNull, not Cascade: removing a portal user must never delete their
+  // business's change requests — approved/paid ones have invoices pointing
+  // at them (tickets already keep the record the same way, see Ticket above).
+  createdByPortalUser   PortalUser? @relation(fields: [createdByPortalUserId], references: [id], onDelete: SetNull)
+  createdByPortalUserId Int?
+  documents             Document[]
+  createdAt             DateTime    @default(now())
+  updatedAt             DateTime    @updatedAt
+}
+
+// One polymorphic thread model reused for ticket replies, change-request
+// comments, suggestion comments, and system-generated status-change
+// entries — these are all the same "timestamped note in a thread" shape, so
+// one table backs all of them instead of near-duplicate tables per type.
+model Message {
+  id         Int      @id @default(autoincrement())
+  threadType String // "Ticket" | "ChangeRequest" | "Suggestion"
+  threadId   Int
+  authorType String // "Staff" | "Portal" | "System"
+  authorName String
+  body       String
+  createdAt  DateTime @default(now())
+
+  @@index([threadType, threadId])
+}
+
+// Read-only-to-the-client record of what's hosting their site — staff picks
+// the provider, the business just sees it. No renewal/expiry tracking yet
+// (that's the still-deferred Renewals phase); this is visibility only.
+model Service {
+  id        Int      @id @default(autoincrement())
+  client    Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId  Int
+  type      String // Domain | Hosting | SSL | Email | Other
+  provider  String // e.g. "AWS", "Vercel", "Namecheap", "Cloudflare"
+  planName  String   @default("")
+  notes     String   @default("")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// The one thing both ChangeRequest and Suggestion pay through — a
+// polymorphic source (mirroring Message's threadType/threadId) instead of
+// a separate invoice table per feature. GST is fixed at 10% (AUD) and
+// computed server-side from amountExGst; amounts are strings, matching the
+// money-as-String convention already used on Client (amountPaid/
+// totalAmount) rather than introducing a Decimal type here.
+model Invoice {
+  id          Int       @id @default(autoincrement())
+  client      Client    @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId    Int
+  sourceType  String // "ChangeRequest" | "Suggestion" | "Manual"
+  sourceId    Int?
+  description String
+  amountExGst String
+  gstAmount   String
+  totalAmount String
+  status      String    @default("Unpaid") // Unpaid | Paid | Overdue | Void
+  issueDate   DateTime  @default(now())
+  dueDate     DateTime?
+  paidAt      DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+// A staff-authored recommendation the business reviews. Approving one that
+// isn't "included in plan" creates an Invoice exactly like an approved
+// ChangeRequest quote does — same pay-then-work-starts flow, same Invoice
+// table, driven by sourceType="Suggestion".
+model Suggestion {
+  id              Int        @id @default(autoincrement())
+  client          Client     @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  clientId        Int
+  project         Project?   @relation(fields: [projectId], references: [id], onDelete: SetNull)
+  projectId       Int?
+  title           String
+  category        String // SEO | Performance | Security | Feature | Design | Conversion | Other
+  description     String     @default("")
+  expectedBenefit String     @default("")
+  priority        String     @default("Medium") // Low | Medium | High
+  estimatedCost   String     @default("")
+  estimatedTime   String     @default("")
+  includedInPlan  Boolean    @default(false)
+  status          String     @default("Proposed") // Proposed | Approved | Snoozed | Declined | InProgress | Completed
+  snoozeUntil     DateTime?
+  declineReason   String     @default("")
+  createdBy       String
+  documents       Document[]
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+}
+
+model AuditLog {
+  id         Int      @id @default(autoincrement())
+  actorType  String // "Staff" | "Portal"
+  actorId    Int
+  actorLabel String
+  action     String
+  targetType String
+  targetId   Int
+  createdAt  DateTime @default(now())
+}
+
+// -----------------------------------------------
+// Auth
+// -----------------------------------------------
+
+// `role` is a free-text label an admin types when creating a user (job
+// title, e.g. "Developer", "Account Manager") — display only. Actual
+// elevated permissions are governed solely by `isAdmin`, kept as a separate
+// boolean so a descriptive label can never accidentally grant access.
+model User {
+  id            Int            @id @default(autoincrement())
+  username      String         @unique
+  passwordHash  String
+  role          String         @default("User")
+  isAdmin       Boolean        @default(false)
+  sessions      Session[]
+  todos         Todo[]
+  tasks         Task[]         @relation("TaskAssignee")
+  tickets       Ticket[]       @relation("TicketAssignee")
+  notifications Notification[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+// A personal, private scratchpad task list — separate from a client's Tasks
+// (which are shared, admin-assigned follow-ups). Each user only ever sees
+// their own todos.
+model Todo {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  title     String
+  done      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// An in-app notification for one staff user — the bell in the top bar.
+// `link` is the in-app href to open when clicked, and `type` is the
+// NotificationType union in src/types/index.ts (validated at the API
+// boundary, like every other "enum" String in this schema).
+//
+// Deliberately denormalized: the title/body are frozen prose written at
+// the moment the event happened, not a join. A task renamed or reassigned
+// later must not rewrite the history of what someone was already told.
+model Notification {
+  id        Int       @id @default(autoincrement())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  type      String
+  title     String
+  body      String    @default("")
+  link      String    @default("")
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@index([userId, readAt])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    Int
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+// -----------------------------------------------
+// Public website (apps/web)
+// -----------------------------------------------
+//
+// These two tables are the only ones written by unauthenticated visitors.
+// They replace the standalone Express + Supabase service that used to sit
+// behind the marketing site's forms: there is now one backend and one
+// database, so an enquiry is visible in the staff CRM the moment it lands
+// instead of in a separate table nothing in the CRM could read.
+
+// A contact or quote-request submission from the marketing site. Kept
+// separate from Client on purpose — an enquiry is an unqualified stranger,
+// and mixing those into the client list would corrupt every CRM count and
+// pipeline stage. Staff convert one into a Client explicitly.
+model Enquiry {
+  id                Int      @id @default(autoincrement())
+  type              String   @default("Contact") // Contact | Quote
+  name              String
+  business          String   @default("")
+  email             String
+  phone             String   @default("")
+  service           String   @default("")
+  budget            String   @default("")
+  message           String   @default("")
+  status            String   @default("New") // New | Contacted | Converted | Archived
+  // Recorded for abuse triage only (the form is public and unauthenticated).
+  ipAddress         String   @default("")
+  // Set when staff turn this enquiry into a real client record.
+  convertedClientId Int?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([status, createdAt])
+}
+
+model NewsletterSubscriber {
+  id               Int       @id @default(autoincrement())
+  email            String    @unique
+  status           String    @default("Subscribed") // Subscribed | Unsubscribed
+  // Unsubscribe links carry this instead of the email, so the address is
+  // never guessable from a URL and one leaked link can't unsubscribe others.
+  unsubscribeToken String    @unique
+  ipAddress        String    @default("")
+  unsubscribedAt   DateTime?
+  createdAt        DateTime  @default(now())
+}

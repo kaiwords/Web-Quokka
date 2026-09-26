@@ -1,0 +1,552 @@
+<!--
+  ============================================================
+  WEB QUOKKA · STUDIO DESIGN — Template 03
+  STYLE DIRECTION: "Horizon Drift"
+    Obsidian night, electric lime and signal orange. The whole site
+    is one long horizontal journey: scrolling down moves you sideways
+    through full-screen panels, with content wiping in from left to
+    right as each panel arrives.
+
+  SIGNATURE "WOW" ELEMENT:
+    Pinned horizontal scroll rail with eased momentum and a velocity
+    skew, over a full-page depth constellation that streams past as
+    you travel, links up to your cursor and bursts on click.
+    Supporting effects: custom label cursor, magnetic + floating
+    buttons, mouse-tracked orbit in the hero, tilt + spotlight cards,
+    drag-to-scroll, scroll-filled process line, chapter progress bar,
+    counters, rotating word, marquee, confetti on form success.
+
+  Files: index.html · assets/css/style.css · assets/js/main.js
+  No libraries — plain HTML, CSS and vanilla JavaScript.
+  ============================================================
+-->
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Web Quokka · Studio Design | Affordable Websites &amp; Apps in Perth</title>
+  <meta name="description" content="Web Quokka is a Perth, WA web studio building affordable, high-quality websites and apps for small businesses. No bloat, no jargon, no surprises." />
+  <meta name="theme-color" content="#0A0A0C" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='11' fill='%23D4FF3A'/%3E%3Ccircle cx='13' cy='13' r='5' fill='%23FF6B2C'/%3E%3Ccircle cx='27' cy='13' r='5' fill='%23FF6B2C'/%3E%3Cellipse cx='20' cy='23' rx='11' ry='10' fill='%23FF6B2C'/%3E%3Ccircle cx='16' cy='21' r='1.6' fill='%230A0A0C'/%3E%3Ccircle cx='24' cy='21' r='1.6' fill='%230A0A0C'/%3E%3Cellipse cx='20' cy='25.5' rx='2' ry='1.4' fill='%230A0A0C'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <script>document.documentElement.classList.add("js");</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ================= BACKGROUND LAYERS ================= -->
+  <div class="bg-layers" aria-hidden="true">
+    <div class="bg-glow bg-glow--lime"></div>
+    <div class="bg-glow bg-glow--orange"></div>
+    <div class="bg-glow bg-glow--ice"></div>
+    <canvas class="stars" id="stars"></canvas>
+    <div class="bg-grain"></div>
+  </div>
+
+  <!-- Custom cursor (fine pointers only, enabled by JS) -->
+  <div class="cursor" aria-hidden="true">
+    <div class="cursor-ring"><span class="cursor-label"></span></div>
+    <div class="cursor-dot"></div>
+  </div>
+
+  <!-- ================= HEADER ================= -->
+  <header class="site-header">
+    <a href="#hero" class="logo" data-cursor="Home" aria-label="Web Quokka · Studio Design — back to start">
+      <svg class="logo-mark" viewBox="0 0 40 40" aria-hidden="true">
+        <rect width="40" height="40" rx="12" fill="#D4FF3A" />
+        <circle cx="12.5" cy="13" r="5" fill="#FF6B2C" />
+        <circle cx="27.5" cy="13" r="5" fill="#FF6B2C" />
+        <circle cx="12.5" cy="13" r="2.3" fill="#FFB08A" />
+        <circle cx="27.5" cy="13" r="2.3" fill="#FFB08A" />
+        <ellipse cx="20" cy="23" rx="11" ry="10" fill="#FF6B2C" />
+        <ellipse cx="20" cy="26.5" rx="6" ry="4.6" fill="#FFD9C4" />
+        <circle cx="15.8" cy="21" r="1.7" fill="#0A0A0C" />
+        <circle cx="24.2" cy="21" r="1.7" fill="#0A0A0C" />
+        <ellipse cx="20" cy="24.6" rx="1.8" ry="1.3" fill="#0A0A0C" />
+        <path d="M17.6 27.2 Q20 29.4 22.4 27.2" stroke="#0A0A0C" stroke-width="1.2" fill="none" stroke-linecap="round" />
+      </svg>
+      <span class="logo-text"><span class="logo-name">Web Quokka</span><span class="logo-sub">Studio Design</span></span>
+    </a>
+
+    <p class="chapter-now" aria-hidden="true">
+      <span class="chapter-num" id="chapterNum">01</span>
+      <span class="chapter-sep"></span>
+      <span class="chapter-name" id="chapterName">Start</span>
+    </p>
+
+    <div class="header-actions">
+      <a href="#contact" class="btn btn-primary btn-sm" data-magnetic data-cursor="Let's talk">
+        <span class="btn-label">Free Quote</span>
+        <span class="btn-icon" aria-hidden="true">→</span>
+      </a>
+      <button class="menu-btn" id="menuBtn" type="button" aria-expanded="false" aria-controls="menu" data-magnetic data-cursor="Menu">
+        <span class="menu-btn-lines" aria-hidden="true"><span></span><span></span></span>
+        <span class="menu-btn-text">Menu</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ================= FULL-SCREEN MENU ================= -->
+  <div class="menu" id="menu" hidden>
+    <nav class="menu-nav" aria-label="Main">
+      <ol>
+        <li><a href="#hero"><span class="menu-i">01</span>Start</a></li>
+        <li><a href="#services"><span class="menu-i">02</span>Services</a></li>
+        <li><a href="#why"><span class="menu-i">03</span>Why Us</a></li>
+        <li><a href="#process"><span class="menu-i">04</span>Process</a></li>
+        <li><a href="#testimonials"><span class="menu-i">05</span>Kind Words</a></li>
+        <li><a href="#pricing"><span class="menu-i">06</span>Pricing</a></li>
+        <li><a href="#contact"><span class="menu-i">07</span>Contact</a></li>
+      </ol>
+    </nav>
+    <div class="menu-aside">
+      <p class="menu-kicker">Say hello</p>
+      <a href="mailto:quokkasupport@gmail.com">quokkasupport@gmail.com</a>
+      <a href="tel:+610451665643">+61 0451 665 643</a>
+      <p class="menu-note">Perth, WA · We reply within 24 hours.</p>
+    </div>
+  </div>
+
+  <!-- ================= THE RAIL =================
+       In horizontal mode .rail gets a tall height from JS, .rail-sticky
+       pins to the viewport and .rail-track slides sideways as you scroll.
+       On small screens / reduced motion it is a normal vertical page. -->
+  <main id="main" class="rail" tabindex="-1">
+    <div class="rail-sticky">
+      <div class="rail-track" id="track">
+
+        <!-- ========== 01 · HERO ========== -->
+        <section class="panel hero" id="hero" data-chapter="Start" aria-labelledby="hero-title">
+          <div class="hero-copy">
+            <p class="eyebrow" data-reveal><span class="pulse-dot"></span>Perth, WA · Web studio</p>
+            <h1 class="hero-title" id="hero-title" data-split>
+              Websites that move your business <em>forward.</em>
+            </h1>
+            <p class="hero-rotator" data-reveal>
+              Built for
+              <span class="rotator" data-rotate='["small businesses","tradies","cafés &amp; shops","creatives","local services"]'>
+                <span class="rotator-word">small businesses</span>
+              </span>
+            </p>
+            <p class="hero-lead" data-reveal>
+              We build affordable, high-quality websites and apps for small businesses — so you can focus on what you do best. No bloat, no jargon, no surprises.
+            </p>
+            <div class="hero-ctas" data-reveal>
+              <a href="#contact" class="btn btn-primary btn-float" data-magnetic data-cursor="Let's go">
+                <span class="btn-label">Start Your Project</span>
+                <span class="btn-icon" aria-hidden="true">→</span>
+              </a>
+              <a href="#services" class="btn btn-ghost" data-magnetic data-cursor="Explore">
+                <span class="btn-label">View Services</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- Mouse-tracked orbit (decorative) -->
+          <div class="orbit" id="orbit" aria-hidden="true">
+            <div class="orbit-inner">
+              <div class="orbit-ring orbit-ring--1"><span class="planet planet--lime"></span></div>
+              <div class="orbit-ring orbit-ring--2"><span class="planet planet--orange"></span></div>
+              <div class="orbit-ring orbit-ring--3"><span class="planet planet--ice"></span></div>
+              <div class="orbit-core">
+                <svg viewBox="0 0 40 40">
+                  <circle cx="12.5" cy="13" r="5" fill="#FF6B2C" />
+                  <circle cx="27.5" cy="13" r="5" fill="#FF6B2C" />
+                  <ellipse cx="20" cy="23" rx="11" ry="10" fill="#FF6B2C" />
+                  <ellipse cx="20" cy="26.5" rx="6" ry="4.6" fill="#FFD9C4" />
+                  <circle class="eye" cx="15.8" cy="21" r="1.7" fill="#0A0A0C" />
+                  <circle class="eye" cx="24.2" cy="21" r="1.7" fill="#0A0A0C" />
+                  <ellipse cx="20" cy="24.6" rx="1.8" ry="1.3" fill="#0A0A0C" />
+                </svg>
+              </div>
+            </div>
+            <span class="chip chip--a" data-depth="1.4">📈 +40% sales</span>
+            <span class="chip chip--b" data-depth="0.9">⚡ Loads in &lt;1s</span>
+            <span class="chip chip--c" data-depth="1.8">🚀 Launched on time</span>
+          </div>
+
+          <ul class="hero-stats" data-reveal>
+            <li><strong><span data-count="50">50</span>+</strong><span>Projects delivered</span></li>
+            <li><strong><span data-count="100">100</span>%</strong><span>Client satisfaction</span></li>
+            <li><strong><span data-count="24">24</span>h</strong><span>Response time</span></li>
+          </ul>
+
+          <p class="travel-hint" aria-hidden="true">
+            <span class="travel-text">Scroll to travel</span>
+            <span class="travel-arrow"><span></span></span>
+          </p>
+        </section>
+
+        <!-- ========== MANIFESTO (interlude) ========== -->
+        <section class="panel manifesto" aria-label="Our promise">
+          <div class="manifesto-words" aria-hidden="true">
+            <p class="giant giant--outline" data-parallax="-0.2">Small business.</p>
+            <p class="giant giant--fill" data-parallax="0.1">Big presence.</p>
+          </div>
+          <div class="manifesto-copy" data-reveal>
+            <p class="manifesto-text">
+              Great websites shouldn't be reserved for big budgets. We design, build and look after your site — <mark>all under one roof</mark>, in plain English.
+            </p>
+            <ul class="tag-row" aria-label="What we build">
+              <li>Websites</li><li>Online Stores</li><li>Web Apps</li><li>Mobile Apps</li><li>Booking Systems</li><li>Hosting</li>
+            </ul>
+          </div>
+        </section>
+
+        <!-- ========== 02 · SERVICES ========== -->
+        <section class="panel services" id="services" data-chapter="Services" aria-labelledby="services-title">
+          <header class="panel-head">
+            <p class="eyebrow" data-reveal><span class="idx">02</span>What we do</p>
+            <h2 id="services-title" data-wipe>Everything you need to get online &amp; grow</h2>
+            <p class="panel-lead" data-reveal>From your first website to a full custom app — designed, built and looked after in one place.</p>
+            <p class="drag-note" data-reveal aria-hidden="true"><span class="drag-pill">⟷</span> Scroll or drag to explore</p>
+          </header>
+
+          <div class="card-row">
+            <article class="card service" data-tilt data-reveal>
+              <span class="card-badge">Most popular</span>
+              <span class="card-num">01</span>
+              <span class="card-icon" aria-hidden="true">🖥️</span>
+              <h3>Website Design &amp; Development</h3>
+              <p>Custom, mobile-friendly websites that look great, load fast and turn visitors into customers.</p>
+              <ul class="ticks"><li>Responsive on every device</li><li>SEO-ready from day one</li><li>Easy for you to update</li></ul>
+            </article>
+            <article class="card service" data-tilt data-reveal>
+              <span class="card-num">02</span>
+              <span class="card-icon" aria-hidden="true">🛒</span>
+              <h3>E-Commerce Development</h3>
+              <p>Online stores that make selling simple — secure payments, stock management and a smooth checkout.</p>
+              <ul class="ticks"><li>Secure card &amp; wallet payments</li><li>Product &amp; stock management</li><li>Shipping &amp; order emails</li></ul>
+            </article>
+            <article class="card service" data-tilt data-reveal>
+              <span class="card-num">03</span>
+              <span class="card-icon" aria-hidden="true">⚙️</span>
+              <h3>Web Application Development</h3>
+              <p>Booking systems, client portals and dashboards built around how your business actually works.</p>
+              <ul class="ticks"><li>Custom features &amp; workflows</li><li>User accounts &amp; logins</li><li>Automations that save hours</li></ul>
+            </article>
+            <article class="card service" data-tilt data-reveal>
+              <span class="card-num">04</span>
+              <span class="card-icon" aria-hidden="true">📱</span>
+              <h3>Mobile App Development</h3>
+              <p>iOS and Android apps that put your business right in your customers' pockets.</p>
+              <ul class="ticks"><li>iOS &amp; Android</li><li>Push notifications</li><li>App Store launch support</li></ul>
+            </article>
+            <article class="card service" data-tilt data-reveal>
+              <span class="card-num">05</span>
+              <span class="card-icon" aria-hidden="true">🛠️</span>
+              <h3>Website &amp; App Maintenance</h3>
+              <p>Updates, backups, security checks and small changes — handled, so you never have to worry.</p>
+              <ul class="ticks"><li>Regular updates &amp; backups</li><li>Security monitoring</li><li>Quick content changes</li></ul>
+            </article>
+            <article class="card service" data-tilt data-reveal>
+              <span class="card-num">06</span>
+              <span class="card-icon" aria-hidden="true">☁️</span>
+              <h3>Hosting &amp; Backend</h3>
+              <p>Fast, secure hosting, domains, business email and databases — set up and managed for you.</p>
+              <ul class="ticks"><li>SSL security included</li><li>Domain &amp; email setup</li><li>Databases &amp; APIs</li></ul>
+            </article>
+          </div>
+        </section>
+
+        <!-- ========== 03 · WHY US ========== -->
+        <section class="panel why" id="why" data-chapter="Why Us" aria-labelledby="why-title">
+          <header class="panel-head">
+            <p class="eyebrow" data-reveal><span class="idx">03</span>Why Web Quokka</p>
+            <h2 id="why-title" data-wipe>Big-studio quality, small-business friendly</h2>
+            <p class="panel-lead" data-reveal>We started Web Quokka because great websites shouldn't be reserved for big budgets. Here's what working with us feels like.</p>
+            <a href="#process" class="btn btn-ghost" data-magnetic data-cursor="Next" data-reveal>
+              <span class="btn-label">See how it works</span><span class="btn-icon" aria-hidden="true">→</span>
+            </a>
+          </header>
+
+          <div class="why-grid">
+            <article class="why-item" data-reveal data-spotlight>
+              <span class="why-num">01</span>
+              <span class="why-icon" aria-hidden="true">💰</span>
+              <h3>Affordable Pricing</h3>
+              <p>Clear, fixed quotes built for small-business budgets. You'll know the price before we start — no surprise invoices.</p>
+            </article>
+            <article class="why-item" data-reveal data-spotlight>
+              <span class="why-num">02</span>
+              <span class="why-icon" aria-hidden="true">🧭</span>
+              <h3>Simple Process</h3>
+              <p>Plain English from start to finish. We guide you through each step and handle all the technical stuff.</p>
+            </article>
+            <article class="why-item" data-reveal data-spotlight>
+              <span class="why-num">03</span>
+              <span class="why-icon" aria-hidden="true">🤝</span>
+              <h3>Ongoing Support</h3>
+              <p>We don't disappear after launch. Need a change or have a question? We're only a message away.</p>
+            </article>
+            <article class="why-item" data-reveal data-spotlight>
+              <span class="why-num">04</span>
+              <span class="why-icon" aria-hidden="true">✨</span>
+              <h3>Modern Studio Design</h3>
+              <p>Fresh, professional designs using today's best practices — fast, accessible and built to grow with you.</p>
+            </article>
+          </div>
+        </section>
+
+        <!-- ========== 04 · PROCESS ========== -->
+        <section class="panel process" id="process" data-chapter="Process" aria-labelledby="process-title">
+          <header class="panel-head">
+            <p class="eyebrow" data-reveal><span class="idx">04</span>How it works</p>
+            <h2 id="process-title" data-wipe>Five simple steps to launch day</h2>
+            <p class="panel-lead" data-reveal>No confusing tech talk. Just a clear path from idea to a website you're proud of.</p>
+          </header>
+
+          <div class="timeline" id="timeline">
+            <div class="timeline-line" aria-hidden="true"><span class="timeline-fill"></span></div>
+            <ol class="steps">
+              <li class="step" data-reveal>
+                <span class="step-node" aria-hidden="true"></span>
+                <span class="step-num">01</span>
+                <h3><span aria-hidden="true">🔍</span> Discover</h3>
+                <p>A friendly chat about your business, goals and customers. We map out exactly what you need.</p>
+              </li>
+              <li class="step" data-reveal>
+                <span class="step-node" aria-hidden="true"></span>
+                <span class="step-num">02</span>
+                <h3><span aria-hidden="true">🎨</span> Design</h3>
+                <p>We create a visual mock-up for you to review, then tweak it until it feels just right.</p>
+              </li>
+              <li class="step" data-reveal>
+                <span class="step-node" aria-hidden="true"></span>
+                <span class="step-num">03</span>
+                <h3><span aria-hidden="true">🧱</span> Build</h3>
+                <p>We develop your site with clean code, fast load times and mobile-first layouts.</p>
+              </li>
+              <li class="step" data-reveal>
+                <span class="step-node" aria-hidden="true"></span>
+                <span class="step-num">04</span>
+                <h3><span aria-hidden="true">🚀</span> Launch</h3>
+                <p>We test everything, go live and show you how to manage your new site with confidence.</p>
+              </li>
+              <li class="step" data-reveal>
+                <span class="step-node" aria-hidden="true"></span>
+                <span class="step-num">05</span>
+                <h3><span aria-hidden="true">🛡️</span> Maintain</h3>
+                <p>Ongoing updates, backups and support keep everything running smoothly.</p>
+              </li>
+            </ol>
+          </div>
+        </section>
+
+        <!-- ========== 05 · TESTIMONIALS ========== -->
+        <section class="panel testimonials" id="testimonials" data-chapter="Kind Words" aria-labelledby="testi-title">
+          <header class="panel-head">
+            <p class="eyebrow" data-reveal><span class="idx">05</span>Kind words</p>
+            <h2 id="testi-title" data-wipe>Real businesses, real results</h2>
+            <p class="panel-lead" data-reveal>Don't just take our word for it — here's what local business owners say.</p>
+          </header>
+
+          <div class="quote-row">
+            <figure class="quote" data-reveal data-tilt>
+              <span class="quote-result">📈 +40% online sales</span>
+              <blockquote>"Web Quokka gave our little shop a beautiful online store. Orders come in while we sleep — our online sales are up 40% since launch."</blockquote>
+              <figcaption><span class="avatar" aria-hidden="true">SM</span><span><strong>Sarah Mitchell</strong>Owner, Bloom Florist</span></figcaption>
+            </figure>
+            <figure class="quote" data-reveal data-tilt>
+              <span class="quote-result">📞 3x more leads</span>
+              <blockquote>"I needed more calls, not a fancy brochure. The new site shows up locally and the phone hasn't stopped — we're getting three times the leads."</blockquote>
+              <figcaption><span class="avatar" aria-hidden="true">JT</span><span><strong>James Torres</strong>Owner, Torres Plumbing</span></figcaption>
+            </figure>
+            <figure class="quote" data-reveal data-tilt>
+              <span class="quote-result">🤖 100% automated bookings</span>
+              <blockquote>"Class bookings used to eat up my evenings. Now every booking, reminder and payment happens automatically. Honestly a game-changer."</blockquote>
+              <figcaption><span class="avatar" aria-hidden="true">PN</span><span><strong>Priya Nair</strong>Founder, NairFit Studio</span></figcaption>
+            </figure>
+            <figure class="quote" data-reveal data-tilt>
+              <span class="quote-result">🔑 Turnkey studio setup</span>
+              <blockquote>"Domain, email, website, hosting — they set up the whole lot for our new studio. We just turned up on day one and everything worked."</blockquote>
+              <figcaption><span class="avatar" aria-hidden="true">ML</span><span><strong>Marcus Lee</strong>Director, Lee &amp; Associates</span></figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <!-- ========== 06 · PRICING ========== -->
+        <section class="panel pricing" id="pricing" data-chapter="Pricing" aria-labelledby="pricing-title">
+          <header class="panel-head">
+            <p class="eyebrow" data-reveal><span class="idx">06</span>Simple pricing</p>
+            <h2 id="pricing-title" data-wipe>Honest prices, no surprises</h2>
+            <p class="panel-lead" data-reveal>One-time packages in Australian dollars. Pick a starting point — we'll tailor it to fit.</p>
+            <p class="panel-note" data-reveal>Not sure which fits? <a href="#contact" class="text-link">Tell us about your project</a> and we'll recommend the right option — free.</p>
+          </header>
+
+          <div class="plans">
+            <article class="plan" data-reveal data-tilt>
+              <h3>Starter</h3>
+              <p class="plan-desc">Perfect for getting your business online, fast.</p>
+              <p class="plan-price"><span class="cur">$</span><span data-count="699">699</span><span class="per">AUD · one-time</span></p>
+              <ul class="ticks"><li>Up to 5 pages</li><li>Mobile-responsive design</li><li>Contact form &amp; Google Maps</li><li>Basic SEO setup</li><li>Social media links</li></ul>
+              <a href="#contact" class="btn btn-ghost btn-block" data-plan="Starter package ($699)" data-magnetic data-cursor="Pick">
+                <span class="btn-label">Choose Starter</span>
+              </a>
+            </article>
+            <article class="plan plan--featured" data-reveal data-tilt>
+              <span class="plan-flag">Most popular</span>
+              <h3>Growth</h3>
+              <p class="plan-desc">For growing businesses ready to attract more customers.</p>
+              <p class="plan-price"><span class="cur">$</span><span data-count="1199" data-format="comma">1,199</span><span class="per">AUD · one-time</span></p>
+              <ul class="ticks"><li>Up to 12 pages</li><li>CMS blog you can update yourself</li><li>Everything in Starter</li><li>Enhanced SEO &amp; analytics</li><li>Speed optimisation</li></ul>
+              <a href="#contact" class="btn btn-primary btn-block" data-plan="Growth package ($1,199)" data-magnetic data-cursor="Pick">
+                <span class="btn-label">Choose Growth</span><span class="btn-icon" aria-hidden="true">→</span>
+              </a>
+            </article>
+            <article class="plan" data-reveal data-tilt>
+              <h3>Pro Bespoke</h3>
+              <p class="plan-desc">Custom web apps and advanced features, built to order.</p>
+              <p class="plan-price"><span class="cur">$</span><span data-count="2499" data-format="comma">2,499</span><span class="per">AUD · one-time</span></p>
+              <ul class="ticks"><li>Custom web application</li><li>Online payments</li><li>User login &amp; authentication</li><li>Database &amp; admin dashboard</li><li>Priority support</li></ul>
+              <a href="#contact" class="btn btn-ghost btn-block" data-plan="Pro Bespoke package ($2,499)" data-magnetic data-cursor="Pick">
+                <span class="btn-label">Choose Pro Bespoke</span>
+              </a>
+            </article>
+          </div>
+        </section>
+
+        <!-- ========== 07 · CONTACT ========== -->
+        <section class="panel contact" id="contact" data-chapter="Contact" aria-labelledby="contact-title">
+          <div class="contact-info">
+            <p class="eyebrow" data-reveal><span class="idx">07</span>Get in touch</p>
+            <h2 id="contact-title" data-wipe>Let's build something great together</h2>
+            <p class="panel-lead" data-reveal>Tell us a little about your business and what you need. We'll come back with friendly advice and a free, no-obligation quote.</p>
+            <ul class="contact-list" data-reveal>
+              <li><a href="mailto:quokkasupport@gmail.com" data-cursor="Email"><span class="ci" aria-hidden="true">✉️</span><span><small>Email us</small>quokkasupport@gmail.com</span></a></li>
+              <li><a href="tel:+610451665643" data-cursor="Call"><span class="ci" aria-hidden="true">📞</span><span><small>Call us</small>+61 0451 665 643</span></a></li>
+              <li><span class="contact-static"><span class="ci" aria-hidden="true">📍</span><span><small>Visit us</small>Perth WA 6000</span></span></li>
+            </ul>
+          </div>
+
+          <div class="form-card" data-reveal>
+            <form class="form" id="contactForm" novalidate>
+              <div class="field">
+                <label for="f-name">Your name <span aria-hidden="true">*</span></label>
+                <input id="f-name" name="name" type="text" autocomplete="name" required />
+                <p class="field-error" id="e-name"></p>
+              </div>
+              <div class="field">
+                <label for="f-business">Business name <span class="opt">(optional)</span></label>
+                <input id="f-business" name="business" type="text" autocomplete="organization" />
+              </div>
+              <div class="field">
+                <label for="f-email">Email <span aria-hidden="true">*</span></label>
+                <input id="f-email" name="email" type="email" autocomplete="email" required />
+                <p class="field-error" id="e-email"></p>
+              </div>
+              <div class="field">
+                <label for="f-phone">Phone <span class="opt">(optional)</span></label>
+                <input id="f-phone" name="phone" type="tel" autocomplete="tel" />
+              </div>
+              <div class="field field--full">
+                <label for="f-service">What can we help with? <span aria-hidden="true">*</span></label>
+                <select id="f-service" name="service" required>
+                  <option value="">Choose a service…</option>
+                  <option>Website Design &amp; Development</option>
+                  <option>E-Commerce Development</option>
+                  <option>Web Application Development</option>
+                  <option>Mobile App Development</option>
+                  <option>Website &amp; App Maintenance</option>
+                  <option>Hosting &amp; Backend</option>
+                  <option>Starter package ($699)</option>
+                  <option>Growth package ($1,199)</option>
+                  <option>Pro Bespoke package ($2,499)</option>
+                  <option>Not sure yet</option>
+                </select>
+                <p class="field-error" id="e-service"></p>
+              </div>
+              <div class="field field--full">
+                <label for="f-message">Tell us about your project <span aria-hidden="true">*</span></label>
+                <textarea id="f-message" name="message" rows="3" required></textarea>
+                <p class="field-error" id="e-message"></p>
+              </div>
+              <div class="form-foot field--full">
+                <p class="form-hint">Fields marked * are required.</p>
+                <button type="submit" class="btn btn-primary" data-magnetic data-cursor="Send">
+                  <span class="btn-label">Send Enquiry</span><span class="btn-icon" aria-hidden="true">→</span>
+                </button>
+              </div>
+            </form>
+
+            <div class="form-success" id="formSuccess" hidden tabindex="-1">
+              <span class="success-mark" aria-hidden="true">✓</span>
+              <h3>Thanks — message sent!</h3>
+              <p>We've got your enquiry and will be in touch within 24 hours. Keep an eye on your inbox.</p>
+              <button type="button" class="btn btn-ghost" id="formReset" data-magnetic>
+                <span class="btn-label">Send another enquiry</span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- ========== END · FOOTER PANEL ========== -->
+        <footer class="panel footer" aria-label="Footer">
+          <p class="giant giant--outline footer-giant" data-parallax="-0.2" aria-hidden="true">Let's talk.</p>
+          <div class="footer-inner" data-reveal>
+            <p class="footer-blurb">Affordable, high-quality websites and apps for small businesses. Proudly based in Perth, Western Australia.</p>
+            <div class="footer-cols">
+              <div>
+                <p class="footer-h">Explore</p>
+                <ul>
+                  <li><a href="#services">Services</a></li>
+                  <li><a href="#why">Why Us</a></li>
+                  <li><a href="#process">Process</a></li>
+                  <li><a href="#testimonials">Kind Words</a></li>
+                  <li><a href="#pricing">Pricing</a></li>
+                  <li><a href="#contact">Contact</a></li>
+                </ul>
+              </div>
+              <div>
+                <p class="footer-h">Contact</p>
+                <ul>
+                  <li><a href="mailto:quokkasupport@gmail.com">quokkasupport@gmail.com</a></li>
+                  <li><a href="tel:+610451665643">+61 0451 665 643</a></li>
+                  <li>Perth WA 6000</li>
+                </ul>
+              </div>
+            </div>
+            <a href="#hero" class="btn btn-ghost" data-magnetic data-cursor="Rewind">
+              <span class="btn-icon btn-icon--back" aria-hidden="true">←</span><span class="btn-label">Back to the start</span>
+            </a>
+            <p class="footer-legal">© <span id="year">2026</span> Web Quokka · Studio Design. All rights reserved. Made with 🧡 in Perth, WA.</p>
+          </div>
+        </footer>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- ================= CHAPTER PROGRESS BAR (horizontal mode) ================= -->
+  <nav class="progress" id="progress" aria-label="Chapters">
+    <div class="progress-track" aria-hidden="true"><span class="progress-fill" id="progressFill"></span></div>
+    <ol class="progress-list">
+      <li><a href="#hero" data-cursor="Start"><span>01</span></a></li>
+      <li><a href="#services" data-cursor="Services"><span>02</span></a></li>
+      <li><a href="#why" data-cursor="Why Us"><span>03</span></a></li>
+      <li><a href="#process" data-cursor="Process"><span>04</span></a></li>
+      <li><a href="#testimonials" data-cursor="Kind Words"><span>05</span></a></li>
+      <li><a href="#pricing" data-cursor="Pricing"><span>06</span></a></li>
+      <li><a href="#contact" data-cursor="Contact"><span>07</span></a></li>
+    </ol>
+  </nav>
+
+  <!-- ================= FLOATING ACTIONS ================= -->
+  <div class="fab" id="fab">
+    <button class="fab-btn fab-btn--top" id="fabTop" type="button" aria-label="Back to the start" data-magnetic data-cursor="Rewind">
+      <span aria-hidden="true">←</span>
+    </button>
+    <a href="#contact" class="fab-btn fab-btn--quote" data-magnetic data-cursor="Quote">
+      <span class="fab-emoji" aria-hidden="true">💬</span><span class="fab-text">Free quote</span>
+    </a>
+  </div>
+
+  <p class="sr-only" id="liveRegion" aria-live="polite"></p>
+
+  <script src="assets/js/main.js" defer></script>
+</body>
+</html>

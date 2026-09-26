@@ -1,0 +1,56 @@
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { getSessionUser } from "@/lib/auth";
+import { hashPassword, verifyPassword } from "@/lib/password";
+import { isRateLimited } from "@/lib/rateLimit";
+import { logAudit } from "@/lib/auditLog";
+
+// PATCH /api/auth/password — the logged-in user changes their own password.
+// Body: { currentPassword, newPassword }
+export async function PATCH(req: NextRequest) {
+  try {
+    const sessionUser = await getSessionUser();
+    if (!sessionUser) {
+      return NextResponse.json({ error: "Not logged in" }, { status: 401 });
+    }
+
+    // Otherwise a stolen session could brute-force the current password.
+    if (isRateLimited(`staff-pwchange:${sessionUser.id}`, 5, 15 * 60 * 1000)) {
+      return NextResponse.json({ error: "Too many attempts. Try again in a few minutes." }, { status: 429 });
+    }
+
+    const { currentPassword, newPassword } = await req.json();
+    if (typeof currentPassword !== "string" || typeof newPassword !== "string" || !currentPassword || !newPassword) {
+      return NextResponse.json({ error: "Current and new password are required" }, { status: 400 });
+    }
+    if (newPassword.length < 6) {
+      return NextResponse.json({ error: "New password must be at least 6 characters" }, { status: 400 });
+    }
+
+    const user = await prisma.user.findUnique({ where: { id: sessionUser.id } });
+    // 403, not 401 — a 401 here reads as "session expired" to generic
+    // client handling, which is the wrong message for a wrong password.
+    if (!user || !verifyPassword(currentPassword, user.passwordHash)) {
+      return NextResponse.json({ error: "Current password is incorrect" }, { status: 403 });
+    }
+
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { passwordHash: hashPassword(newPassword) },
+    });
+
+    await logAudit({
+      actorType: "Staff",
+      actorId: user.id,
+      actorLabel: user.username,
+      action: "password-change",
+      targetType: "User",
+      targetId: user.id,
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("[PATCH /api/auth/password]", error);
+    return NextResponse.json({ error: "Failed to change password" }, { status: 500 });
+  }
+}

@@ -1,0 +1,136 @@
+@import 'tailwindcss';
+@import './styles/horizon.css' layer(components);
+
+/* Horizon Drift is a dark-only direction — `.dark` is pinned on <html>, and the
+   dark: variant is kept so the existing component classes resolve to it. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-heading: 'Syne', 'Manrope', system-ui, sans-serif;
+  --font-body: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  /* Bone — the text colour on obsidian (17:1 on ink-900) */
+  --color-cream-50: #f2f0ea;
+  --color-cream-100: #e9e6de;
+
+  /* Ash scale, warm-neutral. Reads as "muted" through to near-text. */
+  --color-sand-100: #1b1b21;
+  --color-sand-200: #c9c6be;
+  --color-sand-300: #a6a39c;
+  --color-sand-400: #8e8b84;
+  --color-sand-500: #76736d;
+  --color-sand-600: #5d5a55;
+  --color-sand-700: #46433f;
+  --color-sand-800: #2f2d2a;
+  --color-sand-900: #f2f0ea;
+  --color-sand-950: #08080a;
+
+  /* Electric lime — the primary accent. Always ink text on a lime fill. */
+  --color-sky-50: #f7ffe0;
+  --color-sky-100: #262b10;
+  --color-sky-200: #3a4218;
+  --color-sky-300: #d4ff3a;
+  --color-sky-400: #d4ff3a;
+  --color-sky-500: #d4ff3a;
+  --color-sky-600: #b8e619;
+  --color-sky-700: #b8e619;
+  --color-sky-800: #1f2410;
+  --color-sky-900: #1f2410;
+
+  /* Signal orange — the secondary accent */
+  --color-flame-400: #ff8a52;
+  --color-flame-500: #ff6b2c;
+  --color-flame-600: #e5551a;
+
+  /* Obsidian surfaces */
+  --color-ink-950: #08080a;
+  --color-ink-900: #0a0a0c;
+  --color-ink-800: #131317;
+  --color-ink-700: #1b1b21;
+  --color-ink-600: #2a2a31;
+
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-float-slow: float 9s ease-in-out infinite;
+  --animate-pulse-glow: pulse-glow 2.4s ease-in-out infinite;
+  --animate-breathe: breathe 3.2s ease-in-out infinite;
+  --animate-drift: drift 22s ease-in-out infinite;
+  --animate-shimmer: shimmer 3.5s linear infinite;
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-14px); }
+  }
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(212, 255, 58, 0.35); }
+    50% { box-shadow: 0 0 0 10px rgba(212, 255, 58, 0); }
+  }
+  @keyframes breathe {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+  }
+  @keyframes drift {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(3%, -4%) scale(1.05); }
+    66% { transform: translate(-3%, 3%) scale(0.97); }
+  }
+  @keyframes shimmer {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 200% 50%; }
+  }
+}
+
+@layer base {
+  * {
+    @apply border-ink-600;
+  }
+
+  html {
+    color-scheme: dark;
+    --popular-card-bg: var(--color-ink-800);
+  }
+
+  body {
+    @apply bg-ink-900 text-cream-50 font-body antialiased;
+    /* Anything without an explicit size rides the fluid scale from horizon.css. */
+    font-size: var(--fs-base);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading text-cream-50;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-sky-500);
+    outline-offset: 3px;
+    border-radius: 8px;
+  }
+
+  ::selection {
+    @apply bg-sky-500 text-ink-900;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes gradient-border {
+  0%, 100% { background-position: 0% 0%, 0% 50%; }
+  50% { background-position: 0% 0%, 100% 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

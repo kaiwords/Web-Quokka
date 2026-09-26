@@ -1,36 +1,22 @@
 {
-  "name": "WebQuokka",
+  "name": "webquokka",
   "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "version": "1.0.0",
+  "description": "WebQuokka monorepo \u2014 the public website and the staff CRM / client portal.",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "@number-flow/react": "^0.6.2",
-    "@supabase/supabase-js": "^2.101.1",
-    "clsx": "^2.1.1",
-    "firebase": "^12.11.0",
-    "lucide-react": "^1.46.0",
-    "motion": "^13.4.0",
-    "react": "^19.2.4",
-    "react-dom": "^19.2.4",
-    "tailwind-merge": "^3.7.0"
-  },
-  "devDependencies": {
-    "@eslint/js": "^9.39.4",
-    "@tailwindcss/postcss": "^4.2.2",
-    "@vitejs/plugin-react": "^6.0.1",
-    "autoprefixer": "^10.4.27",
-    "eslint": "^9.39.4",
-    "eslint-plugin-react-hooks": "^7.0.1",
-    "eslint-plugin-react-refresh": "^0.5.2",
-    "globals": "^17.4.0",
-    "postcss": "^8.5.8",
-    "tailwindcss": "^4.2.2",
-    "vite": "^8.0.1"
+    "dev": "node scripts/dev.mjs",
+    "dev:web": "npm run dev --prefix apps/web",
+    "dev:management": "npm run dev --prefix apps/management",
+    "build": "npm run build:web && npm run build:management",
+    "build:web": "npm run build --prefix apps/web",
+    "build:management": "npm run build --prefix apps/management",
+    "install:all": "npm install --prefix apps/web && npm install --prefix apps/management",
+    "lint": "npm run lint --prefix apps/web && npm run lint --prefix apps/management",
+    "typecheck": "npx tsc --noEmit -p apps/management/tsconfig.json",
+    "db:migrate": "npm exec --prefix apps/management -- prisma migrate deploy",
+    "db:migrate:dev": "npm exec --prefix apps/management -- prisma migrate dev",
+    "db:seed": "npm exec --prefix apps/management -- prisma db seed",
+    "db:studio": "npm exec --prefix apps/management -- prisma studio",
+    "db:generate": "npm exec --prefix apps/management -- prisma generate"
   }
 }

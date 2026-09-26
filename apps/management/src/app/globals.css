@@ -1,0 +1,144 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-mono), ui-monospace, monospace;
+
+  /* Quokka amber palette (staff CRM) */
+  --color-quokka-50: #fffbe1;
+  --color-quokka-100: #fff3b8;
+  --color-quokka-400: #fbbf24;
+  --color-quokka-500: #f59e0b;
+  --color-quokka-600: #d97706;
+  --color-quokka-900: #78350f;
+
+  /* Client portal palette — warm sand/cream neutrals + teal/coral accents */
+  --color-sand-50: #fdfaf5;
+  --color-sand-100: #f7efe1;
+  --color-sand-200: #ecdfc7;
+  --color-sand-300: #dcc8a3;
+  --color-sand-400: #c7a876;
+  --color-sand-500: #a8895a;
+  --color-sand-600: #8a6d4a;
+  --color-sand-700: #6b5439;
+  --color-sand-800: #4a3a28;
+  --color-sand-900: #2e2417;
+  --color-teal-50: #ecfdf9;
+  --color-teal-200: #99f6e4;
+  --color-teal-400: #2dd4bf;
+  --color-teal-500: #0d9488;
+  --color-teal-600: #0f766e;
+  --color-teal-700: #0e5c53;
+  --color-coral-500: #f2765a;
+  --color-coral-600: #e15c40;
+}
+
+/* Tailwind v4 preflight sets buttons to cursor:default — restore the
+   pointer affordance for every enabled interactive control app-wide. */
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  summary,
+  label[for],
+  label:has(input:not(:disabled)),
+  input[type="checkbox"]:not(:disabled),
+  input[type="radio"]:not(:disabled),
+  select:not(:disabled) {
+    cursor: pointer;
+  }
+
+  label:has(input:disabled) {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  input[type="file"]:not(:disabled)::file-selector-button {
+    cursor: pointer;
+  }
+
+  /* Visible keyboard focus for click targets. Text inputs keep their own
+     focus:border-* styles, so scope this to buttons/links/summaries. */
+  :where(button, [role="button"], a, summary):focus-visible {
+    outline: 2px solid var(--focus-ring, rgba(245, 158, 11, 0.7));
+    outline-offset: 2px;
+    border-radius: 8px;
+  }
+
+  html {
+    color-scheme: dark;
+  }
+
+  /* Light-themed surfaces (client portal) — flips native form controls,
+     scrollbars, selection, and focus ring to the portal palette. */
+  .theme-light {
+    color-scheme: light;
+    --focus-ring: rgba(13, 148, 136, 0.6);
+    --sb-track: #f7efe1;
+    --sb-thumb: #dcc8a3;
+    --sb-thumb-hover: #c7a876;
+  }
+  .theme-light ::selection {
+    background: #0d9488;
+    color: #fdfaf5;
+  }
+}
+
+/* Custom scrollbar (theme-aware via vars; defaults match the dark admin UI) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--sb-track, #0f172a);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb, #334155);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--sb-thumb-hover, #475569);
+}
+
+/* Glass card utility */
+.glass-card {
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(51, 65, 85, 0.5);
+}
+
+/* Ping animation for sprint indicator */
+@keyframes ping {
+  75%,
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+.animate-ping {
+  animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+
+/* Toast entrance */
+@keyframes toast-in {
+  from {
+    transform: translateY(8px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+.animate-toast-in {
+  animation: toast-in 0.18s ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
