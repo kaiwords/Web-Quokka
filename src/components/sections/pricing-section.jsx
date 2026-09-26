@@ -1,6 +1,6 @@
 "use client";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { TimelineContent } from "@/components/ui/timeline-animation";
+import { Card, CardContent, CardHeader } from "@/components/sections/card";
+import { TimelineContent } from "@/components/sections/timeline-animation";
 import NumberFlow from "@number-flow/react";
 import {
   CheckCircle2,

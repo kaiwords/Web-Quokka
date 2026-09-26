@@ -1,4 +1,4 @@
-import WebQokkaLandingPage from './pages/WebQokkaLandingPage'
+import WebQokkaLandingPage from './pages/home/WebQokkaLandingPage'
 
 function App() {
   return <WebQokkaLandingPage />

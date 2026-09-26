@@ -1,7 +1,7 @@
 "use client";
 import React, { useRef } from "react";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { TimelineContent } from "@/components/ui/timeline-animation";
+import { Card, CardContent, CardHeader } from "@/components/sections/card";
+import { TimelineContent } from "@/components/sections/timeline-animation";
 import { Star, Quote, CheckCheck, Building2, Sparkles, ThumbsUp } from "lucide-react";
 import { motion } from "motion/react";
 
@@ -10,7 +10,6 @@ const testimonials = [
     name: "Sarah Mitchell",
     role: "Owner, Bloom Florist",
     location: "Sydney, NSW",
-    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=200",
     quote:
       "Web Quokka built our online store in just two weeks. Sales went up 40% in the first month. They made the whole process easy, friendly, and stress-free.",
     rating: 5,
@@ -21,7 +20,6 @@ const testimonials = [
     name: "James Torres",
     role: "Founder, Torres Plumbing Co.",
     location: "Brisbane, QLD",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200",
     quote:
       "I was skeptical at first, but the team delivered a professional studio site that actually gets us new leads every day. Best investment we have made for our trade business.",
     rating: 5,
@@ -32,7 +30,6 @@ const testimonials = [
     name: "Priya Nair",
     role: "CEO, NairFit Studio",
     location: "Perth, WA",
-    avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=200",
     quote:
       "Our booking app is slick, fast, and our clients love it. The ongoing support has been incredible — they are always there when we need new features or updates.",
     rating: 5,
@@ -43,7 +40,6 @@ const testimonials = [
     name: "Marcus Lee",
     role: "Director, Lee & Associates",
     location: "Melbourne, VIC",
-    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200",
     quote:
       "From design to cloud hosting, Web Quokka handled everything with perfection. The site looks premium, loads instantly, and we didn't have to lift a finger.",
     rating: 5,
@@ -51,6 +47,15 @@ const testimonials = [
     tag: "Corporate Site",
   },
 ];
+
+function initialsOf(name) {
+  return name
+    .split(" ")
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+}
 
 export default function TestimonialsSection() {
   const sectionRef = useRef(null);
@@ -185,11 +190,12 @@ export default function TestimonialsSection() {
                 <div className="pt-4 border-t border-white/10">
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-3">
-                      <img
-                        src={t.avatar}
-                        alt={t.name}
-                        className="w-10 h-10 rounded-full object-cover border border-[#8B9E7D]"
-                      />
+                      <div
+                        aria-hidden="true"
+                        className="w-10 h-10 shrink-0 rounded-full border border-[#8B9E7D] bg-[#3A5A40]/40 flex items-center justify-center text-xs font-bold text-[#FAF8F5]"
+                      >
+                        {initialsOf(t.name)}
+                      </div>
                       <div>
                         <h4 className="font-bold text-sm text-white group-hover:text-[#8B9E7D] transition-colors">
                           {t.name}
