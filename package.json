@@ -2,7 +2,7 @@
   "name": "webquokka",
   "private": true,
   "version": "1.0.0",
-  "description": "WebQuokka monorepo \u2014 the public website and the staff CRM / client portal.",
+  "description": "WebQuokka monorepo — the public website and the staff CRM / client portal.",
   "scripts": {
     "dev": "node scripts/dev.mjs",
     "dev:web": "npm run dev --prefix apps/web",
@@ -13,11 +13,12 @@
     "install:all": "npm install --prefix apps/web && npm install --prefix apps/management",
     "lint": "npm run lint --prefix apps/web && npm run lint --prefix apps/management",
     "typecheck": "npx tsc --noEmit -p apps/management/tsconfig.json",
-    "db:migrate": "npm exec --prefix apps/management -- prisma migrate deploy",
-    "db:migrate:dev": "npm exec --prefix apps/management -- prisma migrate dev",
-    "db:seed": "npm exec --prefix apps/management -- prisma db seed",
-    "db:studio": "npm exec --prefix apps/management -- prisma studio",
-    "db:generate": "npm exec --prefix apps/management -- prisma generate",
-    "smoke:signup": "npm run smoke:signup --prefix apps/management"
+    "db:migrate": "npm run db:migrate --prefix apps/management",
+    "db:migrate:dev": "npm run db:migrate:dev --prefix apps/management",
+    "db:seed": "npm run db:seed --prefix apps/management",
+    "db:studio": "npm run db:studio --prefix apps/management",
+    "db:generate": "npm run db:generate --prefix apps/management",
+    "smoke:signup": "npm run smoke:signup --prefix apps/management",
+    "create-admin": "npm run create-admin --prefix apps/management --"
   }
 }
