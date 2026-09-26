@@ -11,6 +11,7 @@ import { useHorizon } from '../components/horizon/HorizonContext'
 import Icon from '../components/ui/Icon'
 import useRail from '../hooks/useRail'
 import {
+  PORTAL,
   PROCESS_STEPS,
   PROJECT_PACKAGES,
   SERVICES,
@@ -470,6 +471,20 @@ export default function Home() {
                           <a href={`#${chapter.id}`}>{chapter.label}</a>
                         </li>
                       ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="footer-h">Client area</p>
+                    <ul>
+                      <li>
+                        <a href={PORTAL.clientLogin}>Client login</a>
+                      </li>
+                      <li>
+                        <a href={PORTAL.clientSignup}>Create an account</a>
+                      </li>
+                      <li>
+                        <a href={PORTAL.staffLogin}>Staff login</a>
+                      </li>
                     </ul>
                   </div>
                   <div>

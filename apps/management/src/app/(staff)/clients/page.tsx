@@ -188,7 +188,15 @@ function ClientsPageInner() {
                       <p className="text-xs text-slate-400">{client.company}</p>
                     )}
                   </div>
-                  <Badge label={CLIENT_STAGE_LABELS[client.stage]} tone={CLIENT_STAGE_TONE[client.stage]} />
+                  <div className="flex shrink-0 flex-col items-end gap-1">
+                    <Badge label={CLIENT_STAGE_LABELS[client.stage]} tone={CLIENT_STAGE_TONE[client.stage]} />
+                    {/* Registered themselves on the website and not yet vetted.
+                        The whole card is a Link, so the Approve action lives on
+                        the client's own page rather than nested in here. */}
+                    {client.source === "SelfSignup" && !client.approvedAt && (
+                      <Badge label="New signup" tone="violet" />
+                    )}
+                  </div>
                 </div>
 
                 <div className="mt-4 flex flex-wrap items-center gap-2">

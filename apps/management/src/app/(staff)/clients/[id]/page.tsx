@@ -103,6 +103,7 @@ export default function ClientDetailPage() {
     assigneeUserId: null,
   });
   const [patching, setPatching] = useState(false);
+  const [approving, setApproving] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [addingReq, setAddingReq] = useState(false);
   const [addingTask, setAddingTask] = useState(false);
@@ -494,11 +495,45 @@ export default function ClientDetailPage() {
     );
   }
 
+  async function handleApprove() {
+    setApproving(true);
+    const { ok } = await mutate(
+      `/api/clients/${client!.id}/approve`,
+      { method: "POST" },
+      { success: "Client approved", error: "Failed to approve client" }
+    );
+    setApproving(false);
+    if (ok) load();
+  }
+
   const currentStageIndex = stageIndex(client.stage);
+  const awaitingApproval = client.source === "SelfSignup" && !client.approvedAt;
 
   return (
     <>
       <div className="space-y-6">
+        {/* Self-registered and not yet vetted. Shown before anything else so
+            nobody starts attaching projects and invoices to a record that
+            arrived from a public form. */}
+        {awaitingApproval && (
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-violet-500/40 bg-violet-500/10 p-4">
+            <div>
+              <p className="text-sm font-semibold text-violet-300">
+                Registered through the website — not yet approved
+              </p>
+              <p className="mt-0.5 text-xs text-slate-400">
+                This business created its own account at /portal/signup. Check it
+                is a real prospect before treating it as a client.
+              </p>
+            </div>
+            {isAdmin && (
+              <Button variant="success" loading={approving} onClick={handleApprove}>
+                Approve client
+              </Button>
+            )}
+          </div>
+        )}
+
         {/* Header */}
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
