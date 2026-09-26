@@ -22,8 +22,10 @@ export function verifyPassword(password: string, stored: string): boolean {
 // weaken a password below what sign-up demanded. Defined in @/types so the
 // sign-up form can show it (this module imports node:crypto), re-exported
 // here so server code has one import for the whole policy.
-export { MIN_PASSWORD_LENGTH } from "@/types";
-import { MIN_PASSWORD_LENGTH } from "@/types";
+// Relative, not "@/types": scripts run this file under ts-node, which does not
+// know the "@/" alias.
+export { MIN_PASSWORD_LENGTH } from "../types";
+import { MIN_PASSWORD_LENGTH } from "../types";
 
 /** Null when acceptable, otherwise the message to show the user. Length is
  *  the only hard rule — composition rules (a digit, a symbol) push people

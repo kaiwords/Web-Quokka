@@ -161,9 +161,11 @@ limits all rely on it, so if the management app is ever scaled horizontally
 (or deployed to a platform that runs multiple lambdas), move it to a shared
 store such as Redis. It is documented in that file too.
 
-### Local file storage
+### Document storage
 
-Uploaded documents go to `apps/management/storage/uploads/<clientId>/`
-(`src/lib/documents.ts`) — local disk, not Supabase Storage. On a platform with
-an ephemeral filesystem, uploads will not survive a redeploy. Moving them to
-Supabase Storage is a contained change to that one module.
+Uploaded documents go to the private Supabase Storage bucket `documents`, under
+`<clientId>/` (`src/lib/documents.ts`), never to local disk — Vercel's
+filesystem is read-only. The bucket is created by the
+`20260927000000_documents_bucket` migration, and the app reaches it with
+`SUPABASE_URL` and `SUPABASE_SERVICE_ROLE_KEY`, so both must be set wherever
+the management app runs, including locally.
