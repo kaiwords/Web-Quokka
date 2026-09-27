@@ -33,5 +33,9 @@ export async function sendMail(message: MailMessage): Promise<void> {
 
   if (!res.ok) {
     console.error(`[mailer] Resend send failed (${res.status}):`, await res.text());
+    return;
   }
+  // Without this, a delivered email and one that was never attempted leave the
+  // same (empty) trace in the logs.
+  console.log(`[mailer] sent to=${message.to} subject="${message.subject}"`);
 }

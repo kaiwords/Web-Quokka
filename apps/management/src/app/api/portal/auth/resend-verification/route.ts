@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { normalizeEmail, escapeHtml } from "@/lib/validate";
 import { isRateLimited } from "@/lib/rateLimit";
@@ -53,7 +53,9 @@ export async function POST(req: NextRequest) {
     ]);
 
     const appUrl = (process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000").replace(/\/$/, "");
-    void sendMail({
+    // after(): sent once the response is out (so timing doesn't reveal which
+    // addresses exist), and kept alive on Vercel until the send finishes.
+    after(() => sendMail({
       to: email,
       subject: "Confirm your WebQuokka account",
       html: `
@@ -62,7 +64,7 @@ export async function POST(req: NextRequest) {
         <p><a href="${appUrl}/portal/verify-email?token=${token}">Confirm my email address</a></p>
         <p>This link expires in 24 hours.</p>
       `,
-    }).catch(() => {});
+    }));
 
     return done;
   } catch (error) {

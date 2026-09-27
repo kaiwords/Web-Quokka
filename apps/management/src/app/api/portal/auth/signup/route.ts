@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse, after } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { hashPassword, validatePassword } from "@/lib/password";
 import { normalizeEmail, escapeHtml } from "@/lib/validate";
@@ -85,7 +85,9 @@ export async function POST(req: NextRequest) {
     const existing = await prisma.portalUser.findUnique({ where: { email } });
     if (existing) {
       // Tell the real owner of the address, not the person at the keyboard.
-      void sendMail({
+      // after(), not a bare promise: on Vercel the function can be frozen the
+      // moment the response is sent, silently dropping an unawaited send.
+      after(() => sendMail({
         to: email,
         subject: "Someone tried to sign up with your WebQuokka email",
         html: `
@@ -98,7 +100,7 @@ export async function POST(req: NextRequest) {
           <p>If it wasn't you, you can safely ignore this email. No account was
           created and nothing has changed.</p>
         `,
-      }).catch(() => {});
+      }));
       return success;
     }
 
@@ -149,7 +151,7 @@ export async function POST(req: NextRequest) {
       throw error;
     }
 
-    void sendMail({
+    after(() => sendMail({
       to: email,
       subject: "Confirm your WebQuokka account",
       html: `
@@ -159,14 +161,16 @@ export async function POST(req: NextRequest) {
         <p><a href="${appUrl()}/portal/verify-email?token=${token}">Confirm my email address</a></p>
         <p>This link expires in 24 hours. If you didn't sign up, ignore this email.</p>
       `,
-    }).catch(() => {});
+    }));
 
-    void notifyMany(await adminUserIds(), {
-      type: "ClientSignup",
-      title: `New client sign-up: ${businessName}`,
-      body: `${name} (${email}) registered from the website. Review and approve their business record.`,
-      link: "/clients",
-    }).catch(() => {});
+    after(async () =>
+      notifyMany(await adminUserIds(), {
+        type: "ClientSignup",
+        title: `New client sign-up: ${businessName}`,
+        body: `${name} (${email}) registered from the website. Review and approve their business record.`,
+        link: "/clients",
+      })
+    );
 
     await logAudit({
       actorType: "Portal",

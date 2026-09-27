@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { NextRequest, after } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { normalizeEmail, escapeHtml } from "@/lib/validate";
 import { isRateLimited } from "@/lib/rateLimit";
@@ -93,19 +93,22 @@ export async function handleEnquiry(
 
   const label = type === "Quote" ? "quote request" : "enquiry";
 
-  // Fire-and-forget, exactly like every other notify/audit call in this app:
-  // the visitor's form must not fail because staff alerting had a bad day.
-  void notifyMany(await adminUserIds(), {
-    type: "EnquiryReceived",
-    title: `New ${label} from ${name}`,
-    body: message || `${enquiry.service || "No service selected"} — ${email}`,
-    link: "/enquiries",
-  }).catch(() => {});
+  // Run after the response is sent: the visitor's form must not fail because
+  // staff alerting had a bad day. after(), not a bare promise — on Vercel the
+  // function can be frozen once the response is out, dropping unawaited work.
+  after(async () =>
+    notifyMany(await adminUserIds(), {
+      type: "EnquiryReceived",
+      title: `New ${label} from ${name}`,
+      body: message || `${enquiry.service || "No service selected"} — ${email}`,
+      link: "/enquiries",
+    })
+  );
 
   // Only attempt mail when a recipient is actually configured — the in-app
   // bell above is the guaranteed channel, email is the optional extra.
   const notifyTo = process.env.ENQUIRY_NOTIFY_EMAIL?.trim();
-  if (notifyTo) void sendMail({
+  if (notifyTo) after(() => sendMail({
     to: notifyTo,
     subject: `New WebQuokka ${label} from ${name}`,
     html: `
@@ -119,7 +122,7 @@ export async function handleEnquiry(
       <p><strong>Message:</strong></p>
       <p>${escapeHtml(message || "—").replace(/\n/g, "<br>")}</p>
     `,
-  }).catch(() => {});
+  }));
 
   return { ok: true, status: 201, body: { success: true, id: enquiry.id } };
 }
