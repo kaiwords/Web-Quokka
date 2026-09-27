@@ -31,8 +31,11 @@ jobs:
           cache-dependency-path: apps/web/package-lock.json
       - run: npm ci --prefix apps/web
       - run: npm run build:web
+        # Vite bakes these in at build time. Unset, the site's forms and portal
+        # links fall back to localhost — see apps/web/.env.example.
         env:
-          VITE_API_URL: ${{ secrets.VITE_API_URL }}
+          VITE_API_BASE_URL: ${{ secrets.VITE_API_BASE_URL }}
+          VITE_MANAGEMENT_URL: ${{ secrets.VITE_MANAGEMENT_URL }}
       - uses: actions/upload-pages-artifact@v3
         with:
           path: apps/web/dist
