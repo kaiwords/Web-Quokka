@@ -55,7 +55,7 @@ function ResetPasswordInner() {
               Request a new link
             </Link>
             <p className="text-center text-xs text-sand-600">
-              <Link href="/portal/login" className="text-teal-700 hover:underline">
+              <Link href="/login" className="text-teal-700 hover:underline">
                 Back to sign in
               </Link>
             </p>
@@ -75,7 +75,7 @@ function ResetPasswordInner() {
           <p className="mt-2 text-sm text-teal-700">
             Your new password is ready — sign in to continue.
           </p>
-          <Link href="/portal/login" className={`${portalButtonClasses()} mt-5 w-full`}>
+          <Link href="/login" className={`${portalButtonClasses()} mt-5 w-full`}>
             Sign in
           </Link>
         </div>

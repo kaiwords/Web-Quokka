@@ -44,7 +44,7 @@ export default function ForgotPasswordPage() {
             If that email has an account, a reset link is on its way.
           </p>
           <p className="mt-4 text-center text-xs text-sand-600">
-            <Link href="/portal/login" className="text-teal-700 hover:underline">
+            <Link href="/login" className="text-teal-700 hover:underline">
               Back to sign in
             </Link>
           </p>
@@ -88,7 +88,7 @@ export default function ForgotPasswordPage() {
         </PortalButton>
 
         <p className="mt-4 text-center text-xs text-sand-600">
-          <Link href="/portal/login" className="text-teal-700 hover:underline">
+          <Link href="/login" className="text-teal-700 hover:underline">
             Back to sign in
           </Link>
         </p>

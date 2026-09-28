@@ -9,6 +9,7 @@ import Orbit from '../components/horizon/Orbit'
 import Rotator from '../components/horizon/Rotator'
 import SplitText from '../components/horizon/SplitText'
 import { useHorizon } from '../components/horizon/HorizonContext'
+import NewsletterSignup from '../components/horizon/NewsletterSignup'
 import Icon from '../components/ui/Icon'
 import useRail from '../hooks/useRail'
 import {
@@ -17,8 +18,6 @@ import {
   PROJECT_PACKAGES,
   SERVICES,
   SITE,
-  STATS,
-  TESTIMONIALS,
   WHY_CHOOSE_US,
 } from '../lib/constants'
 import { CHAPTERS } from '../lib/chapters'
@@ -52,14 +51,6 @@ function parsePrice(price) {
     note: price.replace(/\$[\d,]+/, '').trim() || 'AUD',
   }
 }
-
-const initials = (name) =>
-  name
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((w) => w[0])
-    .join('')
-    .toUpperCase()
 
 export default function Home() {
   const railRef = useRef(null)
@@ -117,18 +108,6 @@ export default function Home() {
               </div>
 
               <Orbit />
-
-              <ul className="hero-stats" data-reveal>
-                {STATS.slice(0, 3).map((stat) => (
-                  <li key={stat.label}>
-                    <strong>
-                      <Counter to={stat.value} decimals={stat.value % 1 ? 1 : 0} />
-                      {stat.suffix}
-                    </strong>
-                    <span className="stat-label">{stat.label}</span>
-                  </li>
-                ))}
-              </ul>
 
               <p className="travel-hint" aria-hidden="true">
                 <span className="travel-text">Scroll to travel</span>
@@ -191,7 +170,6 @@ export default function Home() {
               <Deck className="card-row" label="Our services" item="service" hint="Swipe for more">
                 {SERVICES.map((service, i) => (
                   <article className="card service" key={service.slug} data-tilt data-reveal>
-                    {i === 0 && <span className="card-badge">Most popular</span>}
                     <span className="card-num">{String(i + 1).padStart(2, '0')}</span>
                     <span className="card-icon" aria-hidden="true">
                       <Icon name={service.icon} className="h-7 w-7" />
@@ -290,43 +268,7 @@ export default function Home() {
               </div>
             </section>
 
-            {/* ========== 05 · TESTIMONIALS ========== */}
-            <section
-              className="panel testimonials"
-              id="testimonials"
-              data-chapter="Kind Words"
-              aria-labelledby="testi-title"
-            >
-              <header className="panel-head">
-                <p className="eyebrow" data-reveal>
-                  <span className="idx">05</span>Kind words
-                </p>
-                <h2 id="testi-title" data-wipe>
-                  Real businesses, real results
-                </h2>
-                <p className="panel-lead" data-reveal>
-                  Don&rsquo;t just take our word for it — here&rsquo;s what the people we build for
-                  say.
-                </p>
-              </header>
-
-              <Deck className="quote-row" label="Kind words" item="review" hint="Swipe for more">
-                {TESTIMONIALS.map((testimonial, i) => (
-                  <figure className="quote" key={`${testimonial.name}-${i}`} data-reveal data-tilt>
-                    <span className="quote-result">{testimonial.designation}</span>
-                    <blockquote>&ldquo;{testimonial.quote}&rdquo;</blockquote>
-                    <figcaption>
-                      <span className="avatar" aria-hidden="true">
-                        {initials(testimonial.name)}
-                      </span>
-                      <strong>{testimonial.name}</strong>
-                    </figcaption>
-                  </figure>
-                ))}
-              </Deck>
-            </section>
-
-            {/* ========== 06 · PRICING ========== */}
+            {/* ========== 05 · PRICING ========== */}
             <section
               className="panel pricing"
               id="pricing"
@@ -335,7 +277,7 @@ export default function Home() {
             >
               <header className="panel-head">
                 <p className="eyebrow" data-reveal>
-                  <span className="idx">06</span>Simple pricing
+                  <span className="idx">05</span>Simple pricing
                 </p>
                 <h2 id="pricing-title" data-wipe>
                   Honest prices, no surprises
@@ -363,7 +305,7 @@ export default function Home() {
                       data-reveal
                       data-tilt
                     >
-                      {plan.popular && <span className="plan-flag">Most popular</span>}
+                      {plan.popular && <span className="plan-flag">Recommended</span>}
                       <h3>{plan.name}</h3>
                       <p className="plan-desc">{plan.description}</p>
                       <p className={`plan-price${amount ? '' : ' plan-price--text'}`}>
@@ -402,7 +344,7 @@ export default function Home() {
               </Deck>
             </section>
 
-            {/* ========== 07 · CONTACT ========== */}
+            {/* ========== 06 · CONTACT ========== */}
             <section
               className="panel contact"
               id="contact"
@@ -411,7 +353,7 @@ export default function Home() {
             >
               <div className="contact-info">
                 <p className="eyebrow" data-reveal>
-                  <span className="idx">07</span>Get in touch
+                  <span className="idx">06</span>Get in touch
                 </p>
                 <h2 id="contact-title" data-wipe>
                   Let&rsquo;s build something great together
@@ -482,16 +424,13 @@ export default function Home() {
                     </ul>
                   </div>
                   <div>
-                    <p className="footer-h">Client area</p>
+                    <p className="footer-h">Client Portal</p>
                     <ul>
                       <li>
-                        <a href={PORTAL.clientLogin}>Client login</a>
+                        <a href={PORTAL.login}>Sign in</a>
                       </li>
                       <li>
-                        <a href={PORTAL.clientSignup}>Create an account</a>
-                      </li>
-                      <li>
-                        <a href={PORTAL.staffLogin}>Staff login</a>
+                        <a href={PORTAL.signup}>Create an account</a>
                       </li>
                     </ul>
                   </div>
@@ -508,6 +447,7 @@ export default function Home() {
                     </ul>
                   </div>
                 </div>
+                <NewsletterSignup />
                 <Btn href="#hero" variant="ghost" cursor="Rewind" icon="←" iconBack>
                   Back to the start
                 </Btn>

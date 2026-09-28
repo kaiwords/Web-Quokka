@@ -64,7 +64,7 @@ function AcceptInviteInner() {
         // Stay disabled through the redirect; the login page greets them with
         // a "created" note and their email prefilled.
         succeeded = true;
-        router.push(`/portal/login?created=1&email=${encodeURIComponent(invite?.email ?? "")}`);
+        router.push(`/login?created=1&email=${encodeURIComponent(invite?.email ?? "")}`);
       } else {
         const data = await res.json().catch(() => ({}));
         setError(data.error || "Failed to accept the invite — please try again.");
@@ -85,7 +85,7 @@ function AcceptInviteInner() {
             {loadError || "This invite link is missing its token."}
           </p>
           <p className="mt-4 text-center text-xs text-sand-600">
-            <Link href="/portal/login" className="text-teal-700 hover:underline">
+            <Link href="/login" className="text-teal-700 hover:underline">
               Back to sign in
             </Link>
           </p>

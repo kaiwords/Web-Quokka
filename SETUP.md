@@ -93,8 +93,8 @@ npm run db:studio       # should list Client, PortalUser, Enquiry, ...
 
 | | Email / username | Password |
 |---|---|---|
-| Staff CRM (`/login`) | `quokkasupport@gmail.com` | `Admin@026` |
-| Client Portal (`/portal/login`) | `demo@oceanicrealestate.com.au` | `Portal@026` |
+| Staff CRM (`/login`, Staff tab) | `quokkasupport@gmail.com` | `Admin@026` |
+| Client Portal (`/login`, Client tab) | `demo@oceanicrealestate.com.au` | `Portal@026` |
 
 Change both before this is reachable from the internet.
 
@@ -105,8 +105,7 @@ npm run dev
 ```
 
 - Marketing site → http://localhost:5173
-- Staff CRM → http://localhost:3000/login
-- Client portal → http://localhost:3000/portal/login
+- Sign in (staff and clients) → http://localhost:3000/login
 
 ## 5. Verify the sign-up flow
 

@@ -53,7 +53,7 @@ export default function Pricing() {
 
           <Reveal as="p" amount={0.5} duration={0.45} className="mx-auto mt-8 max-w-xl text-center text-sm text-sand-600 dark:text-sand-400">
             Prices shown are indicative starting points in AUD and exclude GST. Final pricing
-            depends on project scope — placeholder figures, confirm with us before publishing.
+            depends on project scope — get in touch for a tailored quote.
           </Reveal>
         </Container>
       </section>

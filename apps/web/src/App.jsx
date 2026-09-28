@@ -6,6 +6,7 @@ import FloatingActions from './components/horizon/FloatingActions'
 import HorizonFooter from './components/horizon/HorizonFooter'
 import HorizonHeader from './components/horizon/HorizonHeader'
 import ScrollToTop from './components/layout/ScrollToTop'
+import SmoothScroll from './components/layout/SmoothScroll'
 import useHorizonInteractions from './hooks/useHorizonInteractions'
 import useReveals from './hooks/useReveals'
 
@@ -17,16 +18,17 @@ const About = lazy(() => import('./pages/About'))
 const FAQ = lazy(() => import('./pages/FAQ'))
 const Contact = lazy(() => import('./pages/Contact'))
 const NotFound = lazy(() => import('./pages/NotFound'))
-const Mainframe = lazy(() => import('./pages/mainframe'))
 
 /**
  * The inner routes are ordinary vertical pages. The home route brings its own
  * `<main class="rail">` and ends on a footer panel inside the journey, so it
- * sits outside this layout.
+ * sits outside this layout. The home rail eases its own travel, so Lenis only
+ * runs here, on the vertical pages.
  */
 function PageLayout() {
   return (
     <>
+      <SmoothScroll />
       <main id="main" className="page-main" tabIndex={-1}>
         <Outlet />
       </main>
@@ -50,7 +52,6 @@ export default function App() {
       <ScrollToTop />
 
       <Routes>
-        <Route path="/mainframe" element={<Suspense fallback={null}><Mainframe /></Suspense>} />
         <Route
           path="/"
           element={

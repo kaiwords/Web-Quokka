@@ -65,7 +65,7 @@ export default function PortalShell({ children }: PortalShellProps) {
   // Expired session: send them to login instead of a shell stuck on "...".
   useEffect(() => {
     if (userState.loaded && !userState.user) {
-      router.replace(`/portal/login?next=${encodeURIComponent(pathname)}`);
+      router.replace(`/login?next=${encodeURIComponent(pathname)}`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userState.loaded, userState.user]);
@@ -99,7 +99,7 @@ export default function PortalShell({ children }: PortalShellProps) {
 
   async function handleLogout() {
     await fetch("/api/portal/auth/logout", { method: "POST" });
-    router.push("/portal/login");
+    router.push("/login");
     router.refresh();
   }
 

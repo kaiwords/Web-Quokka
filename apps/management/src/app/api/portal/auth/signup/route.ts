@@ -94,7 +94,7 @@ export async function POST(req: NextRequest) {
           <p>Hi ${escapeHtml(existing.name)},</p>
           <p>Someone just tried to create a WebQuokka client portal account using
           this email address, but you already have one.</p>
-          <p>If that was you, <a href="${appUrl()}/portal/login">sign in here</a>
+          <p>If that was you, <a href="${appUrl()}/login">sign in here</a>
           — or <a href="${appUrl()}/portal/forgot-password">reset your password</a>
           if you've forgotten it.</p>
           <p>If it wasn't you, you can safely ignore this email. No account was

@@ -86,7 +86,7 @@ function VerifyEmailInner() {
               Send me a new link
             </Link>
             <p className="mt-4 text-center text-xs text-sand-600">
-              <Link href="/portal/login" className="text-teal-700 hover:underline">
+              <Link href="/login" className="text-teal-700 hover:underline">
                 Back to sign in
               </Link>
             </p>

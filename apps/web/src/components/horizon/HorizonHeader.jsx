@@ -112,13 +112,14 @@ export default function HorizonHeader() {
 
         <div className="header-actions">
           <Btn
-            href={PORTAL.clientLogin}
+            href={PORTAL.login}
             variant="ghost"
             size="sm"
-            cursor="Client login"
+            cursor="Client Portal"
             icon="→"
+            className="header-portal-btn"
           >
-            Client Login
+            Client Portal
           </Btn>
           <Btn
             {...(onHome ? { href: '#contact' } : { to: '/contact' })}
@@ -126,6 +127,7 @@ export default function HorizonHeader() {
             cursor="Let's talk"
             icon="→"
             onClick={closeMenu}
+            className="header-quote-btn"
           >
             Free Quote
           </Btn>
@@ -175,9 +177,9 @@ export default function HorizonHeader() {
           </ol>
         </nav>
         <div className="menu-aside">
-          <p className="menu-kicker">Client portal</p>
-          <a href={PORTAL.clientLogin}>Client login</a>
-          <a href={PORTAL.clientSignup}>Create an account</a>
+          <p className="menu-kicker">Client Portal</p>
+          <a href={PORTAL.login}>Sign in to the Client Portal</a>
+          <a href={PORTAL.signup}>Create an account</a>
           <p className="menu-kicker" style={{ marginTop: '1.2rem' }}>
             Say hello
           </p>

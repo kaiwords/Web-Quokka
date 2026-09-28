@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { submitContactForm } from '../../lib/api'
+import { submitContactForm, submitQuoteForm } from '../../lib/api'
 import { BUDGET_OPTIONS, PROJECT_PACKAGES, SERVICE_OPTIONS } from '../../lib/constants'
 import { confetti } from '../../lib/horizon'
 import { cn } from '../../lib/utils'
@@ -35,8 +35,12 @@ const EMPTY = {
 /**
  * The enquiry form, Horizon Drift style: inline validation that only nags once
  * you've had a go at a field, a shake when a submit is rejected, and confetti
- * from the send button when it goes through. Posts to the WebQuokka backend via
- * `submitContactForm`.
+ * from the send button when it goes through.
+ *
+ * A submission with quote intent — a budget chosen, or a pricing package
+ * picked — lands in the CRM as a Quote enquiry via `/api/public/quote`;
+ * everything else is a plain Contact enquiry. Same validator server-side,
+ * different `type` on the record (see apps/management/src/lib/publicForms.ts).
  */
 export default function HorizonContactForm() {
   const [searchParams] = useSearchParams()
@@ -106,8 +110,9 @@ export default function HorizonContactForm() {
     setStatus('loading')
     setErrorMsg('')
     const rect = submitRef.current?.getBoundingClientRect()
+    const isQuote = !!values.budget || values.service.endsWith('package')
     try {
-      await submitContactForm(values)
+      await (isQuote ? submitQuoteForm : submitContactForm)(values)
       setStatus('success')
       setValues(EMPTY)
       if (liveRef.current) {

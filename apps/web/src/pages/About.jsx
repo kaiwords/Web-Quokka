@@ -5,10 +5,8 @@ import Container from '../components/ui/Container'
 import Icon from '../components/ui/Icon'
 import QuokkaMascot from '../components/ui/QuokkaMascot'
 import Reveal from '../components/ui/Reveal'
-import StatCounter from '../components/ui/StatCounter'
 import SwipeRow from '../components/ui/SwipeRow'
-import TeamCard from '../components/ui/TeamCard'
-import { STATS, TEAM, VALUES } from '../lib/constants'
+import { VALUES } from '../lib/constants'
 
 export default function About() {
   const heroRef = useRef(null)
@@ -50,34 +48,6 @@ export default function About() {
               around long after launch.
             </p>
           </motion.div>
-        </Container>
-      </section>
-
-      <section className="py-6 sm:py-8">
-        <Container>
-          <SwipeRow
-            label="WebQuokka by the numbers"
-            itemWidth="w-[44%]"
-            className="sm:grid sm:grid-cols-2 sm:gap-6 lg:grid-cols-4 lg:gap-8"
-          >
-            {STATS.map((stat, i) => (
-              <Reveal key={stat.label} delay={i * 0.08} className="text-center">
-                <motion.div
-                  initial={{ scale: 0, rotate: -20 }}
-                  whileInView={{ scale: 1, rotate: 0 }}
-                  viewport={{ once: true, amount: 0.6 }}
-                  transition={{ duration: 0.42, delay: i * 0.08 + 0.1, ease: 'backOut' }}
-                  className="mx-auto flex h-11 w-11 items-center justify-center rounded-full bg-sky-100 text-sky-600 dark:bg-sky-900/30 dark:text-sky-300"
-                >
-                  <Icon name={stat.icon} className="h-5 w-5" />
-                </motion.div>
-                <p className="mt-3 page-stat font-heading font-extrabold text-sky-300">
-                  <StatCounter value={stat.value} suffix={stat.suffix} />
-                </p>
-                <p className="mt-1 text-sm text-sand-600 dark:text-sand-400">{stat.label}</p>
-              </Reveal>
-            ))}
-          </SwipeRow>
         </Container>
       </section>
 
@@ -138,28 +108,6 @@ export default function About() {
         </Container>
       </section>
 
-      <section className="py-16 sm:py-24">
-        <Container>
-          <Reveal className="mx-auto max-w-2xl text-center">
-            <span className="text-sm font-semibold uppercase tracking-wide text-sand-700 dark:text-sand-300">
-              Our Team
-            </span>
-            <h2 className="mt-3 page-h2 font-heading font-bold">
-              Meet the Perth-based crew
-            </h2>
-            <p className="mt-4 text-sand-700 dark:text-sand-300">
-              Placeholder profiles — swap in real photos and bios before launch.
-            </p>
-          </Reveal>
-          <div className="mt-10">
-            <SwipeRow label="Our team" className="sm:grid sm:grid-cols-3 sm:gap-8">
-              {TEAM.map((member, i) => (
-                <TeamCard key={member.name} member={member} index={i} />
-              ))}
-            </SwipeRow>
-          </div>
-        </Container>
-      </section>
     </>
   )
 }

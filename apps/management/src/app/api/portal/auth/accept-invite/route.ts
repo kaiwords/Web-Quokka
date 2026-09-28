@@ -2,10 +2,21 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { hashPassword, validatePassword } from "@/lib/password";
 import { logAudit } from "@/lib/auditLog";
+import { isRateLimited } from "@/lib/rateLimit";
+
+// Invite tokens are secrets; both the GET probe and the POST that consumes
+// one get the same per-IP window as the sibling auth routes.
+function inviteRateLimited(req: NextRequest): boolean {
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+  return isRateLimited(`portal-accept-invite:ip:${ip}`, 15, 15 * 60 * 1000);
+}
 
 // GET /api/portal/auth/accept-invite?token=... — validate a token before
 // showing the "set your password" form.
 export async function GET(req: NextRequest) {
+  if (inviteRateLimited(req)) {
+    return NextResponse.json({ error: "Too many attempts. Try again in a few minutes." }, { status: 429 });
+  }
   const token = new URL(req.url).searchParams.get("token");
   if (!token) return NextResponse.json({ error: "Missing token" }, { status: 400 });
 
@@ -21,6 +32,9 @@ export async function GET(req: NextRequest) {
 // the PortalUser account and consumes the invite.
 export async function POST(req: NextRequest) {
   try {
+    if (inviteRateLimited(req)) {
+      return NextResponse.json({ error: "Too many attempts. Try again in a few minutes." }, { status: 429 });
+    }
     const { token, name, password } = await req.json();
     if (
       typeof token !== "string" ||

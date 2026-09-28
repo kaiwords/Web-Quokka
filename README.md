@@ -21,15 +21,18 @@ They are separate deploys on separate origins, on purpose:
   same-origin to this app, so no session cookie is ever part of a cross-origin
   exchange.
 
-## The two logins
+## One login page, two trust boundaries
 
-The management app runs two fully separate trust boundaries — different tables,
-different cookies, different session lookups. A staff session can never grant
-portal access, or vice versa (`src/lib/auth.ts` and `src/lib/portalAuth.ts`).
+Every sign-in — client or staff — goes through the single `/login` route
+(tabs for **Client Portal** and **Staff**; the old `/portal/login` URL
+permanently redirects there). Behind that one page the management app still
+runs two fully separate trust boundaries — different tables, different
+cookies, different session lookups. A staff session can never grant portal
+access, or vice versa (`src/lib/auth.ts` and `src/lib/portalAuth.ts`).
 
 | | Staff CRM | Client Portal |
 |---|---|---|
-| Sign in | `/login` | `/portal/login` |
+| Sign in | `/login` (Staff tab) | `/login` (Client tab) |
 | Cookie | `wq_session` | `wq_portal_session` |
 | Sign up | **None — admin-created only** | `/portal/signup`, public |
 | Users | `User` table | `PortalUser` table |

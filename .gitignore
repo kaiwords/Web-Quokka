@@ -44,3 +44,9 @@ pnpm-debug.log*
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
+
+# Vercel project links (per-machine, created by `vercel link`)
+.vercel
+
+# Kept on disk for review only — contains an old admin key that must never be pushed
+Delete/Quokka.txt

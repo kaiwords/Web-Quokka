@@ -1,43 +1,102 @@
 "use client";
 
 import { Suspense, useState } from "react";
+import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import Button from "@/components/ui/Button";
+import PortalButton from "@/components/portal/ui/PortalButton";
 
+type Tab = "client" | "staff";
+
+const inputClass =
+  "mt-1 w-full rounded-lg border border-sand-200 bg-white px-3 py-2 text-sm text-sand-900 transition focus:border-teal-500 focus:outline-none focus:ring-2 focus:ring-teal-500/20";
+const labelClass = "block text-xs font-medium text-sand-700";
+
+/**
+ * The one login for everything. Clients and staff both sign in here — there
+ * are no alternate login entry points (/portal/login redirects to this page).
+ * The two account systems stay fully separate behind it: the Client tab posts
+ * to the portal's auth API and cookie, the Staff tab to the CRM's.
+ */
 function LoginPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  // Only follow same-origin relative paths — "//evil.com" or "https://..."
-  // in ?next= would otherwise be an open redirect.
+
+  // Only follow same-origin relative paths — "//evil.com", "https://..." or
+  // "/\evil.com" in ?next= would otherwise be an open redirect (the URL spec
+  // treats a backslash like a forward slash, so "/\evil.com" resolves to
+  // https://evil.com).
   const rawNext = searchParams.get("next");
   const next =
-    rawNext && rawNext.startsWith("/") && !rawNext.startsWith("//") ? rawNext : "/dashboard";
+    rawNext && rawNext.startsWith("/") && !rawNext.startsWith("//") && !rawNext.includes("\\")
+      ? rawNext
+      : "";
+  const nextIsPortal = next === "/portal" || next.startsWith("/portal/");
 
+  // accept-invite lands here with ?created=1&email=... after a new account is
+  // set up — that is always a portal account.
+  const justCreated = searchParams.get("created") === "1";
+
+  // Where they were headed decides which tab greets them; clients are the
+  // common case, so an aimless visit starts on the Client tab.
+  const [tab, setTab] = useState<Tab>(() => {
+    const wanted = searchParams.get("tab");
+    if (wanted === "staff" || wanted === "client") return wanted;
+    if (justCreated) return "client";
+    if (next && !nextIsPortal) return "staff";
+    return "client";
+  });
+
+  const [email, setEmail] = useState(searchParams.get("email") ?? "");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  // Set when the portal account exists but hasn't confirmed its address — the
+  // fix is a new link, not a different password, so the form says so.
+  const [needsVerification, setNeedsVerification] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  function switchTab(nextTab: Tab) {
+    if (nextTab === tab) return;
+    setTab(nextTab);
+    setError("");
+    setNeedsVerification(false);
+    setPassword("");
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+    setNeedsVerification(false);
     setSubmitting(true);
     let succeeded = false;
     try {
-      const res = await fetch("/api/auth/login", {
+      const isClient = tab === "client";
+      const res = await fetch(isClient ? "/api/portal/auth/login" : "/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify(isClient ? { email, password } : { username, password }),
       });
       if (res.ok) {
         // Stay disabled through the redirect so a double click can't fire a
-        // second login while the router navigates.
+        // second login while the router navigates. `next` only follows the
+        // login that can actually open it.
         succeeded = true;
-        router.push(next);
+        const fallback = isClient ? "/portal/dashboard" : "/dashboard";
+        const destination = isClient
+          ? nextIsPortal
+            ? next
+            : fallback
+          : next && !nextIsPortal
+            ? next
+            : fallback;
+        router.push(destination);
         router.refresh();
       } else {
         const data = await res.json().catch(() => ({}));
         setError(data.error || "Failed to log in");
+        setNeedsVerification(
+          isClient && res.status === 403 && data.needsVerification === true
+        );
       }
     } catch {
       setError("Network error — check your connection and try again.");
@@ -47,65 +106,159 @@ function LoginPageInner() {
   }
 
   return (
-    <div className="min-h-full flex items-center justify-center px-4">
-      <form
-        onSubmit={handleSubmit}
-        className="w-full max-w-sm rounded-2xl border border-slate-800 bg-slate-900/60 p-6 shadow-lg shadow-slate-950/20"
-      >
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-tr from-amber-600 to-amber-400 rounded-xl flex items-center justify-center text-slate-950 font-black text-2xl shadow-lg shadow-amber-500/20">
-            W
+    <div className="min-h-full flex items-center justify-center px-4 py-10 bg-sand-50">
+      <div className="w-full max-w-sm">
+        <form
+          onSubmit={handleSubmit}
+          className="rounded-2xl border border-sand-200 bg-white p-6 shadow-lg shadow-sand-900/5"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-gradient-to-tr from-teal-600 to-coral-500 rounded-xl flex items-center justify-center text-white font-black text-2xl">
+              W
+            </div>
+            <div>
+              <p className="font-bold text-lg text-sand-900">WebQuokka</p>
+              <p className="text-xs text-sand-600">
+                {tab === "client" ? "Client Portal — sign in" : "Staff CRM — sign in"}
+              </p>
+            </div>
           </div>
-          <div>
-            <p className="font-bold text-lg text-white">Web-quokka</p>
-            <p className="text-xs text-slate-400">Sign in to continue</p>
-          </div>
-        </div>
 
-        <div className="mt-6 space-y-3">
-          <div>
-            <label htmlFor="login-username" className="block text-xs font-medium text-slate-400">
-              Username
-            </label>
-            <input
-              id="login-username"
-              name="username"
-              autoFocus
-              required
-              autoComplete="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-slate-800 bg-slate-950 px-3 py-1.5 text-sm text-slate-200 focus:border-amber-500 focus:outline-none"
-            />
+          <div
+            className="mt-5 grid grid-cols-2 gap-1 rounded-xl bg-sand-100 p-1"
+            role="tablist"
+            aria-label="Account type"
+          >
+            <button
+              type="button"
+              role="tab"
+              aria-selected={tab === "client"}
+              onClick={() => switchTab("client")}
+              className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
+                tab === "client"
+                  ? "bg-white text-teal-700 shadow-sm"
+                  : "text-sand-600 hover:text-sand-800"
+              }`}
+            >
+              Client Portal
+            </button>
+            <button
+              type="button"
+              role="tab"
+              aria-selected={tab === "staff"}
+              onClick={() => switchTab("staff")}
+              className={`rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
+                tab === "staff"
+                  ? "bg-white text-teal-700 shadow-sm"
+                  : "text-sand-600 hover:text-sand-800"
+              }`}
+            >
+              Staff
+            </button>
           </div>
-          <div>
-            <label htmlFor="login-password" className="block text-xs font-medium text-slate-400">
-              Password
-            </label>
-            <input
-              id="login-password"
-              name="password"
-              required
-              type="password"
-              autoComplete="current-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-slate-800 bg-slate-950 px-3 py-1.5 text-sm text-slate-200 focus:border-amber-500 focus:outline-none"
-            />
+
+          {justCreated && tab === "client" && (
+            <p className="mt-4 rounded-lg border border-teal-500/30 bg-teal-50 px-3 py-2 text-xs text-teal-700">
+              Account created — sign in to continue.
+            </p>
+          )}
+
+          <div className="mt-5 space-y-3">
+            {tab === "client" ? (
+              <div>
+                <label htmlFor="login-email" className={labelClass}>
+                  Email
+                </label>
+                <input
+                  id="login-email"
+                  name="email"
+                  autoFocus
+                  required
+                  type="email"
+                  autoComplete="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className={inputClass}
+                />
+              </div>
+            ) : (
+              <div>
+                <label htmlFor="login-username" className={labelClass}>
+                  Username
+                </label>
+                <input
+                  id="login-username"
+                  name="username"
+                  autoFocus
+                  required
+                  autoComplete="username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className={inputClass}
+                />
+              </div>
+            )}
+            <div>
+              <label htmlFor="login-password" className={labelClass}>
+                Password
+              </label>
+              <input
+                id="login-password"
+                name="password"
+                required
+                type="password"
+                autoComplete="current-password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className={inputClass}
+              />
+            </div>
           </div>
-        </div>
 
-        {/* This page sits outside the Shell, so toasts don't render here — errors stay inline. */}
-        {error && (
-          <p role="alert" className="mt-3 rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-xs text-rose-400">
-            {error}
-          </p>
-        )}
+          {/* This page sits outside both shells, so toasts don't render here —
+              errors stay inline. */}
+          {error && (
+            <p
+              role="alert"
+              className="mt-3 rounded-lg border border-coral-500/40 bg-coral-500/10 px-3 py-2 text-xs text-coral-600"
+            >
+              {error}
+            </p>
+          )}
 
-        <Button type="submit" loading={submitting} className="mt-5 w-full">
-          {submitting ? "Signing in..." : "Sign in"}
-        </Button>
-      </form>
+          <PortalButton type="submit" loading={submitting} className="mt-5 w-full py-2 text-sm">
+            {submitting ? "Signing in..." : "Sign in"}
+          </PortalButton>
+
+          {tab === "client" ? (
+            <>
+              {needsVerification && (
+                <p className="mt-3 text-center text-xs text-sand-600">
+                  <Link href="/portal/resend-verification" className="text-teal-700 hover:underline">
+                    Send me a new confirmation link
+                  </Link>
+                </p>
+              )}
+              <p className="mt-4 text-center text-xs text-sand-600">
+                <Link href="/portal/forgot-password" className="text-teal-700 hover:underline">
+                  Forgot your password?
+                </Link>
+              </p>
+              <p className="mt-3 border-t border-sand-200 pt-3 text-center text-xs text-sand-600">
+                New to WebQuokka?{" "}
+                <Link href="/portal/signup" className="font-medium text-teal-700 hover:underline">
+                  Create an account
+                </Link>
+              </p>
+            </>
+          ) : (
+            <p className="mt-4 border-t border-sand-200 pt-3 text-center text-xs text-sand-600">
+              Staff accounts are created by an administrator — there is no public
+              staff sign-up.
+            </p>
+          )}
+        </form>
+      </div>
     </div>
   );
 }

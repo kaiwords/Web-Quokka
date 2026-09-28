@@ -2,9 +2,9 @@ import { useEffect, useRef } from 'react'
 import { hasFinePointer, prefersReducedMotion } from '../../lib/horizon'
 
 const CHIPS = [
-  { className: 'chip--a', depth: 1.4, text: '📈 +40% enquiries' },
-  { className: 'chip--b', depth: 0.9, text: '⚡ Loads in <1s' },
-  { className: 'chip--c', depth: 1.8, text: '🚀 Launched on time' },
+  { className: 'chip--a', depth: 1.4, text: '📍 Perth, WA' },
+  { className: 'chip--b', depth: 0.9, text: '🚀 MVP to launch' },
+  { className: 'chip--c', depth: 1.8, text: '🛠 Support after launch' },
 ]
 
 /**

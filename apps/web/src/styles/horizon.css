@@ -14,18 +14,18 @@
      --lime    #D4FF3A  primary accent — always ink text on it
      --orange  #FF6B2C  secondary accent
      --ice     #7CC8FF  cool accent
-     --lilac   #B69CFF  soft accent
 
    TABLE OF CONTENTS
      1. Tokens              10. Services
      2. Base helpers        11. Why us
      3. Background layers   12. Process timeline
-     4. Cursor              13. Testimonials
-     5. Buttons             14. Pricing
-     6. Header & menu       15. Contact & form
-     7. Rail (horizontal)   16. Footer panel
-     8. Reveal system       17. Progress bar & FAB
-     9. Hero & manifesto    18. Vertical fallback · 19. Reduced motion
+     4. Cursor              13. Pricing
+     5. Buttons             14. Contact & form
+     6. Header & menu       15. Footer panel
+     7. Rail (horizontal)   16. Progress bar & FAB
+     8. Reveal system       17. Vertical fallback · Swipe decks
+     9. Hero & manifesto    18. Reduced motion
+                            19. Inner routes · 20. Heading scale
    ============================================================ */
 
 /* ---------- 1. TOKENS ---------- */
@@ -44,7 +44,6 @@
   --lime-deep: #B8E619;
   --orange: #FF6B2C;
   --ice: #7CC8FF;
-  --lilac: #B69CFF;
   --danger: #FF8A7A;
   --success: #7BF1A8;
 
@@ -62,7 +61,10 @@
 
   --gutter: clamp(.9rem, .45rem + 2.4vw, 2rem);
   --panel-x: clamp(1.15rem, .5rem + 4vw, 6rem);
-  --header-h: clamp(58px, 49px + 2.1vw, 76px);
+  --header-h: clamp(56px, 48px + 2vw, 72px);
+  /* The header floats clear of the top edge; layout that clears the header
+     has to clear the float gap too. */
+  --header-top: clamp(8px, 5px + .6vw, 16px);
   --bar-h: clamp(52px, 46px + 1.2vw, 64px);
   --mark-size: clamp(30px, 26px + 1vw, 46px);
 
@@ -82,7 +84,7 @@
 /* ---------- 2. BASE HELPERS ---------- */
 html {
   overflow-x: hidden;
-  scroll-padding-top: calc(var(--header-h) + 8px);
+  scroll-padding-top: calc(var(--header-h) + var(--header-top) + 8px);
 }
 @supports (overflow: clip) { html { overflow-x: clip; } }
 body { overflow-x: hidden; line-height: 1.6; }
@@ -241,16 +243,20 @@ h1, h2, h3 { line-height: 1.05; letter-spacing: -.02em; font-weight: 700; }
 @keyframes hd-spin { to { transform: rotate(360deg); } }
 
 /* ---------- 6. HEADER & MENU ---------- */
+/* A floating pill: inset from every edge, glassy once you start travelling. */
 .site-header {
-  position: fixed; inset: 0 0 auto 0; z-index: 100; height: var(--header-h);
+  position: fixed; top: var(--header-top); left: var(--gutter); right: var(--gutter);
+  z-index: 100; height: var(--header-h);
   display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-  padding: 0 var(--gutter);
-  transition: background-color .4s, backdrop-filter .4s, border-color .4s;
-  border-bottom: 1px solid transparent;
+  padding: 0 clamp(.7rem, .5rem + .9vw, 1.1rem);
+  border-radius: var(--r-pill);
+  border: 1px solid transparent;
+  transition: background-color .4s, backdrop-filter .4s, border-color .4s, box-shadow .4s;
 }
 .site-header.is-solid {
-  background: rgba(10, 10, 12, .72); border-bottom-color: var(--line);
-  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  background: rgba(12, 12, 15, .74); border-color: var(--line);
+  -webkit-backdrop-filter: blur(16px) saturate(1.3); backdrop-filter: blur(16px) saturate(1.3);
+  box-shadow: 0 24px 60px -28px rgba(0, 0, 0, .85), inset 0 1px 0 rgba(255, 255, 255, .05);
 }
 .logo {
   display: inline-flex; align-items: center; min-width: 0;
@@ -314,7 +320,7 @@ h1, h2, h3 { line-height: 1.05; letter-spacing: -.02em; font-weight: 700; }
 .menu {
   position: fixed; inset: 0; z-index: 90;
   display: grid; grid-template-columns: 1.4fr 1fr; align-items: center; gap: 3rem;
-  padding: calc(var(--header-h) + 2rem) var(--panel-x) 3rem;
+  padding: calc(var(--header-h) + var(--header-top) + 2rem) var(--panel-x) 3rem;
   background: rgba(10, 10, 12, .96);
   -webkit-backdrop-filter: blur(18px); backdrop-filter: blur(18px);
   opacity: 0; transition: opacity .4s var(--ease);
@@ -358,7 +364,7 @@ h1, h2, h3 { line-height: 1.05; letter-spacing: -.02em; font-weight: 700; }
 .is-h .panel {
   flex: none; height: 100%; position: relative;
   display: flex; align-items: center; gap: clamp(2rem, 1rem + 3vw, 5rem);
-  padding: calc(var(--header-h) + 2vh) var(--panel-x) calc(var(--bar-h) + 3vh);
+  padding: calc(var(--header-h) + var(--header-top) + 2vh) var(--panel-x) calc(var(--bar-h) + 3vh);
 }
 .is-h.is-dragging, .is-h.is-dragging * { user-select: none; -webkit-user-select: none; }
 
@@ -410,7 +416,7 @@ h1, h2, h3 { line-height: 1.05; letter-spacing: -.02em; font-weight: 700; }
   transition: transform .6s var(--ease-out), opacity .9s var(--ease-out), border-color .3s;
 }
 [data-tilt].is-tilting { transition: transform .12s linear, border-color .3s; }
-.card::after, .why-item::after, .quote::after, .plan::after {
+.card::after, .why-item::after, .plan::after {
   content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
   background: radial-gradient(360px circle at var(--sx) var(--sy), rgba(212, 255, 58, .12), transparent 45%);
   opacity: var(--spot); transition: opacity .4s;
@@ -418,8 +424,8 @@ h1, h2, h3 { line-height: 1.05; letter-spacing: -.02em; font-weight: 700; }
 
 /* ---------- 9. HERO & MANIFESTO ---------- */
 .hero { width: 100vw; }
-.is-h .hero { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); grid-template-rows: auto auto; align-content: center; column-gap: 3vw; row-gap: 3vh; }
-.is-h .hero-copy { grid-column: 1; grid-row: 1 / span 2; align-self: center; gap: clamp(.7rem, 2vh, 1.2rem); }
+.is-h .hero { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); align-content: center; column-gap: 3vw; }
+.is-h .hero-copy { grid-column: 1; align-self: center; gap: clamp(.7rem, 2vh, 1.2rem); }
 .is-h .hero-title { font-size: min(var(--fs-h1), 8.5vh, 5.2vw); max-width: 15ch; }
 .hero-copy { display: grid; gap: clamp(.8rem, .55rem + 1.1vw, 1.2rem); justify-items: start; }
 .hero-title { font-size: var(--fs-h1); font-weight: 800; letter-spacing: -.035em; max-width: 13ch; }
@@ -441,19 +447,12 @@ h1, h2, h3 { line-height: 1.05; letter-spacing: -.02em; font-weight: 700; }
 .hero-ctas .btn { flex: 1 1 auto; }
 @media (min-width: 480px) { .hero-ctas .btn { flex: 0 0 auto; } }
 
-.hero-stats { display: flex; flex-wrap: wrap; gap: clamp(1.2rem, 3vw, 3rem); list-style: none; margin: 0; padding: 0; }
-.is-h .hero-stats { grid-column: 2; grid-row: 2; justify-self: center; }
-.hero-stats li { display: grid; gap: .1rem; }
-.hero-stats strong { font-family: var(--font-display); font-size: clamp(1.6rem, 1.2rem + 1.4vw, 2.4rem); line-height: 1; }
-.hero-stats .stat-label { font-size: var(--fs-xs); color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
-
 /* Orbit — tracks the mouse */
 .orbit {
   --ox: 0; --oy: 0;
   position: relative; width: min(38vw, 64vh, 520px); aspect-ratio: 1; justify-self: center;
 }
-.is-h .orbit { grid-column: 2; grid-row: 1; align-self: end; width: min(32vw, 46vh, 480px); }
-.is-h .hero-stats { align-self: start; gap: clamp(1rem, 2.4vw, 2.4rem); }
+.is-h .orbit { grid-column: 2; align-self: center; width: min(32vw, 52vh, 480px); }
 .orbit-inner {
   position: absolute; inset: 0; transform-style: preserve-3d;
   transform: perspective(900px) rotateX(calc(var(--oy) * -16deg)) rotateY(calc(var(--ox) * 16deg)) skewX(calc(var(--vel) * -6deg));
@@ -511,7 +510,7 @@ h1, h2, h3 { line-height: 1.05; letter-spacing: -.02em; font-weight: 700; }
 .chip--c { top: 42%; right: -8%; animation-delay: -3.1s; }
 
 .travel-hint {
-  position: absolute; right: var(--panel-x); top: calc(var(--header-h) + 2.5vh);
+  position: absolute; right: var(--panel-x); top: calc(var(--header-h) + var(--header-top) + 2.5vh);
   display: none; align-items: center; gap: .9rem;
   font-size: var(--fs-xs); font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted);
 }
@@ -562,10 +561,6 @@ h1, h2, h3 { line-height: 1.05; letter-spacing: -.02em; font-weight: 700; }
 .card h3 { font-size: var(--fs-h3); transform: translateZ(20px); }
 .card p { color: var(--muted); font-size: var(--fs-sm); }
 .card .ticks { margin-top: auto; padding-top: .6rem; border-top: 1px solid var(--line); }
-.card-badge {
-  position: absolute; top: 1.2rem; right: 1.2rem; padding: .25rem .65rem; border-radius: var(--r-pill);
-  background: var(--orange); color: var(--ink); font-size: .7rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
-}
 
 /* ---------- 11. WHY US ---------- */
 .is-h .why { width: max(100vw, 1180px); }
@@ -603,31 +598,7 @@ h1, h2, h3 { line-height: 1.05; letter-spacing: -.02em; font-weight: 700; }
 .timeline-line { position: absolute; left: 0; right: 0; top: 1.2rem; height: 2px; background: var(--line); border-radius: 2px; overflow: hidden; }
 .timeline-fill { position: absolute; inset: 0; background: linear-gradient(90deg, var(--lime), var(--orange)); transform-origin: left; transform: scaleX(var(--fill)); }
 
-/* ---------- 13. TESTIMONIALS ---------- */
-.quote-row { display: flex; gap: 1.4rem; align-items: center; }
-.quote {
-  position: relative; flex: none; width: clamp(265px, 130px + 15vw, 440px);
-  display: grid; gap: clamp(.8rem, .65rem + .7vw, 1.1rem);
-  padding: clamp(1.2rem, .95rem + 1.2vw, 1.8rem); border-radius: var(--r-lg);
-  background: var(--bg-2); border: 1px solid var(--line);
-}
-.quote:nth-child(odd) { translate: 0 -5vh; }
-.quote:nth-child(even) { translate: 0 5vh; }
-.quote:hover { border-color: rgba(212, 255, 58, .45); }
-.quote::before {
-  content: "\201C"; position: absolute; top: -.2em; right: .3em; font-family: var(--font-display);
-  font-size: clamp(4rem, 2.5rem + 5vw, 7rem); line-height: 1; color: var(--orange); opacity: .5;
-}
-.quote-result { justify-self: start; padding: .3rem .75rem; border-radius: var(--r-pill); background: rgba(212, 255, 58, .12); color: var(--lime); font-size: var(--fs-xs); font-weight: 700; }
-.quote blockquote { font-size: var(--fs-lg); line-height: 1.55; margin: 0; }
-.quote figcaption { display: flex; align-items: center; gap: .8rem; font-size: var(--fs-sm); color: var(--muted); }
-.quote figcaption strong { display: block; color: var(--text); }
-.avatar { width: 44px; height: 44px; flex: none; display: grid; place-items: center; border-radius: 50%; background: var(--orange); color: var(--ink); font-weight: 800; font-size: var(--fs-xs); }
-.quote:nth-child(2) .avatar { background: var(--lime); }
-.quote:nth-child(3) .avatar { background: var(--ice); }
-.quote:nth-child(4) .avatar { background: var(--lilac); }
-
-/* ---------- 14. PRICING ---------- */
+/* ---------- 13. PRICING ---------- */
 .plans { display: flex; gap: 1.2rem; align-items: center; }
 .plan {
   position: relative; flex: none; width: clamp(255px, 115px + 13vw, 400px);
@@ -660,7 +631,7 @@ h1, h2, h3 { line-height: 1.05; letter-spacing: -.02em; font-weight: 700; }
   animation: hd-bob 3.6s ease-in-out infinite;
 }
 
-/* ---------- 15. CONTACT & FORM ---------- */
+/* ---------- 14. CONTACT & FORM ---------- */
 .is-h .contact { width: max(100vw, 1180px); }
 .contact-info { display: grid; gap: 1.1rem; justify-items: start; flex: 1 1 0; max-width: min(32vw, 560px); }
 .contact-info h2 { font-size: var(--fs-h2); }
@@ -715,7 +686,7 @@ h1, h2, h3 { line-height: 1.05; letter-spacing: -.02em; font-weight: 700; }
 
 .confetti { position: fixed; z-index: 250; width: 9px; height: 14px; pointer-events: none; border-radius: 2px; top: 0; left: 0; }
 
-/* ---------- 16. FOOTER PANEL ---------- */
+/* ---------- 15. FOOTER PANEL ---------- */
 .footer-giant { font-size: clamp(4rem, 2rem + 9vw, 11rem); }
 .is-h .footer-giant { font-size: min(clamp(4rem, 2rem + 9vw, 11rem), 24vh); }
 .footer-inner { display: grid; gap: 1.6rem; justify-items: start; max-width: 760px; }
@@ -728,7 +699,36 @@ h1, h2, h3 { line-height: 1.05; letter-spacing: -.02em; font-weight: 700; }
 .footer-cols a:hover { color: var(--lime); }
 .footer-legal { font-size: var(--fs-xs); color: var(--muted); }
 
-/* ---------- 17. PROGRESS BAR & FAB ---------- */
+/* Newsletter signup (both footers) */
+.newsletter { display: grid; gap: .45rem; width: min(100%, 380px); }
+.newsletter-label {
+  font-size: var(--fs-xs); font-weight: 700; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--muted);
+}
+.newsletter-row {
+  display: flex; gap: .4rem; padding: .3rem; border-radius: var(--r-pill);
+  background: rgba(255, 255, 255, .05); border: 1.5px solid var(--line-strong);
+  transition: border-color .25s, box-shadow .25s;
+}
+.newsletter-row:focus-within { border-color: var(--lime); box-shadow: 0 0 0 4px rgba(212, 255, 58, .12); }
+.newsletter-row input {
+  flex: 1; min-width: 0; padding: .45rem .4rem .45rem .8rem;
+  background: none; border: 0; color: var(--text); font-size: var(--fs-sm);
+}
+.newsletter-row input:focus { outline: none; }
+.newsletter-row input::placeholder { color: var(--muted); opacity: .7; }
+.newsletter-btn {
+  flex: none; padding: .45rem 1rem; border-radius: var(--r-pill);
+  background: var(--lime); color: var(--ink); font-weight: 800; font-size: var(--fs-xs);
+  letter-spacing: .04em; text-transform: uppercase; cursor: pointer;
+  transition: background-color .25s, transform .35s var(--ease-spring);
+}
+.newsletter-btn:hover { background: var(--text); transform: scale(1.04); }
+.newsletter-btn:disabled { opacity: .6; pointer-events: none; }
+.newsletter-status { min-height: 1.1em; font-size: var(--fs-xs); color: var(--success); }
+.newsletter-status.is-error { color: var(--danger); }
+
+/* ---------- 16. PROGRESS BAR & FAB ---------- */
 .progress { display: none; }
 .is-h .progress {
   position: fixed; left: var(--gutter);
@@ -762,19 +762,24 @@ h1, h2, h3 { line-height: 1.05; letter-spacing: -.02em; font-weight: 700; }
 .fab-btn--quote:hover { animation-play-state: paused; background: var(--lime); }
 .fab-emoji { display: inline-flex; animation: hd-wiggle 3.4s ease-in-out infinite; }
 @keyframes hd-wiggle { 0%, 70%, 100% { transform: rotate(0); } 78% { transform: rotate(-14deg); } 86% { transform: rotate(12deg); } 94% { transform: rotate(-6deg); } }
-.fab-btn--top { background: var(--bg-2); border: 1.5px solid var(--line-strong); font-size: 1.1rem; opacity: 0; pointer-events: none; }
+.fab-btn--top {
+  background: rgba(19, 19, 23, .78); border: 1.5px solid var(--line-strong); font-size: 1.1rem;
+  -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+  box-shadow: 0 14px 40px -18px rgba(0, 0, 0, .8);
+  opacity: 0; pointer-events: none;
+}
 .fab-btn--top:hover { border-color: var(--lime); color: var(--lime); }
 .fab.is-away .fab-btn--top { opacity: 1; pointer-events: auto; }
 .fab.is-hidden .fab-btn--quote { opacity: 0; pointer-events: none; }
 
-/* ---------- 18. VERTICAL FALLBACK (small / short screens) ---------- */
+/* ---------- 17. VERTICAL FALLBACK (small / short screens) ---------- */
 html:not(.is-h) .panel {
   padding: clamp(3.25rem, 2.25rem + 5vw, 7rem) var(--gutter);
   max-width: 1200px; margin: 0 auto;
 }
 html:not(.is-h) .hero {
   width: auto; min-height: 100svh;
-  padding-top: calc(var(--header-h) + clamp(1rem, .5rem + 2.4vw, 2rem));
+  padding-top: calc(var(--header-h) + var(--header-top) + clamp(1rem, .5rem + 2.4vw, 2rem));
   padding-bottom: clamp(5rem, 3.5rem + 5vw, 7rem);
   display: grid; gap: clamp(1.5rem, 1rem + 2.4vw, 2.4rem); align-content: center;
 }
@@ -817,7 +822,7 @@ html:not(.is-h) [data-reveal].is-in { transform: none; }
 html:not(.is-h) [data-tilt].is-in { transform: none; }
 html:not(.is-h) .fab-btn--top span { transform: rotate(90deg); }
 
-/* ---------- 18b. SWIPE DECKS (the vertical page's card rows) ---------- */
+/* ---------- 17b. SWIPE DECKS (the vertical page's card rows) ---------- */
 /* Stacked, a five-card row becomes five screens to scroll past. So the rows the
    rail carried sideways keep travelling sideways here: the deck runs right to
    left under a native swipe, a mouse drag, the arrow keys or its dots, with the
@@ -867,7 +872,10 @@ html:not(.is-h) .deck > * {
 
 @media (max-width: 720px) {
   .logo-sub { display: none; }
-  .header-actions .btn-sm { display: none; }
+  /* The FAB already carries "Free quote" on small screens; the Client Portal
+     button stays so the portal is one tap from the header, not only the menu. */
+  .header-actions .header-quote-btn { display: none; }
+  .header-actions .header-portal-btn { padding: .5rem .85rem; }
   .menu { grid-template-columns: 1fr; align-content: start; gap: 2rem; }
   .form { grid-template-columns: 1fr; }
   .fab-text { display: none; }
@@ -881,9 +889,11 @@ html:not(.is-h) .deck > * {
   .contact-list a, .contact-static { padding: .65rem .85rem; }
 }
 
-/* Narrow phones: the wordmark alone, and a menu that still fits the screen. */
+/* Narrow phones: the wordmark alone, and a menu that still fits the screen.
+   The portal button hands over to the menu, which carries the same link. */
 @media (max-width: 400px) {
   .logo-name { font-size: .9rem; }
+  .header-actions .header-portal-btn { display: none; }
   .menu-nav a { font-size: clamp(1.75rem, 1.2rem + 3vw, 2.4rem); gap: .7rem; }
   .menu { padding-left: var(--gutter); padding-right: var(--gutter); }
   .menu-aside { font-size: var(--fs-base); }
@@ -894,13 +904,12 @@ html:not(.is-h) .deck > * {
   .is-h { --header-h: 68px; --bar-h: 56px; }
   .is-h .panel-head { gap: .8rem; }
   .is-h .panel-lead { font-size: var(--fs-base); }
-  .is-h .card, .is-h .why-item, .is-h .quote { padding: 1.25rem; gap: .6rem; }
+  .is-h .card, .is-h .why-item { padding: 1.25rem; gap: .6rem; }
   .is-h .card-icon { width: 46px; height: 46px; font-size: 1.35rem; }
   .is-h .why-grid { gap: .9rem; }
   .is-h .plan { padding: 1.25rem 1.4rem; gap: .6rem; }
   .is-h .plan-price { font-size: 2.4rem; }
   .is-h .ticks { gap: .3rem; }
-  .is-h .quote blockquote { font-size: var(--fs-base); }
   .is-h .form { gap: .55rem .9rem; }
   .is-h .field input, .is-h .field select, .is-h .field textarea { padding: .55rem .8rem; }
   .is-h .field textarea { min-height: 62px; }
@@ -939,7 +948,6 @@ html:not(.is-h) .deck > * {
   .is-h .hero-title { font-size: min(var(--fs-h1), 7.4vh, 4.8vw); }
   .is-h .hero-lead { font-size: var(--fs-sm); max-width: 46ch; }
   .is-h .hero-rotator { font-size: var(--fs-base); }
-  .is-h .hero-stats strong { font-size: clamp(1.3rem, 1rem + 1vw, 1.8rem); }
   .is-h .orbit { width: min(28vw, 40vh, 400px); }
   /* A smaller orbit puts the proof chips on top of the quokka, so push them out. */
   .is-h .chip { font-size: var(--fs-xs); padding: .4rem .75rem; }
@@ -960,17 +968,17 @@ html:not(.is-h) .deck > * {
   .is-h .footer-blurb { font-size: var(--fs-sm); }
 }
 
-/* ---------- 19. REDUCED MOTION ---------- */
+/* ---------- 18. REDUCED MOTION ---------- */
 @media (prefers-reduced-motion: reduce) {
   [data-reveal], [data-wipe], .word > span { opacity: 1; transform: none; clip-path: none; }
   .bg-glow, .btn-float, .chip, .fab-btn--quote, .plan-flag { animation: none !important; }
   .cursor { display: none !important; }
 }
 
-/* ---------- 20. INNER ROUTES (vertical pages) ---------- */
+/* ---------- 19. INNER ROUTES (vertical pages) ---------- */
 .page-main {
   position: relative; z-index: 1;
-  padding-top: calc(var(--header-h) + clamp(1.5rem, 1rem + 3vw, 3.5rem));
+  padding-top: calc(var(--header-h) + var(--header-top) + clamp(1.5rem, 1rem + 3vw, 3.5rem));
 }
 .page-main h1 { font-size: clamp(2.2rem, 1.4rem + 3vw, 3.6rem); }
 
@@ -1004,7 +1012,7 @@ html:not(.is-h) .deck > * {
 .menu { visibility: hidden; transition: opacity .4s var(--ease), visibility .4s var(--ease); }
 .menu.is-open { visibility: visible; }
 
-/* ---------- 21. FLUID HEADING SCALE (inner routes) ---------- */
+/* ---------- 20. FLUID HEADING SCALE (inner routes) ---------- */
 /* One continuous curve per level instead of a step at the `sm` breakpoint, so
    headings fit a 320px phone and a 1920px desktop without a jump in between. */
 .page-title {
@@ -1020,8 +1028,4 @@ html:not(.is-h) .deck > * {
 .page-h3 {
   font-size: clamp(1.2rem, 1.05rem + .7vw, 1.6rem);
   line-height: 1.2;
-}
-.page-stat {
-  font-size: clamp(1.9rem, 1.4rem + 2vw, 2.75rem);
-  line-height: 1;
 }

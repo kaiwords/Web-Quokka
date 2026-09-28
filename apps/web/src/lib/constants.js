@@ -23,11 +23,10 @@ const MANAGEMENT_URL = (import.meta.env.VITE_MANAGEMENT_URL || 'http://localhost
 )
 
 export const PORTAL = {
-  clientLogin: `${MANAGEMENT_URL}/portal/login`,
-  clientSignup: `${MANAGEMENT_URL}/portal/signup`,
-  // Staff CRM. Deliberately not advertised in the main nav — it is an internal
-  // tool, and there is no public sign-up for it.
-  staffLogin: `${MANAGEMENT_URL}/login`,
+  // Every sign-in — client or staff — goes through the one /login route on the
+  // management app. There are no alternate login entry points.
+  login: `${MANAGEMENT_URL}/login`,
+  signup: `${MANAGEMENT_URL}/portal/signup`,
 }
 
 export const NAV_LINKS = [
@@ -260,13 +259,6 @@ export const WHY_CHOOSE_US = [
   },
 ]
 
-export const STATS = [
-  { label: 'Projects Delivered', value: 65, suffix: '+', icon: 'Rocket' },
-  { label: 'Happy Clients', value: 48, suffix: '+', icon: 'Users' },
-  { label: 'Years of Experience', value: 6, suffix: '+', icon: 'Calendar' },
-  { label: 'Avg. Client Rating', value: 4.9, suffix: '/5', icon: 'Star' },
-]
-
 export const VALUES = [
   {
     icon: 'Smile',
@@ -287,48 +279,6 @@ export const VALUES = [
     icon: 'Users',
     title: 'Genuinely Collaborative',
     description: 'Your project, your input. We build with you, not just for you.',
-  },
-]
-
-export const TEAM = [
-  {
-    name: 'Jordan Kelly',
-    role: 'Founder & Lead Developer',
-    bio: 'Full-stack developer who started WebQuokka to help Perth businesses get online without the agency runaround.',
-  },
-  {
-    name: 'Sam Mitchell',
-    role: 'Product & Design',
-    bio: 'Focused on making sure every WebQuokka build looks great and feels effortless to use.',
-  },
-  {
-    name: 'Alex Nguyen',
-    role: 'Client Success',
-    bio: 'Keeps projects on track and makes sure every client feels supported, start to finish.',
-  },
-]
-
-export const TESTIMONIALS = [
-  {
-    name: 'Placeholder Client',
-    designation: 'Owner, Local Perth Business',
-    quote:
-      'WebQuokka took our idea and turned it into a site we’re genuinely proud of. Communication was great the whole way through.',
-    src: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop',
-  },
-  {
-    name: 'Placeholder Client',
-    designation: 'E-commerce Store Owner',
-    quote:
-      'Our online store looks fantastic and the checkout flow is so smooth. Orders started coming in within days of launch.',
-    src: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format&fit=crop',
-  },
-  {
-    name: 'Placeholder Client',
-    designation: 'Startup Founder',
-    quote:
-      'They built our MVP fast without sacrificing quality. Investors were impressed with how polished it felt.',
-    src: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=400&auto=format&fit=crop',
   },
 ]
 

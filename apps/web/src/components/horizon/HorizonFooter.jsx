@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { NAV_LINKS, PORTAL, SERVICES, SITE } from '../../lib/constants'
 import Icon from '../ui/Icon'
 import Btn from './Btn'
+import NewsletterSignup from './NewsletterSignup'
 import QuokkaMark from './QuokkaMark'
 
 /**
@@ -29,6 +30,7 @@ export default function HorizonFooter() {
           <Btn to="/contact" cursor="Let's talk" icon="→">
             Start Your Project
           </Btn>
+          <NewsletterSignup />
         </div>
 
         <div data-reveal>
@@ -54,15 +56,15 @@ export default function HorizonFooter() {
         </div>
 
         <div data-reveal>
-          <p className="footer-h">Client area</p>
+          <p className="footer-h">Client Portal</p>
           <ul className="site-footer-list">
             <li>
-              <a href={PORTAL.clientLogin}>
-                <Icon name="LogIn" className="inline h-4 w-4" /> Client login
+              <a href={PORTAL.login}>
+                <Icon name="LogIn" className="inline h-4 w-4" /> Sign in
               </a>
             </li>
             <li>
-              <a href={PORTAL.clientSignup}>
+              <a href={PORTAL.signup}>
                 <Icon name="UserPlus" className="inline h-4 w-4" /> Create an account
               </a>
             </li>
@@ -95,8 +97,8 @@ export default function HorizonFooter() {
         </p>
         <p>
           Made with 🧡 in Perth, Western Australia. ·{' '}
-          <a href={PORTAL.staffLogin} className="footer-staff-link">
-            Staff login
+          <a href={PORTAL.login} className="footer-staff-link">
+            Staff sign in
           </a>
         </p>
       </div>

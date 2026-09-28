@@ -19,12 +19,12 @@ npm run dev
 
 ## Backend integration
 
-Forms POST JSON to `${VITE_API_BASE_URL}/contact`, `/quote`, and `/newsletter` (see `src/lib/api.js`). Without `VITE_API_BASE_URL` set, requests fall back to same-origin `/api/*` and will fail — set the env var once the real backend URL is available.
+Forms POST JSON to `${VITE_API_BASE_URL}/contact`, `/quote`, and `/newsletter` (see `src/lib/api.js`). The localhost fallback points at the management app started by `npm run dev` at the repo root; set the env var to the deployed backend for production builds.
 
-## Placeholder content
+## Content
 
-Team bios, testimonials, and package prices in `src/lib/constants.js` are placeholders and should be replaced with real content before launch. Pricing is quoted in AUD, excludes GST.
+All copy lives in `src/lib/constants.js` and is the site's real content — there are no placeholder testimonials, stats, or team profiles. Sections like testimonials should only be (re)introduced once there are real quotes to show. Pricing is quoted in AUD, excludes GST.
 
 ## Deployment
 
-`vercel.json` and `firebase.json` both configure SPA rewrites (all paths → `index.html`) for client-side routing.
+`vercel.json` configures SPA rewrites (all paths → `index.html`) for client-side routing. GitHub Pages deploys run from `.github/workflows/deploy.yml` at the repo root.

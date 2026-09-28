@@ -20,7 +20,6 @@ const PUBLIC_API_PREFIX = "/api/public/";
 // Portal (client-facing) paths are a fully separate trust boundary from the
 // staff CRM above — own cookie, own public allowlist, own user lookup.
 const PUBLIC_PORTAL_PATHS = [
-  "/portal/login",
   "/portal/signup",
   "/portal/accept-invite",
   "/portal/forgot-password",
@@ -51,6 +50,17 @@ export async function proxy(request: NextRequest) {
   }
 
   if (isPortalPath(pathname)) {
+    // All sign-in goes through the one /login route — the old portal login
+    // URL forwards there (bookmarks, old emails) with its query intact.
+    if (pathname === "/portal/login") {
+      const loginUrl = new URL("/login", request.url);
+      request.nextUrl.searchParams.forEach((value, key) => {
+        loginUrl.searchParams.set(key, value);
+      });
+      loginUrl.searchParams.set("tab", "client");
+      return NextResponse.redirect(loginUrl, 308);
+    }
+
     if (PUBLIC_PORTAL_PATHS.includes(pathname)) {
       return NextResponse.next();
     }
@@ -62,7 +72,7 @@ export async function proxy(request: NextRequest) {
       if (pathname.startsWith("/api/")) {
         return NextResponse.json({ error: "Not logged in" }, { status: 401 });
       }
-      const loginUrl = new URL("/portal/login", request.url);
+      const loginUrl = new URL("/login", request.url);
       // Keep the query string so "?next=/portal/invoices?status=Unpaid"
       // round-trips through login intact.
       loginUrl.searchParams.set("next", pathname + request.nextUrl.search);
