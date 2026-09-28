@@ -4,7 +4,7 @@ import { cn } from '../../lib/utils'
 const VARIANTS = {
   primary: 'btn-primary',
   ghost: 'btn-ghost',
-  flame: 'btn-flame',
+  forest: 'btn-forest',
 }
 
 const SIZES = {

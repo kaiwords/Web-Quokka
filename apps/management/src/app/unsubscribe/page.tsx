@@ -78,11 +78,10 @@ function UnsubscribeInner() {
     <div className="min-h-full flex items-center justify-center px-4 py-10 bg-sand-50">
       <div className="w-full max-w-sm rounded-2xl border border-sand-200 bg-white p-6 shadow-lg shadow-sand-900/5">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-tr from-teal-600 to-coral-500 rounded-xl flex items-center justify-center text-white font-black text-2xl">
-            W
-          </div>
+          {/* eslint-disable-next-line @next/next/no-img-element -- small static brand asset */}
+          <img src="/brand/mascot-brown.png" alt="Web Quokka" className="w-10 h-10 object-contain" />
           <div>
-            <p className="font-bold text-lg text-sand-900">WebQuokka</p>
+            <p className="font-bold text-lg text-sand-900">Web Quokka</p>
             <p className="text-xs text-sand-600">Email preferences</p>
           </div>
         </div>
@@ -97,7 +96,7 @@ function UnsubscribeInner() {
           <>
             <p className="mt-6 text-sm text-sand-700">
               Unsubscribe <span className="font-medium text-sand-900">{email}</span> from
-              WebQuokka emails?
+              Web Quokka emails?
             </p>
             <p className="mt-1 text-xs text-sand-500">
               You&apos;ll stop receiving our newsletter. This won&apos;t affect emails

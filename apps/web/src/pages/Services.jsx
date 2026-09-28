@@ -19,13 +19,13 @@ export default function Services() {
       <section className="pb-16 pt-12 sm:pb-24 sm:pt-16">
         <Container>
           <Reveal className="mx-auto max-w-2xl text-center">
-            <span className="text-sm font-semibold uppercase tracking-wide text-sky-600 dark:text-sky-300">
+            <span className="text-sm font-semibold uppercase tracking-wide text-terracotta-600">
               Services
             </span>
-            <h1 className="mt-3 page-title font-heading font-bold">
+            <h1 className="mt-3 page-title font-heading">
               Everything you need, under one roof
             </h1>
-            <p className="mt-4 text-sand-700 dark:text-sand-300">
+            <p className="mt-4 text-ink-600">
               Whether you&rsquo;re launching your first MVP or need ongoing support for an
               established site, we&rsquo;ve got you covered.
             </p>
@@ -39,11 +39,11 @@ export default function Services() {
             </SwipeRow>
           </div>
 
-          <Reveal className="mt-20 flex flex-col items-center gap-3 rounded-4xl border border-sand-200 bg-sand-100/60 px-8 py-11 text-center sm:py-12 dark:border-ink-600 dark:bg-ink-800/50">
-            <h2 className="page-h2 font-heading font-bold">
+          <Reveal className="mt-20 flex flex-col items-center gap-3 rounded-4xl border border-cream-400 bg-sage-200/50 px-8 py-11 text-center sm:py-12">
+            <h2 className="page-h2 font-heading">
               Not sure which service fits?
             </h2>
-            <p className="max-w-xl text-sand-700 dark:text-sand-300">
+            <p className="max-w-xl text-ink-600">
               Tell us a bit about your project and we&rsquo;ll recommend the right path — no
               pressure, no jargon.
             </p>

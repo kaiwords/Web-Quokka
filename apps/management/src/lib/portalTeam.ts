@@ -18,7 +18,7 @@ interface CreateInviteInput {
   role: string;
   /** Display name/username interpolated into the email — escaped here. */
   invitedBy: string;
-  /** e.g. "WebQuokka invited you ... for Acme" vs "{owner} invited you ..." */
+  /** e.g. "Web Quokka invited you ... for Acme" vs "{owner} invited you ..." */
   intro: string;
   /** Origin used when NEXT_PUBLIC_APP_URL isn't set (from the request URL). */
   requestOrigin: string;
@@ -91,7 +91,7 @@ export async function createPortalInvite(input: CreateInviteInput): Promise<Crea
   const inviteUrl = `${base}/portal/accept-invite?token=${token}`;
   await sendMail({
     to: email,
-    subject: "You've been invited to the WebQuokka client portal",
+    subject: "You've been invited to the Web Quokka client portal",
     html: `<p>${escapeHtml(input.intro)} as a ${escapeHtml(input.role)}.</p><p><a href="${inviteUrl}">${inviteUrl}</a></p>`,
   });
 

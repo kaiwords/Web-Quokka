@@ -3,7 +3,6 @@ import { NAV_LINKS, PORTAL, SERVICES, SITE } from '../../lib/constants'
 import Icon from '../ui/Icon'
 import Btn from './Btn'
 import NewsletterSignup from './NewsletterSignup'
-import QuokkaMark from './QuokkaMark'
 
 /**
  * Footer for the inner routes. The home journey ends on its own footer panel
@@ -17,11 +16,7 @@ export default function HorizonFooter() {
       <div className="site-footer-inner">
         <div className="site-footer-brand" data-reveal>
           <Link to="/" className="logo" data-cursor="Home">
-            <QuokkaMark />
-            <span className="logo-text">
-              <span className="logo-name">{SITE.name}</span>
-              <span className="logo-sub">Studio Design</span>
-            </span>
+            <img src="/brand/wordmark-cream.png" alt={SITE.name} className="logo-wordmark" />
           </Link>
           <p className="footer-blurb">
             Friendly, professional web development for Perth businesses — from MVP to launch, and

@@ -110,7 +110,7 @@ export async function handleEnquiry(
   const notifyTo = process.env.ENQUIRY_NOTIFY_EMAIL?.trim();
   if (notifyTo) after(() => sendMail({
     to: notifyTo,
-    subject: `New WebQuokka ${label} from ${name}`,
+    subject: `New Web Quokka ${label} from ${name}`,
     html: `
       <h3>New ${escapeHtml(label)}</h3>
       <p><strong>Name:</strong> ${escapeHtml(name)}</p>

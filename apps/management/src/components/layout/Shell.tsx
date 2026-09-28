@@ -155,12 +155,11 @@ export default function Shell({ children }: ShellProps) {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
             {/* Brand */}
             <Link href="/dashboard" className="flex items-center gap-3 cursor-pointer">
-              <div className="w-10 h-10 bg-gradient-to-tr from-amber-600 to-amber-400 rounded-xl flex items-center justify-center text-slate-950 font-black text-2xl shadow-lg shadow-amber-500/20">
-                W
-              </div>
+              {/* eslint-disable-next-line @next/next/no-img-element -- small static brand asset */}
+              <img src="/brand/mascot-cream.png" alt="" className="w-10 h-10 object-contain" />
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-lg tracking-tight text-white">Web-quokka</span>
+                  <span className="font-bold text-lg tracking-tight text-white">Web Quokka</span>
                   <span className="text-[10px] uppercase font-extrabold tracking-wider bg-amber-500/10 text-amber-400 border border-amber-500/30 px-2 py-0.5 rounded-full">
                     Client OS
                   </span>

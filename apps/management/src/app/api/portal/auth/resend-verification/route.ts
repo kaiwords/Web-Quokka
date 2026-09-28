@@ -57,7 +57,7 @@ export async function POST(req: NextRequest) {
     // addresses exist), and kept alive on Vercel until the send finishes.
     after(() => sendMail({
       to: email,
-      subject: "Confirm your WebQuokka account",
+      subject: "Confirm your Web Quokka account",
       html: `
         <p>Hi ${escapeHtml(user.name)},</p>
         <p>Here's a fresh link to confirm your email address:</p>

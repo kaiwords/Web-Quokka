@@ -228,7 +228,7 @@ export default function ChangeRequestDetailPage({ params }: { params: Promise<{ 
 
             {cr.status === "QuoteSent" && (
               <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5 space-y-3">
-                <p className="text-sm font-semibold text-sand-900">Quote from WebQuokka</p>
+                <p className="text-sm font-semibold text-sand-900">Quote from Web Quokka</p>
                 <div className="flex gap-6">
                   <div>
                     <p className="text-xs text-sand-500">Price (+ GST)</p>

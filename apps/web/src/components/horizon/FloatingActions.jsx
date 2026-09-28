@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import { CHAPTERS } from '../../lib/chapters'
 import { cn } from '../../lib/utils'
+import ChatWidget from './ChatWidget'
 import { useHorizon } from './HorizonContext'
 
 /**
- * Floating actions: a rewind button that appears once you've travelled, and a
- * free-quote pill that steps aside when you reach the contact chapter.
+ * Floating actions: a rewind button that appears once you've travelled — its
+ * arrow points back along the journey (left on the horizontal rail, up on
+ * vertical pages) — and the chat widget's launcher, which steps aside when
+ * you reach the contact chapter.
  */
 export default function FloatingActions() {
   const { away, index, horizontal } = useHorizon()
@@ -37,23 +40,9 @@ export default function FloatingActions() {
         data-cursor="Rewind"
         onClick={rewind}
       >
-        <span aria-hidden="true">←</span>
+        <span aria-hidden="true">{onHome && horizontal ? '←' : '↑'}</span>
       </button>
-      {onHome ? (
-        <a href="#contact" className="fab-btn fab-btn--quote" data-magnetic data-cursor="Quote">
-          <span className="fab-emoji" aria-hidden="true">
-            💬
-          </span>
-          <span className="fab-text">Free quote</span>
-        </a>
-      ) : (
-        <Link to="/contact" className="fab-btn fab-btn--quote" data-magnetic data-cursor="Quote">
-          <span className="fab-emoji" aria-hidden="true">
-            💬
-          </span>
-          <span className="fab-text">Free quote</span>
-        </Link>
-      )}
+      <ChatWidget />
     </div>
   )
 }

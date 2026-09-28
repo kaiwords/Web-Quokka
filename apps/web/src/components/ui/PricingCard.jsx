@@ -7,6 +7,16 @@ import Button from './Button'
 import { cn } from '../../lib/utils'
 import { useSwipeRow } from './swipeRowContext'
 
+/* Per-tier accent identities: a decorative top strip plus the check colour.
+   Coloured text stays in the -600 shades (≥4.5:1 on cream); the -500 strips
+   carry no text. Sunshine remains reserved for the featured tier. */
+const TIER_ACCENTS = [
+  { bar: 'bg-sage-500', check: 'text-forest-600' },
+  { bar: 'bg-sunshine-500', check: 'text-forest-500' },
+  { bar: 'bg-terracotta-500', check: 'text-terracotta-600' },
+  { bar: 'bg-lake-500', check: 'text-lake-600' },
+]
+
 function parsePrice(price) {
   const match = price.match(/^([^\d]*)([\d,]+(?:\.\d+)?)(.*)$/)
   if (!match) return { prefix: price, number: null, suffix: '' }
@@ -20,6 +30,7 @@ export default function PricingCard({ plan, index = 0, ctaLabel = 'Get Started',
   const inView = useInView(ref, { once: true, amount: swipe ? 0.3 : 0.5 })
   const { prefix, number, suffix } = parsePrice(plan.price)
   const displayValue = inView && number !== null ? number : 0
+  const accent = TIER_ACCENTS[plan.popular ? 1 : index % TIER_ACCENTS.length]
 
   return (
     <motion.div
@@ -29,14 +40,14 @@ export default function PricingCard({ plan, index = 0, ctaLabel = 'Get Started',
       viewport={{ once: true, amount: swipe ? 0.15 : 0.3 }}
       transition={{ duration: 0.48, delay: swipe ? 0 : index * 0.09, ease: [0.34, 1.2, 0.64, 1] }}
       className={cn(
-        'relative flex h-full flex-col rounded-3xl p-7 shadow-sm',
-        plan.popular ? 'shadow-xl' : 'border border-sand-200 bg-white/80 dark:border-ink-600 dark:bg-ink-800/80',
+        'relative flex h-full flex-col rounded-3xl p-7 shadow-card',
+        plan.popular ? 'shadow-raised' : 'border border-cream-400 bg-cream-50/80',
       )}
       style={
         plan.popular
           ? {
               backgroundImage:
-                'linear-gradient(var(--popular-card-bg), var(--popular-card-bg)), linear-gradient(120deg, var(--color-sky-400), var(--color-sand-400), var(--color-sky-400))',
+                'linear-gradient(var(--popular-card-bg), var(--popular-card-bg)), linear-gradient(120deg, var(--color-sunshine-500), var(--color-sage-500), var(--color-sunshine-500))',
               backgroundOrigin: 'border-box',
               backgroundClip: 'padding-box, border-box',
               border: '2px solid transparent',
@@ -46,24 +57,26 @@ export default function PricingCard({ plan, index = 0, ctaLabel = 'Get Started',
           : undefined
       }
     >
-      {plan.popular && (
-        <Badge className="absolute -top-3 left-1/2 -translate-x-1/2" tone="sky">
+      {plan.popular ? (
+        <Badge className="absolute -top-3 left-1/2 -translate-x-1/2" tone="sunshine">
           Recommended
         </Badge>
+      ) : (
+        <span aria-hidden="true" className={cn('absolute inset-x-7 top-0 h-1 rounded-b-full', accent.bar)} />
       )}
 
-      <h3 className="font-heading text-xl font-bold text-sand-900 dark:text-cream-50">{plan.name}</h3>
-      <p className="mt-2 text-sm text-sand-700 dark:text-sand-300">{plan.description}</p>
+      <h3 className="font-heading text-xl text-ink-900">{plan.name}</h3>
+      <p className="mt-2 text-sm text-ink-600">{plan.description}</p>
 
       <div className="mt-5">
         {number !== null ? (
           <>
             {prefix.trim() && (
-              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-sand-300">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-ink-600">
                 {prefix.trim().replace(/\$$/, '')}
               </p>
             )}
-            <p className="font-heading text-4xl font-extrabold text-cream-50">
+            <p className="font-heading text-4xl text-ink-900">
               <span className="align-top text-xl">$</span>
               <NumberFlow
                 value={displayValue}
@@ -73,14 +86,14 @@ export default function PricingCard({ plan, index = 0, ctaLabel = 'Get Started',
             </p>
           </>
         ) : (
-          <p className="font-heading text-3xl font-extrabold text-cream-50">{plan.price}</p>
+          <p className="font-heading text-3xl text-ink-900">{plan.price}</p>
         )}
       </div>
 
       <ul className="mt-6 flex-1 space-y-2.5">
         {plan.features.map((feature) => (
-          <li key={feature} className="flex items-start gap-2 text-sm text-sand-700 dark:text-sand-300">
-            <Check className="mt-0.5 h-4 w-4 shrink-0 text-sky-500" aria-hidden="true" />
+          <li key={feature} className="flex items-start gap-2 text-sm text-ink-600">
+            <Check className={cn('mt-0.5 h-4 w-4 shrink-0', accent.check)} aria-hidden="true" />
             {feature}
           </li>
         ))}

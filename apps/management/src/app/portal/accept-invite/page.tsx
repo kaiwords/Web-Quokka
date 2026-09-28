@@ -97,9 +97,8 @@ function AcceptInviteInner() {
   return (
     <div className="min-h-full flex items-center justify-center px-4 bg-sand-50">
       <form onSubmit={handleSubmit} className="w-full max-w-sm rounded-2xl border border-sand-200 bg-white p-6 shadow-lg shadow-sand-900/5">
-        <div className="w-10 h-10 bg-gradient-to-tr from-teal-600 to-coral-500 rounded-xl flex items-center justify-center text-white font-black text-2xl">
-          W
-        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element -- small static brand asset */}
+        <img src="/brand/mascot-brown.png" alt="Web Quokka" className="w-10 h-10 object-contain" />
         <p className="mt-3 font-bold text-lg text-sand-900">Join {invite?.businessName ?? "your business"}&apos;s portal</p>
         <p className="text-xs text-sand-600 mt-1">
           {invite ? `Setting up ${invite.email} as ${invite.role}` : "Loading invite..."}

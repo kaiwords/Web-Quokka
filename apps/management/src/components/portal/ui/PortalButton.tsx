@@ -9,10 +9,11 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 // Light-theme counterpart to src/components/ui/Button.tsx — same compact
-// sizing convention, but tuned for the portal's sand/cream + teal/coral
-// palette instead of the staff CRM's dark slate/amber one.
+// sizing convention, but tuned for the portal's cream/brown + forest
+// palette. Primary is Sunshine with brown text, per Brand Guidelines v2
+// ("buttons and highlights"); the pair holds 5.9:1.
 const VARIANT_CLASSES: Record<Variant, string> = {
-  primary: "bg-teal-600 text-white hover:bg-teal-500 focus-visible:outline-teal-500",
+  primary: "bg-quokka-500 text-sand-800 hover:bg-quokka-400 focus-visible:outline-quokka-600",
   secondary:
     "border border-sand-300 text-sand-800 hover:border-teal-500 hover:text-teal-700 bg-white focus-visible:outline-teal-500",
   danger:

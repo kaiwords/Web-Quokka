@@ -6,9 +6,6 @@ import './index.css'
 import App from './App.jsx'
 import { HorizonProvider } from './components/horizon/HorizonContext.jsx'
 
-// Horizon Drift is a dark-only direction — no theme toggle, no light fallback.
-document.documentElement.classList.add('dark')
-
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>

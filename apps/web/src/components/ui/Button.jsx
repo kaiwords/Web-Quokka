@@ -9,7 +9,7 @@ import { cn } from '../../lib/utils'
  */
 const VARIANTS = {
   primary: 'btn-primary',
-  secondary: 'btn-flame',
+  secondary: 'btn-forest',
   outline: 'btn-ghost',
   ghost: 'btn-ghost',
 }

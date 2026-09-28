@@ -24,7 +24,7 @@ export async function sendMail(message: MailMessage): Promise<void> {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from: process.env.MAIL_FROM || "WebQuokka <noreply@webquokka.com.au>",
+      from: process.env.MAIL_FROM || "Web Quokka <noreply@webquokka.com.au>",
       to: message.to,
       subject: message.subject,
       html: message.html,

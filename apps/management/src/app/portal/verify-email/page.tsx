@@ -54,9 +54,8 @@ function VerifyEmailInner() {
   return (
     <div className="min-h-full flex items-center justify-center px-4 bg-sand-50">
       <div className="w-full max-w-sm rounded-2xl border border-sand-200 bg-white p-6 text-center shadow-lg shadow-sand-900/5">
-        <div className="mx-auto w-10 h-10 bg-gradient-to-tr from-teal-600 to-coral-500 rounded-xl flex items-center justify-center text-white font-black text-2xl">
-          W
-        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element -- small static brand asset */}
+        <img src="/brand/mascot-brown.png" alt="Web Quokka" className="mx-auto w-10 h-10 object-contain" />
 
         {state === "working" && (
           <p className="mt-5 text-sm text-sand-600" role="status">

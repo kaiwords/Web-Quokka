@@ -48,23 +48,28 @@ export default function Orbit() {
     <div className="orbit" ref={ref} aria-hidden="true">
       <div className="orbit-inner">
         <div className="orbit-ring orbit-ring--1">
-          <span className="planet planet--lime" />
+          <span className="planet planet--sun" />
         </div>
         <div className="orbit-ring orbit-ring--2">
-          <span className="planet planet--orange" />
+          <span className="planet planet--sage" />
         </div>
         <div className="orbit-ring orbit-ring--3">
-          <span className="planet planet--ice" />
+          <span className="planet planet--forest" />
         </div>
         <div className="orbit-core">
+          {/* Sandy fur with dark features, so the face reads instead of a
+              solid dark-brown mass — and the famous quokka smile. */}
           <svg viewBox="0 0 40 40">
-            <circle cx="12.5" cy="13" r="5" fill="#FF6B2C" />
-            <circle cx="27.5" cy="13" r="5" fill="#FF6B2C" />
-            <ellipse cx="20" cy="23" rx="11" ry="10" fill="#FF6B2C" />
-            <ellipse cx="20" cy="26.5" rx="6" ry="4.6" fill="#FFD9C4" />
-            <circle className="eye" cx="15.8" cy="21" r="1.7" fill="#0A0A0C" />
-            <circle className="eye" cx="24.2" cy="21" r="1.7" fill="#0A0A0C" />
-            <ellipse cx="20" cy="24.6" rx="1.8" ry="1.3" fill="#0A0A0C" />
+            <circle cx="12.5" cy="13" r="5" fill="#8A6244" stroke="#6B5646" strokeWidth="0.5" />
+            <circle cx="27.5" cy="13" r="5" fill="#8A6244" stroke="#6B5646" strokeWidth="0.5" />
+            <circle cx="12.5" cy="13.6" r="2.4" fill="#D9A08C" />
+            <circle cx="27.5" cy="13.6" r="2.4" fill="#D9A08C" />
+            <ellipse cx="20" cy="23" rx="11" ry="10" fill="#A9855D" stroke="#6B5646" strokeWidth="0.5" />
+            <ellipse cx="20" cy="26.5" rx="6" ry="4.6" fill="#F7F1E6" />
+            <circle className="eye" cx="15.8" cy="21" r="1.7" fill="#241608" />
+            <circle className="eye" cx="24.2" cy="21" r="1.7" fill="#241608" />
+            <ellipse cx="20" cy="24.6" rx="1.8" ry="1.3" fill="#422B1C" />
+            <path d="M17.4 27.4 Q20 29.8 22.6 27.4" fill="none" stroke="#422B1C" strokeWidth="1.1" strokeLinecap="round" />
           </svg>
         </div>
       </div>

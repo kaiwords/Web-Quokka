@@ -209,12 +209,12 @@ export default function SwipeRow({
               aria-label={`Go to item ${i + 1} of ${items.length}`}
               aria-current={i === active ? 'true' : undefined}
               onClick={() => scrollToIndex(i)}
-              className="rounded-full p-1.5"
+              className="flex h-8 w-8 items-center justify-center rounded-full pointer-coarse:h-11 pointer-coarse:w-11"
             >
               <span
                 className={cn(
                   'block h-1.5 rounded-full transition-all duration-300',
-                  i === active ? 'w-5 bg-sky-500' : 'w-1.5 bg-sand-300 dark:bg-ink-600',
+                  i === active ? 'w-5 bg-forest-500' : 'w-1.5 bg-cream-500',
                 )}
               />
             </button>

@@ -1,36 +1,70 @@
 @import "tailwindcss";
 
+/* Brand Guidelines v2 palette. Token NAMES are kept from the pre-rebrand
+   theme so no component class had to change — only the values moved:
+   - teal-*  now renders brand Forest (#3A5A40 family) — teal itself is retired
+   - coral-* now renders the burnt-sienna "don't"/danger tone (#9A3412 family)
+   - quokka-*/amber-* now render Sunshine (#E0A232) — buttons & highlights
+   - sand-*  is the Cream -> Quokka Brown neutral ramp
+   - slate-* (staff CRM darks) is overridden to a warm cocoa ramp so the
+     dark admin UI reads as a brand "dark section" instead of cold blue
+   - white   is the brand's toned white (never pure #fff) */
 @theme {
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-mono), ui-monospace, monospace;
 
-  /* Quokka amber palette (staff CRM) */
-  --color-quokka-50: #fffbe1;
-  --color-quokka-100: #fff3b8;
-  --color-quokka-400: #fbbf24;
-  --color-quokka-500: #f59e0b;
-  --color-quokka-600: #d97706;
-  --color-quokka-900: #78350f;
+  --color-white: #fbf8f2;
 
-  /* Client portal palette — warm sand/cream neutrals + teal/coral accents */
-  --color-sand-50: #fdfaf5;
-  --color-sand-100: #f7efe1;
-  --color-sand-200: #ecdfc7;
-  --color-sand-300: #dcc8a3;
-  --color-sand-400: #c7a876;
-  --color-sand-500: #a8895a;
-  --color-sand-600: #8a6d4a;
-  --color-sand-700: #6b5439;
-  --color-sand-800: #4a3a28;
-  --color-sand-900: #2e2417;
-  --color-teal-50: #ecfdf9;
-  --color-teal-200: #99f6e4;
-  --color-teal-400: #2dd4bf;
-  --color-teal-500: #0d9488;
-  --color-teal-600: #0f766e;
-  --color-teal-700: #0e5c53;
-  --color-coral-500: #f2765a;
-  --color-coral-600: #e15c40;
+  /* Sunshine accent (staff CRM) */
+  --color-quokka-50: #fcf6e8;
+  --color-quokka-100: #f3dfb8;
+  --color-quokka-400: #e8b554;
+  --color-quokka-500: #e0a232;
+  --color-quokka-600: #c98b1f;
+  --color-quokka-900: #5c400f;
+
+  /* Sunshine again under the default-amber name the CRM pages use */
+  --color-amber-300: #edc276;
+  --color-amber-400: #e8b554;
+  --color-amber-500: #e0a232;
+  --color-amber-600: #c98b1f;
+
+  /* Warm cocoa darks replacing Tailwind's cool slate (staff CRM surfaces) */
+  --color-slate-50: #fbf8f2;
+  --color-slate-100: #f0e9dd;
+  --color-slate-200: #e0d5c7;
+  --color-slate-300: #c7b5a5;
+  --color-slate-400: #a99181;
+  --color-slate-500: #8a7361;
+  --color-slate-600: #64513e;
+  --color-slate-700: #4e3928;
+  --color-slate-800: #3b2a1e;
+  --color-slate-900: #2a1d14;
+  --color-slate-950: #201510;
+
+  /* Client portal neutrals — Cream (#F7F1E6) through Quokka Brown (#422B1C) */
+  --color-sand-50: #f7f1e6;
+  --color-sand-100: #efe6d6;
+  --color-sand-200: #e6dccb;
+  --color-sand-300: #d9cdb8;
+  --color-sand-400: #a98f73;
+  --color-sand-500: #8a7258;
+  --color-sand-600: #6b5646;
+  --color-sand-700: #57422f;
+  --color-sand-800: #422b1c;
+  --color-sand-900: #2e1e13;
+
+  /* Forest accent (client portal) */
+  --color-teal-50: #eef2ec;
+  --color-teal-200: #dce2d3;
+  --color-teal-400: #7e997f;
+  --color-teal-500: #4c6b53;
+  --color-teal-600: #3a5a40;
+  --color-teal-700: #2c4531;
+
+  /* Burnt sienna danger (client portal) */
+  --color-coral-500: #b4451d;
+  --color-coral-600: #9a3412;
 }
 
 /* Tailwind v4 preflight sets buttons to cursor:default — restore the
@@ -59,7 +93,7 @@
   /* Visible keyboard focus for click targets. Text inputs keep their own
      focus:border-* styles, so scope this to buttons/links/summaries. */
   :where(button, [role="button"], a, summary):focus-visible {
-    outline: 2px solid var(--focus-ring, rgba(245, 158, 11, 0.7));
+    outline: 2px solid var(--focus-ring, rgba(224, 162, 50, 0.7));
     outline-offset: 2px;
     border-radius: 8px;
   }
@@ -72,14 +106,14 @@
      scrollbars, selection, and focus ring to the portal palette. */
   .theme-light {
     color-scheme: light;
-    --focus-ring: rgba(13, 148, 136, 0.6);
-    --sb-track: #f7efe1;
-    --sb-thumb: #dcc8a3;
-    --sb-thumb-hover: #c7a876;
+    --focus-ring: rgba(58, 90, 64, 0.6);
+    --sb-track: #efe6d6;
+    --sb-thumb: #d9cdb8;
+    --sb-thumb-hover: #a98f73;
   }
   .theme-light ::selection {
-    background: #0d9488;
-    color: #fdfaf5;
+    background: #3a5a40;
+    color: #fbf8f2;
   }
 }
 
@@ -89,21 +123,21 @@
   height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--sb-track, #0f172a);
+  background: var(--sb-track, #2a1d14);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--sb-thumb, #334155);
+  background: var(--sb-thumb, #4e3928);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--sb-thumb-hover, #475569);
+  background: var(--sb-thumb-hover, #64513e);
 }
 
 /* Glass card utility */
 .glass-card {
-  background: rgba(15, 23, 42, 0.75);
+  background: rgba(42, 29, 20, 0.75);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(51, 65, 85, 0.5);
+  border: 1px solid rgba(78, 57, 40, 0.5);
 }
 
 /* Ping animation for sprint indicator */

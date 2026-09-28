@@ -62,7 +62,7 @@ export async function POST(req: NextRequest, { params }: Params) {
       email,
       role,
       invitedBy: sessionUser.username,
-      intro: `WebQuokka invited you to their client portal for ${client.company || client.name}`,
+      intro: `Web Quokka invited you to their client portal for ${client.company || client.name}`,
       requestOrigin: new URL(req.url).origin,
       staffContext: true,
     });

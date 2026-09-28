@@ -2,7 +2,7 @@
    queries that decide whether the horizontal journey is on, and the two
    imperative effects (star drift, confetti) that are driven from outside React. */
 
-export const HORIZON_COLORS = ['#D4FF3A', '#7CC8FF', '#B69CFF', '#FF6B2C', '#F2F0EA']
+export const HORIZON_COLORS = ['#E0A232', '#3A5A40', '#8F9D7A', '#5A4434', '#BC5B34']
 
 export const clamp = (v, a, b) => Math.min(b, Math.max(a, v))
 export const lerp = (a, b, t) => a + (b - a) * t

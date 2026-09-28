@@ -84,7 +84,7 @@ function AnimatedPath({ d, id }) {
 
   return (
     <>
-      <path d={d} stroke="currentColor" strokeWidth="1" fill="none" className="text-sand-300 dark:text-ink-600" />
+      <path d={d} stroke="currentColor" strokeWidth="1" fill="none" className="text-cream-400" />
       <motion.path
         d={d}
         stroke={`url(#${id})`}
@@ -98,7 +98,7 @@ function AnimatedPath({ d, id }) {
       <defs>
         <linearGradient id={id} gradientUnits="userSpaceOnUse">
           <stop offset="0%" stopColor="transparent" />
-          <stop offset="50%" stopColor="var(--color-sky-500)" stopOpacity="0.6" />
+          <stop offset="50%" stopColor="var(--color-forest-500)" stopOpacity="0.6" />
           <stop offset="100%" stopColor="transparent" />
         </linearGradient>
       </defs>
@@ -122,12 +122,12 @@ function Integration() {
         ))}
       </svg>
 
-      <div className="absolute top-1/2 left-1/2 z-20 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-lg border border-sand-200 bg-cream-50 p-0.5 shadow-md dark:border-ink-600 dark:bg-ink-800 sm:rounded-2xl sm:p-2 sm:shadow-xl">
-        <div className="rounded-lg border border-sand-200 p-1 dark:border-ink-600 sm:rounded-xl sm:p-2.5">
+      <div className="absolute top-1/2 left-1/2 z-20 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-lg border border-cream-400 bg-cream-50 p-0.5 shadow-card sm:rounded-2xl sm:p-2 sm:shadow-raised">
+        <div className="rounded-lg border border-cream-400 p-1 sm:rounded-xl sm:p-2.5">
           <QuokkaMascot size="clamp(1.25rem, .6rem + 2.6vw, 2.25rem)" />
         </div>
         <motion.div
-          className="absolute inset-0 rounded-lg border-2 border-sky-500/15 sm:rounded-2xl"
+          className="absolute inset-0 rounded-lg border-2 border-forest-500/20 sm:rounded-2xl"
           animate={{ scale: [1, 1.15, 1], opacity: [0.3, 0, 0.3] }}
           transition={{ duration: 3, repeat: Infinity }}
         />
@@ -143,7 +143,7 @@ function Integration() {
             viewport={{ once: true }}
             transition={{ delay: integration.delay }}
             style={{ left: `${(integration.x / 564) * 100}%`, top: `${(integration.y / 410) * 100}%` }}
-            className="absolute z-10 flex h-8 w-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-lg border border-sand-200 bg-cream-50 text-sand-700 shadow-sm dark:border-ink-600 dark:bg-ink-800 dark:text-cream-100 sm:h-12 sm:w-12 sm:rounded-xl md:h-13.5 md:w-13.5"
+            className="absolute z-10 flex h-8 w-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-lg border border-cream-400 bg-cream-50 text-ink-600 shadow-card sm:h-12 sm:w-12 sm:rounded-xl md:h-13.5 md:w-13.5"
           >
             <Icon className="h-4 w-4 sm:h-6 sm:w-6" />
           </motion.div>
@@ -157,25 +157,18 @@ function VisualContainer({ children, className }) {
   return (
     <div
       className={cn(
-        'relative flex aspect-564/460 w-full items-center justify-center overflow-hidden bg-sand-100 p-8 dark:bg-ink-800/50 sm:aspect-564/410',
+        'relative flex aspect-564/460 w-full items-center justify-center overflow-hidden bg-cream-200 p-8 sm:aspect-564/410',
         className,
       )}
     >
       <div
-        className="absolute inset-0 opacity-20 dark:hidden"
+        className="absolute inset-0 opacity-20"
         style={{
-          backgroundImage: 'radial-gradient(circle, var(--color-sand-700) 1px, transparent 1px)',
+          backgroundImage: 'radial-gradient(circle, var(--color-ink-600) 1px, transparent 1px)',
           backgroundSize: '32px 32px',
         }}
       />
-      <div
-        className="absolute inset-0 hidden opacity-20 dark:block"
-        style={{
-          backgroundImage: 'radial-gradient(circle, var(--color-cream-100) 1px, transparent 1px)',
-          backgroundSize: '32px 32px',
-        }}
-      />
-      <div className="pointer-events-none absolute inset-0 bg-linear-to-b from-cream-50/60 from-10% via-transparent to-90% to-cream-50/60 dark:from-ink-900/60 dark:to-ink-900/60" />
+      <div className="pointer-events-none absolute inset-0 bg-linear-to-b from-cream-50/60 from-10% via-transparent to-90% to-cream-50/60" />
       <div className="relative z-10 flex h-full w-full items-center justify-center">{children}</div>
     </div>
   )
@@ -190,10 +183,10 @@ export default function IntegrationShowcase({ title, description, url }) {
 
       <div className="flex flex-col gap-6 p-6 sm:gap-8 sm:p-8">
         <div className="flex flex-col gap-2">
-          <h3 className="text-xl font-medium tracking-tight text-sand-900 dark:text-cream-50 sm:text-2xl">
+          <h3 className="text-xl font-semibold tracking-tight text-ink-900 sm:text-2xl">
             {title}
           </h3>
-          <p className="text-base leading-relaxed text-sand-700 dark:text-sand-300">{description}</p>
+          <p className="text-base leading-relaxed text-ink-600">{description}</p>
         </div>
         {url && (
           <Button href={url} variant="primary" size="md" className="w-fit">

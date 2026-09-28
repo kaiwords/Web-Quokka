@@ -63,7 +63,7 @@ export default function PortalProjectsPage() {
             </PortalButton>
           </div>
         ) : projects.length === 0 ? (
-          <p className="text-sm text-sand-500">No projects yet — check back once WebQuokka kicks things off. 🐾</p>
+          <p className="text-sm text-sand-500">No projects yet — check back once Web Quokka kicks things off. 🐾</p>
         ) : (
           <div className="grid gap-4 sm:grid-cols-2">
             {projects.map((p) => {

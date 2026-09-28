@@ -6,7 +6,7 @@ import { canAct, usePortalUser } from "@/components/portal/PortalShell";
 import { fetchJson, mutate } from "@/lib/clientApi";
 import { formatDateTime, type Message } from "@/types";
 
-// The business's direct conversation with the WebQuokka team — one running
+// The business's direct conversation with the Web Quokka team — one running
 // thread, not per-ticket. Anything tied to a specific piece of work still
 // belongs on that ticket or change request.
 export default function PortalMessagesPage() {
@@ -74,7 +74,7 @@ export default function PortalMessagesPage() {
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-sand-900">Messages</h1>
           <p className="mt-1 text-sm text-sand-600">
-            A direct line to the WebQuokka team. For a bug or a specific piece of work, a support ticket or change
+            A direct line to the Web Quokka team. For a bug or a specific piece of work, a support ticket or change
             request will get looked after faster.
           </p>
           {loaded && user && !canAct(user) && (
@@ -107,7 +107,7 @@ export default function PortalMessagesPage() {
                     {m.authorType !== "System" && (
                       <p className="text-xs font-semibold text-sand-600 mb-1">
                         {m.authorName}
-                        {m.authorType === "Staff" && " · WebQuokka"}
+                        {m.authorType === "Staff" && " · Web Quokka"}
                       </p>
                     )}
                     <p className="whitespace-pre-wrap">{m.body}</p>

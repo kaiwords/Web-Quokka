@@ -24,3 +24,4 @@ and typecheck without this folder. Review, then remove the folder when ready.
 | `apps/web/src/context/` | Theme toggle context — the site is dark-only |
 | `apps/management/ofs/` | Empty nested folder |
 | `apps/management/src/app/portal/login/` | Replaced by the unified `/login` page; the proxy 308-redirects `/portal/login` there |
+| `apps/management/src/app/favicon.ico` | Default Next.js favicon, superseded by the brand mascot `icon.png` |

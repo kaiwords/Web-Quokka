@@ -89,10 +89,10 @@ export async function POST(req: NextRequest) {
       // moment the response is sent, silently dropping an unawaited send.
       after(() => sendMail({
         to: email,
-        subject: "Someone tried to sign up with your WebQuokka email",
+        subject: "Someone tried to sign up with your Web Quokka email",
         html: `
           <p>Hi ${escapeHtml(existing.name)},</p>
-          <p>Someone just tried to create a WebQuokka client portal account using
+          <p>Someone just tried to create a Web Quokka client portal account using
           this email address, but you already have one.</p>
           <p>If that was you, <a href="${appUrl()}/login">sign in here</a>
           — or <a href="${appUrl()}/portal/forgot-password">reset your password</a>
@@ -153,10 +153,10 @@ export async function POST(req: NextRequest) {
 
     after(() => sendMail({
       to: email,
-      subject: "Confirm your WebQuokka account",
+      subject: "Confirm your Web Quokka account",
       html: `
         <p>Hi ${escapeHtml(name)},</p>
-        <p>Thanks for signing up to the WebQuokka client portal. Confirm your
+        <p>Thanks for signing up to the Web Quokka client portal. Confirm your
         email address to activate your account:</p>
         <p><a href="${appUrl()}/portal/verify-email?token=${token}">Confirm my email address</a></p>
         <p>This link expires in 24 hours. If you didn't sign up, ignore this email.</p>

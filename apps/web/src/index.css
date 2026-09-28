@@ -1,53 +1,85 @@
 @import 'tailwindcss';
 @import './styles/horizon.css' layer(components);
 
-/* Horizon Drift is a dark-only direction — `.dark` is pinned on <html>, and the
-   dark: variant is kept so the existing component classes resolve to it. */
-@custom-variant dark (&:where(.dark, .dark *));
-
 @theme {
-  --font-heading: 'Syne', 'Manrope', system-ui, sans-serif;
-  --font-body: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-heading: 'Gloock', Georgia, serif;
+  --font-body: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
-  /* Bone — the text colour on obsidian (17:1 on ink-900) */
-  --color-cream-50: #f2f0ea;
-  --color-cream-100: #e9e6de;
+  /* Cream — the warm surface scale. 150 is the page ground (a deeper, richer
+     value so cards visibly lift off it), 50/100 are raised cards and glass,
+     200 panel tints, 300/400 borders, 500 the deep-tan chrome (strong
+     borders, inactive dots). */
+  --color-cream-50: #fbf8f2;
+  --color-cream-100: #f7f1e6;
+  --color-cream-150: #ede3cf;
+  --color-cream-200: #efe6d6;
+  --color-cream-300: #e6dccb;
+  --color-cream-400: #d9cdb8;
+  --color-cream-500: #c9b99e;
 
-  /* Ash scale, warm-neutral. Reads as "muted" through to near-text. */
-  --color-sand-100: #1b1b21;
-  --color-sand-200: #c9c6be;
-  --color-sand-300: #a6a39c;
-  --color-sand-400: #8e8b84;
-  --color-sand-500: #76736d;
-  --color-sand-600: #5d5a55;
-  --color-sand-700: #46433f;
-  --color-sand-800: #2f2d2a;
-  --color-sand-900: #f2f0ea;
-  --color-sand-950: #08080a;
+  /* Sand — the warm soft-brown support ramp: light washes and borders low,
+     muted-through-dark brown copy high. */
+  --color-sand-100: #f1eadc;
+  --color-sand-200: #e6dccb;
+  --color-sand-300: #d9cdb8;
+  --color-sand-400: #8a7160;
+  --color-sand-500: #7a6353;
+  --color-sand-600: #6b5646;
+  --color-sand-700: #5a4434;
+  --color-sand-800: #4e3526;
+  --color-sand-900: #422b1c;
+  --color-sand-950: #241608;
 
-  /* Electric lime — the primary accent. Always ink text on a lime fill. */
-  --color-sky-50: #f7ffe0;
-  --color-sky-100: #262b10;
-  --color-sky-200: #3a4218;
-  --color-sky-300: #d4ff3a;
-  --color-sky-400: #d4ff3a;
-  --color-sky-500: #d4ff3a;
-  --color-sky-600: #b8e619;
-  --color-sky-700: #b8e619;
-  --color-sky-800: #1f2410;
-  --color-sky-900: #1f2410;
+  /* Ink — Quokka Brown text and dark-surface scale. 600 is muted copy,
+     900 is the brand brown for headings and primary text. */
+  --color-ink-600: #6b5646;
+  --color-ink-700: #5a4434;
+  --color-ink-800: #4e3526;
+  --color-ink-900: #422b1c;
+  --color-ink-950: #241608;
 
-  /* Signal orange — the secondary accent */
-  --color-flame-400: #ff8a52;
-  --color-flame-500: #ff6b2c;
-  --color-flame-600: #e5551a;
+  /* Forest — the main brand colour. Accent text/links, and full dark
+     sections (footer, CTA bands) with cream text. */
+  --color-forest-50: #e7ede3;
+  --color-forest-500: #3a5a40;
+  --color-forest-600: #33503a;
+  --color-forest-700: #2c4531;
 
-  /* Obsidian surfaces */
-  --color-ink-950: #08080a;
-  --color-ink-900: #0a0a0c;
-  --color-ink-800: #131317;
-  --color-ink-700: #1b1b21;
-  --color-ink-600: #2a2a31;
+  /* Sage — soft decorative panels and illustration only, never text. */
+  --color-sage-200: #dce2d3;
+  --color-sage-500: #8f9d7a;
+
+  /* Sunshine — buttons and highlights, used sparingly. Brown text on it. */
+  --color-sunshine-400: #e8b554;
+  --color-sunshine-500: #e0a232;
+  --color-sunshine-600: #c98b1f;
+
+  /* Supporting accents — seasoning only, never the lead. Coloured TEXT only
+     in the -600 shades (terracotta-600 4.6:1 and lake-600 4.9:1 on the
+     cream-150 page, 5.5+:1 on cards); the -500s are for icons, strips and
+     fills (≈4:1, non-text). The -50 washes sit a step below the raised cards
+     so they stay distinct from the deeper page tone. */
+
+  /* Terracotta — warm earthy accent, distinct from sunshine and from the
+     #9A3412 error tone. */
+  --color-terracotta-50: #f4dfd0;
+  --color-terracotta-500: #bc5b34;
+  --color-terracotta-600: #a34a28;
+
+  /* Lake — a dusty grey-blue, the one cool counterpoint in the warm palette
+     (muted on purpose; not the retired teal or navy). */
+  --color-lake-50: #e3ebeb;
+  --color-lake-500: #587b87;
+  --color-lake-600: #47656f;
+
+  /* Blush — a peachy wash for panels, always with brown text (9.9:1). */
+  --color-blush-100: #f0dccc;
+
+  /* Elevation — the two warm, brown-tinted shadows used everywhere.
+     card = a surface resting above the page ground; raised = hover states,
+     the featured tier and popovers. Never plain black shadows. */
+  --shadow-card: 0 1px 2px rgba(66, 43, 28, 0.07), 0 12px 32px -14px rgba(66, 43, 28, 0.22);
+  --shadow-raised: 0 2px 4px rgba(66, 43, 28, 0.09), 0 24px 56px -20px rgba(66, 43, 28, 0.32);
 
   --animate-float: float 6s ease-in-out infinite;
   --animate-float-slow: float 9s ease-in-out infinite;
@@ -61,8 +93,8 @@
     50% { transform: translateY(-14px); }
   }
   @keyframes pulse-glow {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(212, 255, 58, 0.35); }
-    50% { box-shadow: 0 0 0 10px rgba(212, 255, 58, 0); }
+    0%, 100% { box-shadow: 0 0 0 0 rgba(224, 162, 50, 0.4); }
+    50% { box-shadow: 0 0 0 10px rgba(224, 162, 50, 0); }
   }
   @keyframes breathe {
     0%, 100% { transform: scale(1); }
@@ -81,32 +113,34 @@
 
 @layer base {
   * {
-    @apply border-ink-600;
+    @apply border-cream-400;
   }
 
   html {
-    color-scheme: dark;
-    --popular-card-bg: var(--color-ink-800);
+    color-scheme: light;
+    --popular-card-bg: var(--color-cream-50);
   }
 
   body {
-    @apply bg-ink-900 text-cream-50 font-body antialiased;
+    @apply bg-cream-150 text-ink-900 font-body antialiased;
     /* Anything without an explicit size rides the fluid scale from horizon.css. */
     font-size: var(--fs-base);
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-heading text-cream-50;
+    @apply font-heading text-ink-900;
+    /* Gloock ships in 400 only — never fake-bold the display serif. */
+    font-weight: 400;
   }
 
   :focus-visible {
-    outline: 3px solid var(--color-sky-500);
+    outline: 3px solid var(--color-forest-500);
     outline-offset: 3px;
     border-radius: 8px;
   }
 
   ::selection {
-    @apply bg-sky-500 text-ink-900;
+    @apply bg-forest-500 text-cream-100;
   }
 }
 

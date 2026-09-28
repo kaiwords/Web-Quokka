@@ -19,13 +19,13 @@ export default function Process() {
       <section className="pb-16 pt-12 sm:pb-24 sm:pt-16">
         <Container className="max-w-4xl">
           <Reveal className="mx-auto max-w-2xl text-center">
-            <span className="text-sm font-semibold uppercase tracking-wide text-sky-600 dark:text-sky-300">
+            <span className="text-sm font-semibold uppercase tracking-wide text-lake-600">
               How we work
             </span>
-            <h1 className="mt-3 page-title font-heading font-bold">
+            <h1 className="mt-3 page-title font-heading">
               Idea to launch, step by step
             </h1>
-            <p className="mt-4 text-sand-700 dark:text-sand-300">
+            <p className="mt-4 text-ink-600">
               A clear, collaborative process so you always know what&rsquo;s happening and
               what&rsquo;s next.
             </p>
@@ -36,13 +36,13 @@ export default function Process() {
           </div>
 
           <Reveal className="mt-24 text-center">
-            <span className="text-sm font-semibold uppercase tracking-wide text-sky-600 dark:text-sky-300">
+            <span className="text-sm font-semibold uppercase tracking-wide text-lake-600">
               Our toolkit
             </span>
-            <h2 className="mt-3 page-h2 font-heading font-bold">
+            <h2 className="mt-3 page-h2 font-heading">
               Built with a modern, integrated stack
             </h2>
-            <p className="mx-auto mt-3 max-w-xl text-sand-700 dark:text-sand-300">
+            <p className="mx-auto mt-3 max-w-xl text-ink-600">
               Figma for design, React and Tailwind for the build, Motion for the polish, and
               AI-assisted development to move faster without cutting corners.
             </p>
@@ -54,9 +54,9 @@ export default function Process() {
             </div>
           </Reveal>
 
-          <Reveal className="mt-20 flex flex-col items-center gap-3 rounded-4xl border border-sand-200 bg-sand-100/60 px-8 py-12 text-center dark:border-ink-600 dark:bg-ink-800/50">
-            <h2 className="page-h2 font-heading font-bold">Ready to get started?</h2>
-            <p className="max-w-xl text-sand-700 dark:text-sand-300">
+          <Reveal className="mt-20 flex flex-col items-center gap-3 rounded-4xl bg-forest-700 px-8 py-12 text-center **:focus-visible:outline-sunshine-500">
+            <h2 className="page-h2 font-heading text-cream-100">Ready to get started?</h2>
+            <p className="max-w-xl text-cream-300">
               Book a free discovery call and let&rsquo;s map out step one for your project.
             </p>
             <Button to="/contact" size="lg" className="mt-2">

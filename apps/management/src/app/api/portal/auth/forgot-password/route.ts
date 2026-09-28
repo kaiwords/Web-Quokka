@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
       const resetUrl = `${base}/portal/reset-password?token=${token}`;
       await sendMail({
         to: portalUser.email,
-        subject: "Reset your WebQuokka client portal password",
+        subject: "Reset your Web Quokka client portal password",
         html: `<p>Click the link below to reset your password (expires in 1 hour):</p><p><a href="${resetUrl}">${resetUrl}</a></p>`,
       });
     }

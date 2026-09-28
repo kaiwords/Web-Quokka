@@ -124,7 +124,7 @@ export default function BackgroundLayers() {
           if (d2 > LINK * LINK) continue
           const d = Math.sqrt(d2)
           const alpha = (1 - d / LINK) * 0.16 * Math.min(p.life, q.life)
-          ctx.strokeStyle = `rgba(242,240,234,${alpha.toFixed(3)})`
+          ctx.strokeStyle = `rgba(78,53,38,${alpha.toFixed(3)})`
           ctx.beginPath()
           ctx.moveTo(p.x, p.y)
           ctx.lineTo(q.x, q.y)
@@ -141,7 +141,7 @@ export default function BackgroundLayers() {
           if (d2 > REACH * REACH) continue
           const d = Math.sqrt(d2)
           const alpha = (1 - d / REACH) * 0.5 * p.life
-          ctx.strokeStyle = `rgba(212,255,58,${alpha.toFixed(3)})`
+          ctx.strokeStyle = `rgba(58,90,64,${alpha.toFixed(3)})`
           ctx.beginPath()
           ctx.moveTo(p.x, p.y)
           ctx.lineTo(mouse.x, mouse.y)
@@ -225,9 +225,9 @@ export default function BackgroundLayers() {
 
   return (
     <div className="bg-layers" aria-hidden="true">
-      <div className="bg-glow bg-glow--lime" />
-      <div className="bg-glow bg-glow--orange" />
-      <div className="bg-glow bg-glow--ice" />
+      <div className="bg-glow bg-glow--sun" />
+      <div className="bg-glow bg-glow--sage" />
+      <div className="bg-glow bg-glow--forest" />
       <canvas className="stars" ref={canvasRef} />
       <div className="bg-grain" />
     </div>

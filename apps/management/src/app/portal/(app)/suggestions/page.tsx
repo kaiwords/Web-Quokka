@@ -49,7 +49,7 @@ export default function PortalSuggestionsPage() {
       <div className="space-y-6">
         <div>
           <p className="text-xs uppercase tracking-[0.2em] text-teal-600/80">Suggestions</p>
-          <h1 className="mt-2 text-3xl font-bold tracking-tight text-sand-900">Recommendations from WebQuokka</h1>
+          <h1 className="mt-2 text-3xl font-bold tracking-tight text-sand-900">Recommendations from Web Quokka</h1>
         </div>
 
         {loading ? (

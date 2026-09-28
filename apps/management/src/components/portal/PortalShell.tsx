@@ -118,12 +118,11 @@ export default function PortalShell({ children }: PortalShellProps) {
           className={`${collapsed ? "w-16" : "w-60"} shrink-0 border-r border-sand-200 bg-white transition-all duration-200 hidden sm:flex flex-col`}
         >
           <div className="h-16 flex items-center gap-3 px-4 border-b border-sand-200">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-teal-600 to-coral-500 flex items-center justify-center text-white font-black text-lg shrink-0">
-              W
-            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element -- small static brand asset */}
+            <img src="/brand/mascot-brown.png" alt="Web Quokka" className="w-9 h-9 shrink-0 object-contain" />
             {!collapsed && (
               <div>
-                <p className="font-bold text-sm text-sand-900 leading-tight">WebQuokka</p>
+                <p className="font-bold text-sm text-sand-900 leading-tight">Web Quokka</p>
                 <p className="text-[10px] text-sand-600 leading-tight">Client Portal</p>
               </div>
             )}
@@ -164,7 +163,7 @@ export default function PortalShell({ children }: PortalShellProps) {
         <div className="flex-1 flex flex-col min-w-0">
           {/* TOP BAR */}
           <header className="h-16 border-b border-sand-200 bg-white sticky top-0 z-40 flex items-center justify-between px-4 sm:px-6">
-            <p className="text-sm font-semibold text-sand-800 sm:hidden">WebQuokka</p>
+            <p className="text-sm font-semibold text-sand-800 sm:hidden">Web Quokka</p>
             <div className="hidden sm:block" />
             <div className="relative" ref={menuRef}>
               <button

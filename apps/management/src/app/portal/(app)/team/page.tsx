@@ -200,7 +200,7 @@ export default function TeamPage() {
                 </div>
                 <div className="flex items-center gap-2">
                   <PortalBadge label={m.role} tone="teal" />
-                  {m.status === "Disabled" && <PortalBadge label="Access revoked by WebQuokka" tone="rose" />}
+                  {m.status === "Disabled" && <PortalBadge label="Access revoked by Web Quokka" tone="rose" />}
                   {user && m.id !== user.id && (
                     <button
                       onClick={() => void remove({ id: m.id, type: "member", label: m.name || m.email })}

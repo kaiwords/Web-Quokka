@@ -4,7 +4,6 @@ import { CHAPTERS } from '../../lib/chapters'
 import { NAV_LINKS, PORTAL, SITE } from '../../lib/constants'
 import { cn } from '../../lib/utils'
 import Btn from './Btn'
-import QuokkaMark from './QuokkaMark'
 import { useHorizon } from './HorizonContext'
 
 /**
@@ -84,19 +83,11 @@ export default function HorizonHeader() {
       <header className={cn('site-header', isSolid && 'is-solid')}>
         {onHome ? (
           <a href="#hero" className="logo" data-cursor="Home" aria-label={`${SITE.name} — back to the start`}>
-            <QuokkaMark />
-            <span className="logo-text">
-              <span className="logo-name">{SITE.name}</span>
-              <span className="logo-sub">Studio Design</span>
-            </span>
+            <img src="/brand/wordmark-brown.png" alt="" className="logo-wordmark" />
           </a>
         ) : (
           <Link to="/" className="logo" data-cursor="Home" aria-label={`${SITE.name} — home`}>
-            <QuokkaMark />
-            <span className="logo-text">
-              <span className="logo-name">{SITE.name}</span>
-              <span className="logo-sub">Studio Design</span>
-            </span>
+            <img src="/brand/wordmark-brown.png" alt="" className="logo-wordmark" />
           </Link>
         )}
 
@@ -123,6 +114,7 @@ export default function HorizonHeader() {
           </Btn>
           <Btn
             {...(onHome ? { href: '#contact' } : { to: '/contact' })}
+            variant="forest"
             size="sm"
             cursor="Let's talk"
             icon="→"

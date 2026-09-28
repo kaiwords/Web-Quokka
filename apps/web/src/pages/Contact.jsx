@@ -24,13 +24,13 @@ export default function Contact() {
       <section className="pb-16 pt-12 sm:pb-24 sm:pt-16">
         <Container>
           <Reveal className="mx-auto max-w-2xl text-center">
-            <span className="text-sm font-semibold uppercase tracking-wide text-sky-600 dark:text-sky-300">
+            <span className="text-sm font-semibold uppercase tracking-wide text-forest-600">
               Contact
             </span>
-            <h1 className="mt-3 page-title font-heading font-bold">
+            <h1 className="mt-3 page-title font-heading">
               Let&rsquo;s build something great
             </h1>
-            <p className="mt-4 text-sand-700 dark:text-sand-300">
+            <p className="mt-4 text-ink-600">
               Tell us about your project and we&rsquo;ll get back to you within one business day.
             </p>
           </Reveal>
@@ -43,11 +43,16 @@ export default function Contact() {
                   direction="right"
                   delay={i * 0.08}
                   className={cn(
-                    'flex items-center gap-4 rounded-2xl border border-sand-200 bg-white/80 p-5 dark:border-ink-600 dark:bg-ink-800/80',
+                    'flex items-center gap-4 rounded-2xl border border-cream-400 bg-cream-50/80 p-5 shadow-card',
                     item.href && 'group'
                   )}
                 >
-                  <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-sky-100 text-sky-600 dark:bg-sky-900/30 dark:text-sky-300">
+                  <span
+                    className={cn(
+                      'flex h-12 w-12 shrink-0 items-center justify-center rounded-xl',
+                      ['bg-forest-50 text-forest-600', 'bg-terracotta-50 text-terracotta-600', 'bg-lake-50 text-lake-600'][i % 3],
+                    )}
+                  >
                     <item.icon
                       className={cn(
                         'h-5 w-5',
@@ -57,18 +62,18 @@ export default function Contact() {
                     />
                   </span>
                   <div className="min-w-0">
-                    <p className="text-xs font-semibold uppercase tracking-wide text-sand-500 dark:text-sand-400">
+                    <p className="text-xs font-semibold uppercase tracking-wide text-ink-600">
                       {item.label}
                     </p>
                     {item.href ? (
                       <a
                         href={item.href}
-                        className="wrap-break-word font-medium text-sand-900 hover:text-sky-600 dark:text-cream-50 dark:hover:text-sky-300"
+                        className="wrap-break-word font-semibold text-ink-900 hover:text-forest-600"
                       >
                         {item.value}
                       </a>
                     ) : (
-                      <p className="wrap-break-word font-medium text-sand-900 dark:text-cream-50">{item.value}</p>
+                      <p className="wrap-break-word font-semibold text-ink-900">{item.value}</p>
                     )}
                   </div>
                 </Reveal>
@@ -77,7 +82,7 @@ export default function Contact() {
               <Reveal
                 direction="right"
                 delay={0.24}
-                className="overflow-hidden rounded-2xl border border-sand-200 dark:border-ink-600"
+                className="overflow-hidden rounded-2xl border border-cream-400"
               >
                 <iframe
                   title="WebQuokka location map — Perth, Western Australia"

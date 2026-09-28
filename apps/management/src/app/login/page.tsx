@@ -113,11 +113,10 @@ function LoginPageInner() {
           className="rounded-2xl border border-sand-200 bg-white p-6 shadow-lg shadow-sand-900/5"
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-tr from-teal-600 to-coral-500 rounded-xl flex items-center justify-center text-white font-black text-2xl">
-              W
-            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element -- small static brand asset */}
+            <img src="/brand/mascot-brown.png" alt="Web Quokka" className="w-10 h-10 object-contain" />
             <div>
-              <p className="font-bold text-lg text-sand-900">WebQuokka</p>
+              <p className="font-bold text-lg text-sand-900">Web Quokka</p>
               <p className="text-xs text-sand-600">
                 {tab === "client" ? "Client Portal — sign in" : "Staff CRM — sign in"}
               </p>
@@ -245,7 +244,7 @@ function LoginPageInner() {
                 </Link>
               </p>
               <p className="mt-3 border-t border-sand-200 pt-3 text-center text-xs text-sand-600">
-                New to WebQuokka?{" "}
+                New to Web Quokka?{" "}
                 <Link href="/portal/signup" className="font-medium text-teal-700 hover:underline">
                   Create an account
                 </Link>

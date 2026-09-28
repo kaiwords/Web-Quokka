@@ -1,11 +1,11 @@
 import { motion } from 'motion/react'
 import { cn } from '../../lib/utils'
 
-export default function Badge({ className, children, tone = 'sky', pop = true }) {
+export default function Badge({ className, children, tone = 'sunshine', pop = true }) {
   const tones = {
-    sky: 'bg-sky-500 text-ink-900',
-    brown: 'bg-flame-500 text-ink-900',
-    sand: 'bg-ink-700 text-sand-200 ring-1 ring-ink-600',
+    sunshine: 'bg-sunshine-500 text-ink-900',
+    forest: 'bg-forest-500 text-cream-100',
+    sand: 'bg-cream-200 text-ink-900 ring-1 ring-cream-400',
   }
 
   const classes = cn(

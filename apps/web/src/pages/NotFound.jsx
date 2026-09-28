@@ -17,10 +17,10 @@ export default function NotFound() {
           >
             <QuokkaMascot className="animate-float" size="clamp(3.75rem, 3rem + 4vw, 5.5rem)" />
           </motion.div>
-          <h1 className="mt-6 page-title font-heading font-extrabold text-cream-50">
+          <h1 className="mt-6 page-title font-heading text-ink-900">
             404
           </h1>
-          <p className="mt-2 text-lg text-sand-700 dark:text-sand-300">
+          <p className="mt-2 text-lg text-ink-600">
             Looks like this page hopped off somewhere else.
           </p>
           <Button to="/" size="lg" className="mt-8">
