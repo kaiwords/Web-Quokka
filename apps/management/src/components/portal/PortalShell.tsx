@@ -8,6 +8,7 @@ import ConfirmHost from "../ui/ConfirmDialog";
 
 const NAV_ITEMS = [
   { href: "/portal/dashboard", label: "Dashboard", icon: "\u{1F3E0}" },
+  { href: "/portal/messages", label: "Messages", icon: "\u{1F4AC}" },
   { href: "/portal/projects", label: "Projects", icon: "\u{1F4C8}" },
   { href: "/portal/tickets", label: "Support Tickets", icon: "\u{1F3AB}" },
   { href: "/portal/change-requests", label: "Change Requests", icon: "\u{1F4DD}" },

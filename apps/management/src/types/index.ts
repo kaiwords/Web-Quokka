@@ -325,7 +325,9 @@ export type ChangeRequestStatus =
   | "Completed";
 export type PortalTicketStatus = "Open" | "InProgress" | "WaitingOnClient" | "Resolved" | "Closed";
 export type PortalTicketCategory = "Bug" | "ContentUpdate" | "TechnicalQuestion" | "Billing" | "Other";
-export type MessageThreadType = "Ticket" | "ChangeRequest" | "Suggestion";
+// "Client" is the direct staff <-> client conversation: threadId is the
+// clientId itself, not a per-thread record — one running thread per business.
+export type MessageThreadType = "Ticket" | "ChangeRequest" | "Suggestion" | "Client";
 export type MessageAuthorType = "Staff" | "Portal" | "System";
 
 export interface PortalUser {
@@ -672,6 +674,7 @@ export type NotificationType =
   | "TaskAssigned"
   | "TicketAssigned"
   | "TicketReply"
+  | "ClientMessage"
   | "SuggestionStatus"
   | "ChangeRequestSubmitted"
   | "ChangeRequestStatus"
@@ -695,6 +698,7 @@ export const NOTIFICATION_ICON: Record<NotificationType, string> = {
   TaskAssigned: "\u2705",
   TicketAssigned: "\uD83C\uDFAB",
   TicketReply: "\uD83D\uDCAC",
+  ClientMessage: "\uD83D\uDCAC",
   SuggestionStatus: "\uD83D\uDCA1",
   ChangeRequestSubmitted: "\uD83D\uDCDD",
   ChangeRequestStatus: "\uD83D\uDCDD",

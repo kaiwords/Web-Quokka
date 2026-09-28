@@ -11,6 +11,7 @@ import { useCurrentUser } from "@/components/layout/Shell";
 import { fetchJson, mutate, mutateForm } from "@/lib/clientApi";
 import NewSuggestionForm from "@/components/NewSuggestionForm";
 import PortalAccessPanel from "@/components/PortalAccessPanel";
+import ClientMessagesPanel from "@/components/ClientMessagesPanel";
 import Link from "next/link";
 import AssigneeSelect from "@/components/ui/AssigneeSelect";
 import {
@@ -1016,6 +1017,13 @@ export default function ClientDetailPage() {
           <h2 className="text-lg font-semibold text-white">Portal Access</h2>
           <p className="mb-4 mt-1 text-xs text-slate-500">Business contacts who can log in to this client&apos;s portal.</p>
           <PortalAccessPanel clientId={Number(params.id)} isAdmin={isAdmin} />
+        </div>
+
+        {/* Messages — the anchor is what ClientMessage notifications link to */}
+        <div id="messages" className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5">
+          <h2 className="text-lg font-semibold text-white">Messages</h2>
+          <p className="mb-4 mt-1 text-xs text-slate-500">Direct conversation with this client&apos;s portal members.</p>
+          <ClientMessagesPanel clientId={Number(params.id)} isAdmin={isAdmin} />
         </div>
 
         {/* Notes */}
