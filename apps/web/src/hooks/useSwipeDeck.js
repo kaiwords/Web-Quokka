@@ -1,22 +1,16 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { clamp, cursorState, prefersReducedMotion, wideEnoughQuery } from '../lib/horizon'
+import { clamp, cursorState, prefersReducedMotion } from '../lib/horizon'
 
 /** Children that own their own pointer gestures, so a drag must not start on them. */
 const NO_DRAG = 'a, button, input, select, textarea, label, [data-no-drag]'
 
 /**
- * True when the rail is not carrying this row sideways itself, so the row has to
- * carry itself.
- *
- * The `is-h` class the rail owns is the authority. Child effects run before the
- * rail's, though, so on the very first paint it has not been written yet — hence
- * the same test the rail makes as the fallback, which keeps a desktop from
- * flashing the swipe controls for a frame.
+ * The horizontal rail is retired — every card row is a swipe deck at every
+ * width now, so this is a constant. It stays a function so the state wiring
+ * below reads the same as it always has.
  */
 function wantsDeck() {
-  if (typeof document === 'undefined') return false
-  if (document.documentElement.classList.contains('is-h')) return false
-  return !wideEnoughQuery().matches || prefersReducedMotion()
+  return typeof document !== 'undefined'
 }
 
 /** Distance from the deck's start padding edge to card `i` — its snap position. */
@@ -69,18 +63,10 @@ function nearestIndex(deck) {
  * @returns {{ swipe: boolean, index: number, count: number, goTo: Function }}
  */
 export default function useSwipeDeck(deckRef, { fillsTimeline = false } = {}) {
-  const [swipe, setSwipe] = useState(wantsDeck)
+  const [swipe] = useState(wantsDeck)
   const [index, setIndex] = useState(0)
   const [count, setCount] = useState(0)
   const drag = useRef({ down: false, moved: false, startX: 0, startLeft: 0 })
-
-  useEffect(() => {
-    const read = () => setSwipe(wantsDeck())
-    read()
-    const mo = new MutationObserver(read)
-    mo.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
-    return () => mo.disconnect()
-  }, [])
 
   const goTo = useCallback(
     (i) => {

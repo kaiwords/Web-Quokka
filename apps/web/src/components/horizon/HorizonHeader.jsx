@@ -1,18 +1,14 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink, useLocation } from 'react-router-dom'
-import { CHAPTERS } from '../../lib/chapters'
 import { NAV_LINKS, PORTAL, SITE } from '../../lib/constants'
 import { cn } from '../../lib/utils'
 import Btn from './Btn'
-import { useHorizon } from './HorizonContext'
 
 /**
  * Fixed header that stays transparent until you start moving, plus the
- * full-screen menu. On the home route it also shows which chapter of the
- * horizontal journey you're currently in.
+ * full-screen menu.
  */
 export default function HorizonHeader() {
-  const { solid, index } = useHorizon()
   const location = useLocation()
   const onHome = location.pathname === '/'
 
@@ -20,28 +16,24 @@ export default function HorizonHeader() {
   const [scrolled, setScrolled] = useState(false)
   const menuBtnRef = useRef(null)
   const menuRef = useRef(null)
-  const chapter = CHAPTERS[index] || CHAPTERS[0]
 
   const closeMenu = () => setMenuOpen(false)
 
-  // The rail reports travel on the home route; the inner routes are ordinary
-  // vertical pages, so the header watches the page scroll itself. Without this
-  // it would stay transparent and the content would run straight through it.
+  // Every route is an ordinary vertical page now, so the header watches the
+  // page scroll itself. Without this it would stay transparent and the
+  // content would run straight through it.
   useEffect(() => {
-    if (onHome) return undefined
     const onScroll = () => setScrolled(window.scrollY > 16)
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
-  }, [onHome])
+  }, [])
 
-  const isSolid = onHome ? solid : scrolled
+  const isSolid = scrolled
 
-  // The rail listens for this so the wheel and arrow keys stop steering while
-  // the menu is up. The menu itself stays mounted and fades via `.is-open`, so
-  // opening it needs no second render.
+  // The menu stays mounted and fades via `.is-open`, so opening it needs no
+  // second render.
   useEffect(() => {
-    window.dispatchEvent(new CustomEvent('horizon:menu', { detail: menuOpen }))
     document.body.classList.toggle('menu-open', menuOpen)
     if (!menuOpen) return undefined
     const focusTimer = setTimeout(() => {
@@ -89,16 +81,6 @@ export default function HorizonHeader() {
           <Link to="/" className="logo" data-cursor="Home" aria-label={`${SITE.name} — home`}>
             <img src="/brand/wordmark-brown.png" alt="" className="logo-wordmark" />
           </Link>
-        )}
-
-        {onHome && (
-          <p className="chapter-now" aria-hidden="true">
-            <span className="chapter-num">{String(index + 1).padStart(2, '0')}</span>
-            <span className="chapter-sep" />
-            <span className="chapter-name is-swap" key={chapter.id}>
-              {chapter.label}
-            </span>
-          </p>
         )}
 
         <div className="header-actions">

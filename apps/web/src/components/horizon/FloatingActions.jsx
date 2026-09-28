@@ -1,46 +1,53 @@
 import { useEffect, useState } from 'react'
 import { useLocation } from 'react-router-dom'
-import { CHAPTERS } from '../../lib/chapters'
 import { cn } from '../../lib/utils'
+import { scrollToTop } from '../../lib/scroll'
 import ChatWidget from './ChatWidget'
-import { useHorizon } from './HorizonContext'
 
 /**
- * Floating actions: a rewind button that appears once you've travelled — its
- * arrow points back along the journey (left on the horizontal rail, up on
- * vertical pages) — and the chat widget's launcher, which steps aside when
- * you reach the contact chapter.
+ * Floating actions: a rewind button that appears once you've scrolled away —
+ * every page is a vertical journey now, so its arrow always points up — and
+ * the chat widget's launcher, which steps aside while the home page's
+ * contact section is on screen (the form is right there).
  */
 export default function FloatingActions() {
-  const { away, index, horizontal } = useHorizon()
   const location = useLocation()
   const onHome = location.pathname === '/'
   const [scrolled, setScrolled] = useState(false)
+  const [atContact, setAtContact] = useState(false)
 
-  // Off the home route there is no rail to report progress, so watch the page.
   useEffect(() => {
-    if (onHome) return undefined
     const onScroll = () => setScrolled(window.scrollY > window.innerHeight * 0.5)
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
-  }, [onHome])
+  }, [])
 
-  const isAway = onHome ? away : scrolled
-  const atContact = onHome && index === CHAPTERS.length - 1
-  const rewind = () => window.scrollTo({ top: 0, behavior: horizontal ? 'auto' : 'smooth' })
+  // On home, hide the chat launcher while the contact chapter is in view
+  // (the render gate below also ignores any stale value off-home).
+  useEffect(() => {
+    if (!onHome || !('IntersectionObserver' in window)) return undefined
+    const target = document.getElementById('contact')
+    if (!target) return undefined
+    const io = new IntersectionObserver(
+      ([entry]) => setAtContact(entry.isIntersecting),
+      { threshold: 0.25 },
+    )
+    io.observe(target)
+    return () => io.disconnect()
+  }, [onHome, location.pathname])
 
   return (
-    <div className={cn('fab', isAway && 'is-away', atContact && 'is-hidden')}>
+    <div className={cn('fab', scrolled && 'is-away', onHome && atContact && 'is-hidden')}>
       <button
         className="fab-btn fab-btn--top"
         type="button"
-        aria-label="Back to the start"
+        aria-label="Back to the top"
         data-magnetic
-        data-cursor="Rewind"
-        onClick={rewind}
+        data-cursor="Top"
+        onClick={scrollToTop}
       >
-        <span aria-hidden="true">{onHome && horizontal ? '←' : '↑'}</span>
+        <span aria-hidden="true">↑</span>
       </button>
       <ChatWidget />
     </div>
