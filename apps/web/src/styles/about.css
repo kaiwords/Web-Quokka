@@ -1,0 +1,68 @@
+/* ============================================================
+   ABOUT — page-specific flourish styles (Branch2 animation pass).
+
+   Composes the shared tokens from horizon.css / index.css only:
+   terracotta eyebrow identity, blush values band, elevation via
+   --shadow-card / --shadow-raised. No animation primitives are
+   redefined here — the fold/pin/reveal system lives in horizon.css
+   and lib/animation.js (see ANIMATIONS.md).
+   ============================================================ */
+
+/* The promoted "stack" hero: generous height so its pin starts below the
+   fold instead of mid-exit on load, content centred, and the page's faint
+   terracotta wash over the opaque page ground that stack mode requires. */
+.about-hero {
+  min-height: 72svh;
+  display: grid;
+  align-content: center;
+  background:
+    radial-gradient(70% 90% at 78% 16%, rgba(188, 91, 52, .06), transparent 70%),
+    var(--bg);
+}
+
+/* The story is the section that slides over the pinned hero, so it must be
+   opaque — and it needs its own stacking context: while pinned, the hero is
+   position: fixed, and a static sibling would paint underneath it. */
+.about-story {
+  position: relative;
+  z-index: 2;
+  background: var(--bg);
+}
+
+/* Value-card icon delight: replaces the old JS hover with a token-eased CSS
+   transition, so it costs nothing and dies with prefers-reduced-motion. The
+   icon bubble is not a reveal target, so this transition clashes with none. */
+.value-icon {
+  transition: transform .5s var(--ease-spring);
+}
+.value-card:hover .value-icon,
+.value-card:focus-within .value-icon {
+  transform: scale(1.12) rotate(-6deg);
+}
+
+/* The real-footage slot: invisible while <QuokkaMedia> has no src (it renders
+   nothing), and a full-width parallax frame the moment media lands. */
+.about-media {
+  width: 100%;
+}
+.about-media:empty {
+  display: none;
+}
+.about-media:not(:empty) {
+  margin-top: 2rem;
+}
+
+/* The values-band quokka peeks around the top edge of the blush section,
+   clear of the centred heading at every width (pointer-events: none comes
+   from .quokka-spot in horizon.css §21). */
+.quokka-spot--values {
+  top: -34px;
+  right: clamp(.75rem, 6vw, 4rem);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .value-card:hover .value-icon,
+  .value-card:focus-within .value-icon {
+    transform: none;
+  }
+}

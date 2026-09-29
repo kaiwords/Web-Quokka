@@ -1,0 +1,64 @@
+/* ============================================================
+   SERVICES — page flourishes. Imported by pages/Services.jsx only.
+
+   Terracotta is this page's accent (per the differentiation pass).
+   All motion lives in the shared Branch2 primitives (ANIMATIONS.md);
+   these are static styles: positioning for the quokka spots, the
+   chapter wash, and the decorative echo heading. Colours come from
+   the Brand v2 tokens in index.css / horizon.css.
+   ============================================================ */
+
+/* 01 · Hero — default fold treatment (the site's one "stack" pin lives
+   on About, per the Phase-3 ruling), centred with generous height so the
+   fold exit starts below view on load. */
+.svc-hero {
+  display: grid;
+  align-content: center;
+  min-height: min(58svh, 620px);
+  padding: clamp(2rem, 1rem + 3vw, 4rem) 0 clamp(2.5rem, 1.5rem + 3vw, 4rem);
+}
+
+/* 02 · Catalog — solid deep-cream ground first, then the services
+   chapter's terracotta wash mixed on top (kept opaque so the fold of
+   the hero above never ghosts through the card grid). */
+.svc-catalog {
+  position: relative;
+  z-index: 2;
+  padding: clamp(3rem, 2.25rem + 3vw, 5rem) 0 clamp(5rem, 4rem + 4vw, 7rem);
+  background: var(--bg);
+  background:
+    radial-gradient(70% 90% at 75% 12%, color-mix(in srgb, var(--terracotta) 7%, transparent), transparent 70%),
+    var(--bg);
+}
+
+/* Decorative echo of the page eyebrow — a giant outline in the page
+   accent, drifting on data-parallax. Never body copy, never focusable. */
+.svc-echo {
+  margin-bottom: clamp(1rem, .5rem + 2vw, 1.75rem);
+  -webkit-text-stroke-color: color-mix(in srgb, var(--terracotta) 42%, transparent);
+  opacity: .7;
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Quokka peeking in from the catalog's LEFT edge (Home peeks right, so
+   this page mirrors it). It lives on the lane the section's bottom
+   padding keeps clear — below the deck and its swipe dots. */
+.svc-spot--peek {
+  left: clamp(.5rem, 3vw, 3rem);
+  right: auto;
+  bottom: -4px;
+}
+
+/* 03 · CTA band. (Its perched quokka was retired in the Phase-3 rhythm
+   pass — the perch-on-panel trick is FAQ's; Services keeps one quokka,
+   the catalog peek.) */
+.svc-cta-band { position: relative; }
+
+/* Phone widths: a smaller quokka so the spot never crowds the content
+   column or the swipe dots. (The inline width from the component is a
+   default; the page spot deliberately overrides it.) */
+@media (max-width: 480px) {
+  .svc-spot--peek svg { width: 76px !important; }
+}

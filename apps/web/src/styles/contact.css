@@ -1,0 +1,33 @@
+/* ============================================================
+   CONTACT — page-specific flourish styles (Branch2 animation pass).
+
+   Forest is this page's accent identity (with the forest / terracotta /
+   lake info tiles from the differentiation pass). Everything composes
+   tokens from horizon.css / index.css; the fold/reveal/parallax
+   primitives live in the shared system (see ANIMATIONS.md).
+   ============================================================ */
+
+/* Hero: centred copy over a faint forest wash, tall enough that the fold
+   exit starts below view on load. The extra bottom padding is the reserved
+   band the scrubbed quokka hop crosses — no copy ever sits in its path. */
+.contact-hero {
+  min-height: 62svh;
+  display: grid;
+  align-content: center;
+  padding-bottom: clamp(6.5rem, 5rem + 5vw, 8.5rem);
+  background: radial-gradient(70% 90% at 50% 12%, rgba(58, 90, 64, .07), transparent 70%);
+}
+
+/* The hop quokka's anchor inside the hero's reserved band — it starts on
+   the RIGHT and hops left (side="right"), mirroring Process's left-to-right
+   hopper (pointer-events: none comes from .quokka-spot in horizon.css §21). */
+.quokka-spot--contact {
+  bottom: 12px;
+  right: clamp(1rem, 12vw, 10rem);
+}
+
+/* The enquiry page keeps a whisper of the same forest wash behind the
+   tiles and the form card — 6% alpha so cream stays the page. */
+.contact-body {
+  background: radial-gradient(70% 80% at 22% 18%, rgba(58, 90, 64, .06), transparent 70%);
+}

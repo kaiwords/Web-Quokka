@@ -56,9 +56,13 @@ reference implementation for everything on this page.
 - Props: `as` (tag, default `section`), `mode`:
   - `"fold"` (default) — no pinning; sections may stay transparent over the
     fixed constellation. Use this everywhere unless told otherwise.
-  - `"stack"` — pins while the next section slides over it. Use for AT MOST
-    1–2 hero moments per page; the section that covers a pinned one needs an
-    opaque background (`.page-turn--stack` supplies one).
+  - `"stack"` — pins while the next section slides over it. Site-wide ruling:
+    ONE stack hero exists (About); treat any further promotion as a
+    coordinator decision. The section that COVERS a pinned one needs an
+    opaque background AND its own stacking context
+    (`position: relative; z-index: 2`) — while pinned, the hero is
+    `position: fixed` and paints over static siblings without it.
+    `.page-turn--stack` supplies the pinned section's own opaque ground.
 - Reduced motion: plain static section.
 - The shadow overlay is `.page-turn::after` driven by `--pt-shade` — don't
   repurpose that variable.
