@@ -5,6 +5,7 @@ import CustomCursor from './components/horizon/CustomCursor'
 import FloatingActions from './components/horizon/FloatingActions'
 import HorizonFooter from './components/horizon/HorizonFooter'
 import HorizonHeader from './components/horizon/HorizonHeader'
+import ScrollProgress from './components/layout/ScrollProgress'
 import ScrollToTop from './components/layout/ScrollToTop'
 import SmoothScroll from './components/layout/SmoothScroll'
 import useHorizonInteractions from './hooks/useHorizonInteractions'
@@ -20,15 +21,14 @@ const Contact = lazy(() => import('./pages/Contact'))
 const NotFound = lazy(() => import('./pages/NotFound'))
 
 /**
- * The inner routes are ordinary vertical pages. The home route brings its own
- * `<main class="rail">` and ends on a footer panel inside the journey, so it
- * sits outside this layout. The home rail eases its own travel, so Lenis only
- * runs here, on the vertical pages.
+ * Every route is an ordinary vertical page. The home route still sits outside
+ * this layout because it ends on its own footer panel inside the journey;
+ * Lenis and the scroll progress line are mounted once at the app root so they
+ * cover home and inner pages alike.
  */
 function PageLayout() {
   return (
     <>
-      <SmoothScroll />
       <main id="main" className="page-main" tabIndex={-1}>
         <Outlet />
       </main>
@@ -50,6 +50,8 @@ export default function App() {
       <BackgroundLayers />
       <CustomCursor />
       <ScrollToTop />
+      <SmoothScroll />
+      <ScrollProgress />
 
       <Routes>
         <Route

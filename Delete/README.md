@@ -25,3 +25,7 @@ and typecheck without this folder. Review, then remove the folder when ready.
 | `apps/management/ofs/` | Empty nested folder |
 | `apps/management/src/app/portal/login/` | Replaced by the unified `/login` page; the proxy 308-redirects `/portal/login` there |
 | `apps/management/src/app/favicon.ico` | Default Next.js favicon, superseded by the brand mascot `icon.png` |
+| `apps/web/src/hooks/useRail.js` | The horizontal-rail scroll engine — Branch2 made the home page a traditional vertical page (GSAP ScrollTrigger drives the animation now) |
+| `apps/web/src/components/horizon/HorizonContext.jsx` | Chrome context the rail engine fed (chapter index, solid header, fill ref) — header and floating actions now watch the page scroll themselves |
+| `apps/web/src/components/horizon/ChapterProgress.jsx` | The rail's bottom chapter-dot bar — replaced by the slim `components/layout/ScrollProgress.jsx` scroll indicator |
+| `apps/web/src/components/ui/Reveal.jsx` | motion/react reveal wrapper — orphaned once the Branch2 pages moved to the shared `data-reveal` / `sectionIntro` primitives |

@@ -18,18 +18,8 @@ export function hasFinePointer() {
 }
 
 /**
- * The rail only pins sideways where there is room for it — and where motion is
- * welcome. A pinned panel cannot scroll, so the window has to be tall enough to
- * hold the tallest one (the contact form) with the header and chapter bar on
- * top; below that the vertical page is the better read.
- */
-export function wideEnoughQuery() {
-  return window.matchMedia('(min-width: 1000px) and (min-height: 680px)')
-}
-
-/**
- * The constellation canvas registers itself here so the rail engine can push
- * scroll velocity into it without either one importing the other.
+ * The constellation canvas registers itself here so scroll effects can push
+ * velocity into it without either one importing the other.
  */
 export const starField = {
   push() {},

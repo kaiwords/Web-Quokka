@@ -1,31 +1,40 @@
 import Lenis from 'lenis'
 import { useEffect } from 'react'
-import { prefersReducedMotion } from '../../lib/horizon'
+import { gsap, ScrollTrigger, motionOK } from '../../lib/animation'
+import { starField } from '../../lib/horizon'
+import { registerLenis, scrollOffset } from '../../lib/scroll'
 
 /**
- * Lenis-powered inertia scrolling for the vertical inner pages. Mounted by the
- * page layout only — the home rail does its own eased travel, and running both
- * would smooth the same scroll twice.
+ * Site-wide Lenis inertia scrolling — mounted once at the app root (the home
+ * rail that used to ease its own travel is gone). Tuned deliberately slow and
+ * heavy so the page-turn choreography has room to read.
  *
- * Renders nothing; it hooks the window scroll while mounted and hands it back
- * untouched on unmount. Reduced motion opts out entirely.
+ * It also keeps GSAP's ScrollTrigger in sync: Lenis reports scroll, GSAP's
+ * ticker drives Lenis, so pinned/scrubbed scenes and the smoothing never
+ * disagree about where the page is.
+ *
+ * Reduced motion mounts nothing — native scrolling, native anchor jumps
+ * (html's scroll-padding-top keeps targets clear of the header).
  */
 export default function SmoothScroll() {
   useEffect(() => {
-    if (prefersReducedMotion()) return undefined
+    if (!motionOK()) return undefined
 
     const lenis = new Lenis({
-      duration: 1.1,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      lerp: 0.06,
+      wheelMultiplier: 0.85,
       smoothWheel: true,
     })
+    registerLenis(lenis)
 
-    let frame
-    const raf = (time) => {
-      lenis.raf(time)
-      frame = requestAnimationFrame(raf)
-    }
-    frame = requestAnimationFrame(raf)
+    lenis.on('scroll', (e) => {
+      ScrollTrigger.update()
+      // The constellation streams past with the scroll velocity.
+      starField.push(0, e.velocity || 0)
+    })
+    const tick = (time) => lenis.raf(time * 1000)
+    gsap.ticker.add(tick)
+    gsap.ticker.lagSmoothing(0)
 
     // In-page anchors ride the same easing instead of jumping.
     const onClick = (e) => {
@@ -34,13 +43,22 @@ export default function SmoothScroll() {
       const target = document.getElementById(a.getAttribute('href').slice(1))
       if (!target) return
       e.preventDefault()
-      lenis.scrollTo(target, { offset: -96 })
+      lenis.scrollTo(target, { offset: -scrollOffset() })
     }
     document.addEventListener('click', onClick)
 
+    // A deep link (/#pricing) should land on its section once layout settles.
+    if (window.location.hash) {
+      const deep = document.getElementById(window.location.hash.slice(1))
+      if (deep) {
+        requestAnimationFrame(() => lenis.scrollTo(deep, { offset: -scrollOffset(), immediate: true }))
+      }
+    }
+
     return () => {
       document.removeEventListener('click', onClick)
-      cancelAnimationFrame(frame)
+      gsap.ticker.remove(tick)
+      registerLenis(null)
       lenis.destroy()
     }
   }, [])

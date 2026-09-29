@@ -1,0 +1,75 @@
+/* ============================================================
+   FAQ — page-specific flourish styles (Branch2 animation pass).
+
+   Lake is this page's accent identity. Everything composes tokens
+   from horizon.css / index.css; the fold/reveal/parallax primitives
+   themselves live in the shared system (see ANIMATIONS.md).
+   ============================================================ */
+
+/* Hero: tall enough that the fold exit starts below view on load, with the
+   giant question mark drifting behind the centred copy. */
+.faq-hero {
+  position: relative;
+  overflow: hidden;
+  min-height: 62svh;
+  display: grid;
+  align-content: center;
+}
+
+/* Giant display ornament — decorative only (aria-hidden), lake-stroked like
+   the home page's outline giants, driven by data-parallax. Faint enough that
+   the brown-on-cream copy in front keeps its contrast. */
+.faq-giant {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: clamp(13rem, 8rem + 34vw, 30rem);
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(88, 123, 135, .28);
+  pointer-events: none;
+}
+
+/* Scrubbed answer tally — a lake chip whose number counts up on scroll
+   (data-count-to). Lake-2 on lake-pale keeps a 5+:1 pair even though the
+   chip is decorative. */
+.faq-count {
+  display: inline-flex;
+  align-items: baseline;
+  gap: .4rem;
+  margin-top: 1.75rem;
+  padding: .5rem 1.1rem;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--line-strong);
+  background: var(--lake-pale);
+  color: var(--lake-2);
+  box-shadow: var(--shadow-card);
+}
+.faq-count [data-count-to] {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
+  line-height: 1;
+}
+.faq-count small {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+/* The accordion page carries the lake wash — same 6-10% alpha recipe as the
+   home chapters, so the cream ground stays the page. */
+.faq-list {
+  background: radial-gradient(70% 90% at 50% 15%, rgba(88, 123, 135, .08), transparent 72%);
+}
+
+/* The sitting quokka perches on the CTA card's top edge (the card is the
+   positioning context; pointer-events: none via .quokka-spot). The section's
+   generous top padding reserves its headroom at every width. */
+.quokka-spot--cta {
+  top: -86px;
+  right: clamp(1.25rem, 8vw, 4.5rem);
+}

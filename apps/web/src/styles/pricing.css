@@ -1,0 +1,93 @@
+/* ============================================================
+   PRICING — page flourishes. Imported by pages/Pricing.jsx only.
+
+   Forest is this page's accent (per the differentiation pass). All
+   motion lives in the shared Branch2 primitives (ANIMATIONS.md); these
+   are static styles: the at-a-glance strip, chapter washes, the echo
+   heading and the sitting quokka's flow slot. Colours come from the
+   Brand v2 tokens in index.css / horizon.css.
+   ============================================================ */
+
+/* At-a-glance strip in the hero: the four project packages, straight
+   from lib/constants — names and starting prices only, nothing new.
+   The amounts scrub-count via [data-count-to]; the chips reuse the
+   raised-card surface language (cream card, warm shadow). The strip is
+   aria-hidden: it is a visual echo of the package cards below. */
+.pr-glance {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(.5rem, .4rem + .5vw, .8rem);
+  margin: 1.9rem auto 0;
+  padding: 0;
+  list-style: none;
+  max-width: 46rem;
+}
+.pr-glance li {
+  display: grid;
+  gap: .15rem;
+  justify-items: center;
+  padding: .6rem 1.1rem;
+  border-radius: var(--r-md);
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-card);
+}
+.pr-glance-name {
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--forest-2);
+}
+.pr-glance-price {
+  display: flex;
+  align-items: baseline;
+  gap: .35rem;
+}
+.pr-glance-price small {
+  font-size: var(--fs-xs);
+  color: var(--muted);
+}
+.pr-glance-num {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.05rem, 1rem + .4vw, 1.4rem);
+  line-height: 1.1;
+  color: var(--text);
+}
+
+/* Chapter washes — forest for the packages, sage for the maintenance
+   plans; both sit under 10% alpha so the cream ground stays the page. */
+.pr-packages {
+  background: radial-gradient(70% 90% at 25% 15%, color-mix(in srgb, var(--forest) 6%, transparent), transparent 70%);
+}
+.pr-maintenance {
+  background: radial-gradient(70% 90% at 80% 70%, color-mix(in srgb, var(--sage) 9%, transparent), transparent 70%);
+}
+
+/* Decorative echo of the page eyebrow — giant forest outline drifting
+   on data-parallax above the package cards. */
+.pr-echo {
+  text-align: center;
+  margin-bottom: clamp(1rem, .5rem + 1.5vw, 1.5rem);
+  -webkit-text-stroke-color: color-mix(in srgb, var(--forest) 45%, transparent);
+  opacity: .65;
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Closing note: the sitting quokka idles in flow above the fine print,
+   next to the maintenance cards' CTAs — no overlap, no absolute maths. */
+.pr-note {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .5rem;
+}
+.pr-note-quokka {
+  display: block;
+  line-height: 0;
+  pointer-events: none;
+}

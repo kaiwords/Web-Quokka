@@ -1,0 +1,48 @@
+/* ============================================================
+   PROCESS — page flourishes. Imported by pages/Process.jsx only.
+
+   Lake is this page's accent (per the differentiation pass). All
+   motion lives in the shared Branch2 primitives (ANIMATIONS.md); these
+   are static styles: the timeline band's quokka lane, chapter washes
+   and the echo heading. Colours come from the Brand v2 tokens in
+   index.css / horizon.css.
+   ============================================================ */
+
+/* Timeline band — extra top padding is the lane the hop quokka scrubs
+   across (over the echo heading, well clear of the first step title). */
+.proc-band {
+  padding-top: clamp(3.5rem, 3rem + 2vw, 5rem);
+  padding-bottom: clamp(2.5rem, 2rem + 2vw, 3.5rem);
+  background: radial-gradient(70% 90% at 70% 15%, color-mix(in srgb, var(--lake) 7%, transparent), transparent 70%);
+}
+
+/* Decorative echo of the page's nav label — giant lake outline drifting
+   on data-parallax above the timeline. */
+.proc-echo {
+  margin-bottom: clamp(1.75rem, 1rem + 3vw, 3rem);
+  -webkit-text-stroke-color: color-mix(in srgb, var(--lake) 48%, transparent);
+  opacity: .65;
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* The hop quokka starts near the band's left edge and hops away from it
+   (side="left") as the scroll scrubs — mirroring Home, which hops from
+   the right. */
+.proc-spot--hop {
+  left: 6%;
+  right: auto;
+  top: clamp(.2rem, .1rem + 1vw, 1rem);
+}
+
+/* Toolkit chapter keeps a whisper of sage under the integration card so
+   the showcase frame reads as its own plate. */
+.proc-toolkit {
+  background: radial-gradient(60% 80% at 30% 60%, color-mix(in srgb, var(--sage) 7%, transparent), transparent 70%);
+}
+
+/* Phone widths: a smaller hopper so the band's lane stays generous. */
+@media (max-width: 480px) {
+  .proc-spot--hop svg { width: 64px !important; }
+}

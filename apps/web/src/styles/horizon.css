@@ -1,10 +1,10 @@
 /* ============================================================
    WEB QUOKKA — "Horizon Drift"
 
-   Warm cream daylight — Brand Guidelines v2. The home
-   route is a single horizontal journey: vertical scroll drives a
-   pinned track sideways. Small screens, short windows and reduced
-   motion fall back to a normal vertical page (html without .is-h).
+   Warm cream daylight — Brand Guidelines v2. Every route is a vertical
+   journey now: Lenis slows the scroll, GSAP ScrollTrigger turns the
+   chapters like the pages of a book (see lib/animation.js and
+   ANIMATIONS.md), and the swipe decks carry the card rows sideways.
 
    COLOUR PALETTE
      --bg      #EDE3CF  deep cream (page ground; raised surfaces stay lighter)
@@ -24,8 +24,8 @@
      4. Cursor              13. Pricing
      5. Buttons             14. Contact & form
      6. Header & menu       15. Footer panel
-     7. Rail (horizontal)   16. Progress bar & FAB
-     8. Reveal system       17. Vertical fallback · Swipe decks
+     7. Sections            16. Scroll progress & FAB
+     8. Reveal system       17. Section layout · Swipe decks
      9. Hero & manifesto    18. Reduced motion
                             19. Inner routes · 20. Heading scale
    ============================================================ */
@@ -91,8 +91,6 @@
   --ease-out: cubic-bezier(.16, 1, .3, 1);
   --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
 
-  /* Written by the rail engine every frame: scroll velocity (-1..1) */
-  --vel: 0;
 }
 
 /* ---------- 2. BASE HELPERS ---------- */
@@ -315,17 +313,6 @@ h1, h2, h3 { line-height: 1.05; letter-spacing: -.01em; font-weight: 400; }
   color: var(--muted); letter-spacing: .14em; text-transform: uppercase; white-space: nowrap;
 }
 
-.chapter-now {
-  display: none; align-items: center; gap: .8rem;
-  font-size: var(--fs-xs); letter-spacing: .14em; text-transform: uppercase; color: var(--muted);
-}
-.is-h .chapter-now { display: inline-flex; }
-.chapter-num { font-family: var(--font-display); color: var(--forest-2); font-weight: 400; font-size: .95rem; }
-.chapter-sep { width: 36px; height: 1px; background: var(--line-strong); }
-.chapter-name { display: inline-block; min-width: 8ch; }
-.chapter-name.is-swap { animation: hd-chapter-in .5s var(--ease-out); }
-@keyframes hd-chapter-in { from { opacity: 0; transform: translateX(-12px); } }
-
 .header-actions { display: flex; align-items: center; gap: .6rem; position: relative; z-index: 2; }
 .menu-btn {
   --mx: 0px; --my: 0px;
@@ -382,37 +369,12 @@ h1, h2, h3 { line-height: 1.05; letter-spacing: -.01em; font-weight: 400; }
 .menu-kicker { font-size: var(--fs-xs); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
 .menu-note { color: var(--muted); font-size: var(--fs-sm); margin-top: .6rem; }
 
-/* ---------- 7. RAIL (HORIZONTAL MODE) ---------- */
-.rail { position: relative; z-index: 1; display: block; outline: none; }
-.rail-track { position: relative; }
-
-.is-h .rail-sticky {
-  position: sticky; top: 0; height: 100vh; height: 100dvh;
-  overflow: hidden;
-}
-@supports (overflow: clip) { .is-h .rail-sticky { overflow: clip; } }
-.is-h .rail-track {
-  display: flex; flex-wrap: nowrap; height: 100%; width: max-content;
-  will-change: transform;
-}
-.is-h .panel {
-  flex: none; height: 100%; position: relative;
-  display: flex; align-items: center; gap: clamp(2rem, 1rem + 3vw, 5rem);
-  padding: calc(var(--header-h) + var(--header-top) + 2vh) var(--panel-x) calc(var(--bar-h) + 3vh);
-}
-/* Breathing room between chapters. The parallax giants drift up to ~12% of the
-   viewport toward their neighbour (d × speed in useRail) and the orbit's proof
-   chips overhang the orbit — this margin plus the panel padding absorbs both,
-   so no chapter's decoration can sit on another chapter's content. */
-.is-h .panel + .panel { margin-inline-start: clamp(3rem, 1rem + 3vw, 7rem); }
-.is-h.is-dragging, .is-h.is-dragging * { user-select: none; -webkit-user-select: none; }
+/* ---------- 7. SECTIONS ---------- */
 
 .panel-head { display: grid; gap: 1.1rem; align-content: center; justify-items: start; }
-.is-h .panel-head { flex: none; width: clamp(280px, 110px + 16vw, 520px); }
 .panel-head h2 { font-size: var(--fs-h2); }
 .panel-lead { color: var(--muted); font-size: var(--fs-lg); max-width: 44ch; }
 .panel-note { color: var(--muted); font-size: var(--fs-sm); max-width: 40ch; }
-.drag-note { display: inline-flex; align-items: center; gap: .6rem; font-size: var(--fs-xs); color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
 .drag-pill {
   display: inline-grid; place-items: center; width: 42px; height: 26px; border-radius: var(--r-pill);
   border: 1px solid var(--line-strong); color: var(--forest-2); animation: hd-nudge 1.8s ease-in-out infinite;
@@ -431,9 +393,6 @@ h1, h2, h3 { line-height: 1.05; letter-spacing: -.01em; font-weight: 400; }
 .panel.services .eyebrow .idx { background: var(--terracotta-pale); }
 .panel.why .eyebrow .idx      { background: var(--lake-pale); }
 .panel.process .eyebrow .idx  { background: var(--sage-pale); }
-
-/* Velocity skew — decorative layers only, keeps text crisp */
-.is-h .giant { transform: skewX(calc(var(--vel) * -8deg)); }
 
 /* ---------- 8. REVEAL SYSTEM ---------- */
 [data-reveal] {
@@ -473,10 +432,6 @@ h1, h2, h3 { line-height: 1.05; letter-spacing: -.01em; font-weight: 400; }
 }
 
 /* ---------- 9. HERO & MANIFESTO ---------- */
-.hero { width: 100vw; }
-.is-h .hero { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); align-content: center; column-gap: 3vw; }
-.is-h .hero-copy { grid-column: 1; align-self: center; gap: clamp(.7rem, 2vh, 1.2rem); }
-.is-h .hero-title { font-size: min(var(--fs-h1), 8.5vh, 5.2vw); max-width: 15ch; }
 .hero-copy { display: grid; gap: clamp(.8rem, .55rem + 1.1vw, 1.2rem); justify-items: start; }
 .hero-title { font-size: var(--fs-h1); font-weight: 400; letter-spacing: -.015em; max-width: 13ch; }
 .hero-title em { font-style: normal; color: var(--forest-2); }
@@ -502,10 +457,9 @@ h1, h2, h3 { line-height: 1.05; letter-spacing: -.01em; font-weight: 400; }
   --ox: 0; --oy: 0;
   position: relative; width: min(38vw, 64vh, 520px); aspect-ratio: 1; justify-self: center;
 }
-.is-h .orbit { grid-column: 2; align-self: center; width: min(32vw, 52vh, 480px); }
 .orbit-inner {
   position: absolute; inset: 0; transform-style: preserve-3d;
-  transform: perspective(900px) rotateX(calc(var(--oy) * -16deg)) rotateY(calc(var(--ox) * 16deg)) skewX(calc(var(--vel) * -6deg));
+  transform: perspective(900px) rotateX(calc(var(--oy) * -16deg)) rotateY(calc(var(--ox) * 16deg));
   transition: transform .5s var(--ease-out);
 }
 .orbit-ring {
@@ -559,19 +513,7 @@ h1, h2, h3 { line-height: 1.05; letter-spacing: -.01em; font-weight: 400; }
 .chip--b { bottom: 18%; left: -12%; animation-delay: -1.6s; }
 .chip--c { top: 42%; right: -8%; animation-delay: -3.1s; }
 
-.travel-hint {
-  position: absolute; right: var(--panel-x); top: calc(var(--header-h) + var(--header-top) + 2.5vh);
-  display: none; align-items: center; gap: .9rem;
-  font-size: var(--fs-xs); font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--muted);
-}
-.is-h .travel-hint { display: inline-flex; }
-.travel-arrow { position: relative; width: 72px; height: 2px; background: var(--line-strong); overflow: hidden; border-radius: 2px; }
-.travel-arrow span { position: absolute; inset: 0; background: var(--forest); animation: hd-travel 1.8s var(--ease-out) infinite; }
-@keyframes hd-travel { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
-
 .manifesto-words { display: grid; gap: 1vh; }
-.is-h .manifesto { gap: clamp(3rem, 6vw, 8rem); }
-.is-h .manifesto .giant { font-size: min(var(--fs-giant), 22vh); }
 .giant {
   font-family: var(--font-display); font-weight: 400; font-size: var(--fs-giant);
   line-height: .9; letter-spacing: -.02em; white-space: nowrap; will-change: transform;
@@ -590,7 +532,6 @@ h1, h2, h3 { line-height: 1.05; letter-spacing: -.01em; font-weight: 400; }
 }
 .giant--fill::after { content: ""; display: inline-block; width: .2em; height: .2em; border-radius: 50%; background: var(--sun); margin-left: .05em; }
 .manifesto-copy { display: grid; gap: 1.4rem; max-width: 480px; }
-.is-h .manifesto-copy { flex: none; width: clamp(320px, 30vw, 480px); }
 .manifesto-text { font-size: var(--fs-h3); font-family: var(--font-body); font-weight: 600; line-height: 1.35; }
 .tag-row { display: flex; flex-wrap: wrap; gap: .5rem; list-style: none; margin: 0; padding: 0; }
 .tag-row li {
@@ -624,7 +565,6 @@ h1, h2, h3 { line-height: 1.05; letter-spacing: -.01em; font-weight: 400; }
 .card .ticks { margin-top: auto; padding-top: .6rem; border-top: 1px solid var(--line); }
 
 /* ---------- 11. WHY US ---------- */
-.is-h .why { width: max(100vw, 1180px); }
 .why-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(.9rem, .7rem + .8vw, 1.6rem); flex: 1; max-width: min(58vw, 1040px); }
 .why-item {
   position: relative; display: grid; gap: .6rem; align-content: start;
@@ -708,7 +648,6 @@ h1, h2, h3 { line-height: 1.05; letter-spacing: -.01em; font-weight: 400; }
 }
 
 /* ---------- 14. CONTACT & FORM ---------- */
-.is-h .contact { width: max(100vw, 1180px); }
 .contact-info { display: grid; gap: 1.1rem; justify-items: start; flex: 1 1 0; max-width: min(32vw, 560px); }
 .contact-info h2 { font-size: var(--fs-h2); }
 .contact-list { display: grid; gap: .6rem; width: 100%; margin: .4rem 0 0; padding: 0; list-style: none; }
@@ -781,9 +720,7 @@ h1, h2, h3 { line-height: 1.05; letter-spacing: -.01em; font-weight: 400; }
 .footer-panel .giant--outline { -webkit-text-stroke-color: rgba(224, 162, 50, .6); }
 .footer-panel :focus-visible, .site-footer :focus-visible, .menu :focus-visible { outline-color: var(--sun); }
 .footer-giant { font-size: clamp(4rem, 2rem + 9vw, 11rem); }
-.is-h .footer-giant { font-size: min(clamp(4rem, 2rem + 9vw, 11rem), 24vh); }
 .footer-inner { display: grid; gap: 1.6rem; justify-items: start; max-width: 760px; }
-.is-h .footer-inner { flex: none; width: clamp(360px, 150px + 22vw, 700px); gap: clamp(.9rem, 2.4vh, 1.6rem); }
 .footer-blurb { font-size: var(--fs-lg); color: var(--muted); max-width: 48ch; }
 .footer-cols { display: flex; flex-wrap: wrap; gap: 3rem; }
 .footer-h { font-size: var(--fs-xs); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-bottom: .6rem; }
@@ -823,27 +760,7 @@ h1, h2, h3 { line-height: 1.05; letter-spacing: -.01em; font-weight: 400; }
 .newsletter-status { min-height: 1.1em; font-size: var(--fs-xs); color: var(--success); }
 .newsletter-status.is-error { color: var(--danger); }
 
-/* ---------- 16. PROGRESS BAR & FAB ---------- */
-.progress { display: none; }
-.is-h .progress {
-  position: fixed; left: var(--gutter);
-  /* Leave room for the floating actions, which grow with the type scale. */
-  right: calc(var(--gutter) + clamp(232px, 190px + 2.2vw, 300px));
-  bottom: 0; z-index: 80; height: var(--bar-h);
-  display: flex; align-items: center;
-}
-.progress-track { position: absolute; left: 0; right: 0; top: 50%; height: 2px; background: var(--line); border-radius: 2px; overflow: hidden; }
-.progress-fill { position: absolute; inset: 0; background: linear-gradient(90deg, var(--forest), var(--sun)); transform-origin: left; transform: scaleX(0); }
-.progress-list { position: relative; display: flex; justify-content: space-between; width: 100%; list-style: none; margin: 0; padding: 0; }
-.progress-list a {
-  display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%;
-  background: var(--bg-2); border: 1.5px solid var(--line-strong);
-  font-size: .7rem; font-weight: 800; color: var(--muted);
-  transition: background-color .3s, color .3s, border-color .3s, transform .4s var(--ease-spring);
-}
-.progress-list a:hover { border-color: var(--forest); color: var(--text); transform: scale(1.12); }
-.progress-list a.is-passed { border-color: var(--forest); color: var(--text); }
-.progress-list a.is-current { background: var(--forest); border-color: var(--forest); color: #F7F1E6; transform: scale(1.15); }
+/* ---------- 16. SCROLL PROGRESS & FAB ---------- */
 
 .fab { position: fixed; right: var(--gutter); bottom: 12px; z-index: 85; display: flex; align-items: center; gap: .6rem; }
 .fab-btn {
@@ -951,12 +868,12 @@ h1, h2, h3 { line-height: 1.05; letter-spacing: -.01em; font-weight: 400; }
   }
 }
 
-/* ---------- 17. VERTICAL FALLBACK (small / short screens) ---------- */
-html:not(.is-h) .panel {
+/* ---------- 17. SECTION LAYOUT ---------- */
+html .panel {
   padding: clamp(3.25rem, 2.25rem + 5vw, 7rem) var(--gutter);
   max-width: 1200px; margin: 0 auto;
 }
-html:not(.is-h) .hero {
+html .hero {
   width: auto; min-height: 100svh;
   padding-top: calc(var(--header-h) + var(--header-top) + clamp(1rem, .5rem + 2.4vw, 2rem));
   padding-bottom: clamp(5rem, 3.5rem + 5vw, 7rem);
@@ -965,47 +882,46 @@ html:not(.is-h) .hero {
 /* On a phone the hero is taller than the screen anyway, so let it flow from the
    top instead of centring a block that then overruns both ends. */
 @media (max-width: 720px), (max-height: 620px) {
-  html:not(.is-h) .hero { min-height: 0; align-content: start; }
+  html .hero { min-height: 0; align-content: start; }
 }
-html:not(.is-h) .orbit { width: min(74vw, 380px); margin: 0 auto; }
-html:not(.is-h) .chip--a { left: -2%; }
-html:not(.is-h) .chip--b { left: -4%; }
-html:not(.is-h) .chip--c { right: -2%; }
-html:not(.is-h) .manifesto { overflow: hidden; max-width: none; }
+html .orbit { width: min(74vw, 380px); margin: 0 auto; }
+html .chip--a { left: -2%; }
+html .chip--b { left: -4%; }
+html .chip--c { right: -2%; }
+html .manifesto { overflow: hidden; max-width: none; }
 /* Sideways, the giant words are meant to run past the edge of the screen. Read
    as a vertical page there is nothing to run past, so they wrap instead of
    being sliced mid-word. */
-html:not(.is-h) .giant {
+html .giant {
   /* Sized so the longest single word ("presence.") still clears the gutters on
      a 320px screen — the words wrap, but none of them get sliced. */
   font-size: clamp(2rem, .6rem + 8vw, 8rem);
   white-space: normal;
 }
-html:not(.is-h) .giant--fill { padding-left: clamp(0px, -1rem + 5vw, 6rem); }
-html:not(.is-h) .manifesto-copy { margin: 2rem 0 0; }
-html:not(.is-h) .panel-head { margin-bottom: 2.4rem; }
+html .giant--fill { padding-left: clamp(0px, -1rem + 5vw, 6rem); }
+html .manifesto-copy { margin: 2rem 0 0; }
+html .panel-head { margin-bottom: 2.4rem; }
 /* The rail's own drag hint belongs to the rail; each deck carries its own. */
-html:not(.is-h) .drag-note { display: none; }
-html:not(.is-h) .contact { display: grid; gap: 2rem; }
-html:not(.is-h) .contact-info { max-width: none; }
-html:not(.is-h) .form-card { max-width: none; }
-html:not(.is-h) .footer-panel { display: grid; gap: 1rem; overflow: hidden; max-width: none; padding-bottom: 6rem; border-radius: var(--r-lg); }
-html:not(.is-h) .footer-giant { font-size: clamp(2.2rem, .9rem + 7.5vw, 7rem); }
-html:not(.is-h) .footer-inner { max-width: 1200px; }
+html .contact { display: grid; gap: 2rem; }
+html .contact-info { max-width: none; }
+html .form-card { max-width: none; }
+html .footer-panel { display: grid; gap: 1rem; overflow: hidden; max-width: none; padding-bottom: 6rem; border-radius: var(--r-lg); }
+html .footer-giant { font-size: clamp(2.2rem, .9rem + 7.5vw, 7rem); }
+html .footer-inner { max-width: 1200px; }
 
 /* Vertical mode slides content in along the inline axis, and `useReveals` deals
    the sides out at random — so a column of cards arrives from alternating edges
    instead of reading like one conveyor belt. */
-html:not(.is-h) [data-reveal] { transform: translate3d(calc(var(--dir, -1) * 44px), 0, 0); }
-html:not(.is-h) [data-reveal].is-in { transform: none; }
-html:not(.is-h) [data-tilt].is-in { transform: none; }
+html [data-reveal] { transform: translate3d(calc(var(--dir, -1) * 44px), 0, 0); }
+html [data-reveal].is-in { transform: none; }
+html [data-tilt].is-in { transform: none; }
 
-/* ---------- 17b. SWIPE DECKS (the vertical page's card rows) ---------- */
-/* Stacked, a five-card row becomes five screens to scroll past. So the rows the
-   rail carried sideways keep travelling sideways here: the deck runs right to
-   left under a native swipe, a mouse drag, the arrow keys or its dots, with the
-   next card peeking in from the edge so there is something to reach for. */
-html:not(.is-h) .deck {
+/* ---------- 17b. SWIPE DECKS (the card rows) ---------- */
+/* Stacked, a five-card row becomes five screens to scroll past. So the card
+   rows travel sideways instead: the deck runs right to left under a native
+   swipe, a mouse drag, the arrow keys or its dots, with the next card peeking
+   in from the edge so there is something to reach for. */
+html .deck {
   display: flex; flex-direction: row; align-items: stretch;
   grid-template-columns: none; max-width: none;
   gap: 1rem;
@@ -1021,18 +937,18 @@ html:not(.is-h) .deck {
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 }
-html:not(.is-h) .deck::-webkit-scrollbar { display: none; }
-html:not(.is-h) .deck[data-dragging] {
+html .deck::-webkit-scrollbar { display: none; }
+html .deck[data-dragging] {
   scroll-snap-type: none;
   user-select: none; -webkit-user-select: none;
 }
 /* Where the custom cursor is running it shows the drag state itself, so the
    native hand is only for pointers it never replaced. */
-html:not(.has-cursor):not(.is-h) .deck { cursor: grab; }
-html:not(.has-cursor):not(.is-h) .deck[data-dragging] { cursor: grabbing; }
-html:not(.is-h) .deck:focus-visible { outline: 2px solid var(--forest); outline-offset: 4px; border-radius: var(--r-lg); }
+html:not(.has-cursor) .deck { cursor: grab; }
+html:not(.has-cursor) .deck[data-dragging] { cursor: grabbing; }
+html .deck:focus-visible { outline: 2px solid var(--forest); outline-offset: 4px; border-radius: var(--r-lg); }
 /* One card per swipe, with a sliver of the next one showing. */
-html:not(.is-h) .deck > * {
+html .deck > * {
   flex: 0 0 clamp(236px, 78vw, 340px); width: auto; translate: none;
   scroll-snap-align: start;
 }
@@ -1092,73 +1008,9 @@ html:not(.is-h) .deck > * {
   .chat-close { width: 44px; height: 44px; }
 }
 
-/* Short laptop screens in horizontal mode: tighten vertical rhythm */
-@media (max-height: 800px) {
-  .is-h { --header-h: 68px; --bar-h: 56px; }
-  .is-h .panel-head { gap: .8rem; }
-  .is-h .panel-lead { font-size: var(--fs-base); }
-  .is-h .card, .is-h .why-item { padding: 1.25rem; gap: .6rem; }
-  .is-h .card-icon { width: 46px; height: 46px; font-size: 1.35rem; }
-  .is-h .why-grid { gap: .9rem; }
-  .is-h .plan { padding: 1.25rem 1.4rem; gap: .6rem; }
-  .is-h .plan-price { font-size: 2.4rem; }
-  .is-h .ticks { gap: .3rem; }
-  .is-h .form { gap: .55rem .9rem; }
-  .is-h .field input, .is-h .field select, .is-h .field textarea { padding: .55rem .8rem; }
-  .is-h .field textarea { min-height: 62px; }
-  .is-h .form-card { padding: 1.2rem 1.4rem; }
-  .is-h .contact-list a, .is-h .contact-static { padding: .55rem .9rem; }
-  .is-h .step-num { font-size: 2.4rem; }
-  .is-h .panel-head h2, .is-h .contact-info h2 { font-size: min(var(--fs-h2), 7vh); }
-  .is-h .contact-info { gap: .8rem; }
-  .is-h .contact-list { grid-template-columns: 1fr 1fr; }
-  .is-h .contact-list li:first-child { grid-column: 1 / -1; }
-}
-
-/* The two panels meant to be taken in at a glance (the why grid and the contact
-   form) are given a 1180px working width. On a narrower window that would push
-   half of the form off-screen, so they fall back to exactly one screen wide. */
-@media (max-width: 1180px) {
-  .is-h .why, .is-h .contact { width: 100vw; }
-  .is-h .contact-info { max-width: 360px; }
-  .is-h .why-grid { max-width: none; }
-}
-
-/* Very wide displays: the panels that are exactly one screen wide (why,
-   contact) would otherwise leave their content hugging the left edge with a
-   third of the screen empty, so the pair is centred and given more room. */
-@media (min-width: 1700px) {
-  .is-h .why, .is-h .contact { justify-content: center; gap: clamp(3rem, 4vw, 7rem); }
-  .is-h .contact-info { max-width: 620px; }
-  .is-h .form-card { max-width: 900px; }
-  .is-h .why-grid { max-width: 1100px; }
-}
-
-/* Shortest windows that still qualify for the rail: every panel has to fit
-   between the header and the chapter bar, because a pinned panel cannot scroll. */
 @media (max-height: 760px) {
-  .is-h .hero-copy { gap: .5rem; }
-  .is-h .hero-title { font-size: min(var(--fs-h1), 7.4vh, 4.8vw); }
-  .is-h .hero-lead { font-size: var(--fs-sm); max-width: 46ch; }
-  .is-h .hero-rotator { font-size: var(--fs-base); }
-  .is-h .orbit { width: min(28vw, 40vh, 400px); }
   /* A smaller orbit puts the proof chips on top of the quokka, so push them out. */
-  .is-h .chip { font-size: var(--fs-xs); padding: .4rem .75rem; }
-  .is-h .chip--a { left: -14%; }
-  .is-h .chip--b { left: -20%; }
-  .is-h .chip--c { right: -20%; }
-  .is-h .btn { min-height: 46px; padding: .6rem 1.2rem; }
-  .is-h .plan-price { font-size: clamp(1.9rem, 1.5rem + 1.4vw, 2.2rem); }
-  .is-h .plan .ticks { gap: .25rem; }
-  .is-h .plan-desc, .is-h .card p { font-size: var(--fs-xs); }
   /* Service and budget share a row so the form loses a step */
-  .is-h .form .field--select { grid-column: span 1; }
-  .is-h .field textarea { min-height: 52px; }
-  .is-h .form-foot { margin-top: 0; }
-  .is-h .contact-info h2, .is-h .panel-head h2 { font-size: min(var(--fs-h2), 6.2vh); }
-  .is-h .panel-lead { font-size: var(--fs-sm); }
-  .is-h .footer-inner { gap: .7rem; }
-  .is-h .footer-blurb { font-size: var(--fs-sm); }
 }
 
 /* ---------- 18. REDUCED MOTION ---------- */
@@ -1235,4 +1087,52 @@ html:not(.is-h) .deck > * {
 .page-h3 {
   font-size: clamp(1.2rem, 1.05rem + .7vw, 1.6rem);
   line-height: 1.2;
+}
+
+/* ---------- 21. VERTICAL JOURNEY FOUNDATION (Branch2) ---------- */
+.home-main { position: relative; z-index: 1; }
+
+/* Book page-turn sections — initPageTurn() in lib/animation.js scrubs the
+   fold and drives the settling shadow below via --pt-shade. */
+.page-turn { position: relative; }
+.page-turn::after {
+  content: ""; position: absolute; inset: 0; z-index: 5; pointer-events: none;
+  background: linear-gradient(180deg, rgba(36, 22, 8, .5), rgba(36, 22, 8, .12) 55%, transparent);
+  opacity: var(--pt-shade, 0);
+}
+/* The "stack" mode pins and gets covered, so it needs an opaque page. */
+.page-turn--stack { background: var(--bg); }
+
+/* Anchors for the animated quokka inside a page-turn section. */
+.quokka-spot { position: absolute; z-index: 2; pointer-events: none; }
+.quokka-spot--peek { right: clamp(.5rem, 3vw, 3rem); bottom: -4px; }
+.quokka-spot--hop { right: 10%; top: clamp(.4rem, .2rem + 1vw, 1.6rem); }
+
+/* Idle life for the animated quokka — CSS loops, killed with everything
+   else by prefers-reduced-motion. */
+.aq { display: block; }
+.aq .aq-eye { transform-box: fill-box; transform-origin: center; animation: aq-blink 5.6s ease-in-out infinite; }
+.aq .aq-ear { transform-box: fill-box; transform-origin: 50% 95%; }
+.aq .aq-ear--l { animation: aq-ear 7.5s ease-in-out infinite; }
+.aq .aq-ear--r { animation: aq-ear 7.5s ease-in-out infinite; animation-delay: -3.4s; }
+@keyframes aq-blink { 0%, 91%, 100% { transform: scaleY(1); } 94% { transform: scaleY(.12); } }
+@keyframes aq-ear { 0%, 86%, 100% { transform: rotate(0); } 90% { transform: rotate(-9deg); } 95% { transform: rotate(5deg); } }
+
+/* The slot for real quokka photos/video (QuokkaMedia component). */
+.quokka-media {
+  margin: 0; border-radius: var(--r-lg); overflow: hidden;
+  border: 1px solid var(--line); box-shadow: var(--shadow-card); background: var(--bg-2);
+}
+.quokka-media img, .quokka-media video { width: 100%; display: block; object-fit: cover; aspect-ratio: var(--qm-aspect, 4 / 3); }
+.quokka-media figcaption { padding: .6rem .9rem; font-size: var(--fs-xs); color: var(--muted); }
+
+/* Frame for [data-figure-parallax]: the overscaled media pans inside it. */
+.figure-parallax { overflow: hidden; border-radius: var(--r-lg); }
+
+/* Slim scroll progress line along the top edge — the vertical journey's
+   chapter bar. Informational, so it stays under reduced motion. */
+.scroll-progress { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 120; pointer-events: none; }
+.scroll-progress span {
+  display: block; height: 100%; transform-origin: left; transform: scaleX(0);
+  background: linear-gradient(90deg, var(--forest), var(--sun));
 }

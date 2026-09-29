@@ -1,25 +1,27 @@
 import { useEffect } from 'react'
-import { prefersReducedMotion } from '../lib/horizon'
+import { ScrollTrigger, motionOK } from '../lib/animation'
 
 const SELECTOR = '[data-reveal], [data-wipe], [data-split]'
 
 /**
- * The site-wide entrance system. Elements marked `data-reveal` slide in
- * horizontally, `data-wipe` headings are unmasked left to right, and
- * `data-split` titles deal their words up one by one.
+ * The site-wide entrance system, driven by ScrollTrigger. Elements marked
+ * `data-reveal` slide in, `data-wipe` headings are unmasked left to right,
+ * and `data-split` titles deal their words up one by one — the transitions
+ * themselves live in CSS (horizon.css) and fire when `.is-in` lands, so
+ * this hook only decides *when*, batching simultaneous arrivals into a
+ * stagger via the `--d` delay custom property.
  *
- * A fully clipped heading never intersects anything, so wipes are triggered by
- * watching their parent instead. Items that arrive together are staggered, which
- * is what makes a panel look like it deals its content in as it slides into view.
+ * ScrollTrigger measures layout geometry rather than painted pixels, so a
+ * fully clipped `data-wipe` heading triggers directly — no parent-watching
+ * workaround needed.
  *
- * Runs once and keeps watching the document, so lazily loaded routes are picked
- * up without re-mounting anything.
+ * Runs once and keeps watching the document, so lazily loaded routes are
+ * picked up without re-mounting anything. Reduced motion (or no JS-driven
+ * scroll) shows everything immediately.
  */
 export default function useReveals() {
   useEffect(() => {
-    const reduceMotion = prefersReducedMotion()
-
-    if (reduceMotion || !('IntersectionObserver' in window)) {
+    if (!motionOK()) {
       const showAll = () =>
         document.querySelectorAll(SELECTOR).forEach((el) => el.classList.add('is-in'))
       showAll()
@@ -28,43 +30,36 @@ export default function useReveals() {
       return () => mo.disconnect()
     }
 
-    // parent element -> the wipe heading it stands in for
-    const wipeOf = new WeakMap()
     const seen = new WeakSet()
-
-    const io = new IntersectionObserver(
-      (entries) => {
-        let n = 0
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return
-          const el = wipeOf.get(entry.target) || entry.target
-          io.unobserve(entry.target)
-          if (el.hasAttribute('data-wipe')) {
-            el.classList.add('is-in')
-            return
-          }
-          el.style.setProperty('--d', `${(Math.min(n++, 6) * 0.08).toFixed(2)}s`)
-          el.classList.add('is-in')
-        })
-      },
-      { threshold: 0.12, rootMargin: '0px -4% -4% 0px' },
-    )
+    const triggers = []
 
     function scan() {
+      const fresh = []
       document.querySelectorAll(SELECTOR).forEach((el) => {
-        if (el.classList.contains('is-in')) return
-        const target = el.hasAttribute('data-wipe') ? el.parentElement : el
-        if (!target || seen.has(target)) return
-        seen.add(target)
-        if (el.hasAttribute('data-wipe')) wipeOf.set(target, el)
-        // Vertical mode slides reveals in along the inline axis. Choosing the
-        // side per element means a column of cards arrives from alternating
-        // edges instead of reading like a single conveyor belt.
+        if (seen.has(el) || el.classList.contains('is-in')) return
+        seen.add(el)
+        // Reveals arrive from alternating sides so a column of cards doesn't
+        // read like a single conveyor belt.
         if (el.hasAttribute('data-reveal')) {
           el.style.setProperty('--dir', Math.random() < 0.5 ? '-1' : '1')
         }
-        io.observe(target)
+        fresh.push(el)
       })
+      if (!fresh.length) return
+      triggers.push(
+        ...ScrollTrigger.batch(fresh, {
+          start: 'top 88%',
+          once: true,
+          onEnter: (els) => {
+            els.forEach((el, i) => {
+              if (!el.hasAttribute('data-wipe')) {
+                el.style.setProperty('--d', `${(Math.min(i, 6) * 0.08).toFixed(2)}s`)
+              }
+              el.classList.add('is-in')
+            })
+          },
+        }),
+      )
     }
 
     scan()
@@ -75,13 +70,14 @@ export default function useReveals() {
       requestAnimationFrame(() => {
         queued = false
         scan()
+        ScrollTrigger.refresh()
       })
     })
     mo.observe(document.body, { childList: true, subtree: true })
 
     return () => {
       mo.disconnect()
-      io.disconnect()
+      triggers.forEach((t) => t.kill())
     }
   }, [])
 }
