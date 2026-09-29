@@ -1,14 +1,15 @@
 @import "tailwindcss";
 
 /* Brand Guidelines v2 palette. Token NAMES are kept from the pre-rebrand
-   theme so no component class had to change — only the values moved:
-   - teal-*  now renders brand Forest (#3A5A40 family) — teal itself is retired
-   - coral-* now renders the burnt-sienna "don't"/danger tone (#9A3412 family)
-   - quokka-*/amber-* now render Sunshine (#E0A232) — buttons & highlights
-   - sand-*  is the Cream -> Quokka Brown neutral ramp
-   - slate-* (staff CRM darks) is overridden to a warm cocoa ramp so the
+   theme so no component class had to change — only the values moved
+   (careful in this comment: a star-slash sequence would end it early):
+   - teal   now renders brand Forest (#3A5A40 family) — teal itself is retired
+   - coral  now renders the burnt-sienna "don't"/danger tone (#9A3412 family)
+   - quokka and amber now render Sunshine (#E0A232) — buttons & highlights
+   - sand   is the Cream -> Quokka Brown neutral ramp
+   - slate  (staff CRM darks) is overridden to a warm cocoa ramp so the
      dark admin UI reads as a brand "dark section" instead of cold blue
-   - white   is the brand's toned white (never pure #fff) */
+   - white  is the brand's toned white (never pure #fff) */
 @theme {
   --font-sans: var(--font-jakarta), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-mono), ui-monospace, monospace;
