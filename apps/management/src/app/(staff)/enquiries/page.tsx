@@ -102,7 +102,7 @@ export default function EnquiriesPage() {
         <div>
           <h1 className="text-lg font-bold text-slate-100">Website Enquiries</h1>
           <p className="text-xs text-slate-500">
-            Contact and quote requests submitted from webquokka.com.au
+            Contact and quote requests submitted from quokkadisco.com
           </p>
         </div>
         {newCount > 0 && <Badge label={`${newCount} new`} tone="sky" />}

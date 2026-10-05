@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://webquokka.com.au/sitemap.xml
+Sitemap: https://quokkadisco.com/sitemap.xml

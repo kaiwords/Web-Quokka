@@ -9,7 +9,7 @@ import { NextRequest, NextResponse } from "next/server";
 //
 // Origins come from PUBLIC_SITE_ORIGINS (comma-separated, exact origins, no
 // trailing slash), e.g.
-//   PUBLIC_SITE_ORIGINS="https://webquokka.com.au,https://www.webquokka.com.au"
+//   PUBLIC_SITE_ORIGINS="https://quokkadisco.com,https://www.quokkadisco.com"
 // In development, localhost Vite ports are allowed automatically.
 const DEV_ORIGINS = [
   "http://localhost:5173",

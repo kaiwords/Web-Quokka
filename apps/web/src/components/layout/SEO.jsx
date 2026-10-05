@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { SITE } from '../../lib/constants'
 
-const SITE_URL = 'https://webquokka.com.au'
+const SITE_URL = 'https://quokkadisco.com'
 
 function setMeta(attr, key, content) {
   let el = document.querySelector(`meta[${attr}="${key}"]`)
