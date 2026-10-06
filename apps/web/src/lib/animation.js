@@ -55,25 +55,15 @@ export function initPageTurn(el, { mode = 'fold' } = {}) {
   if (!el || !motionOK()) return []
   const created = []
 
-  // Touch: one cheap entrance per section instead of the fold — no scrub, no
-  // 3D layer, no pin. It ends at full opacity and starts only part-way faded,
-  // so a section is readable even if its trigger never fires.
-  if (!heavyMotionOK()) {
-    created.push(
-      gsap.fromTo(
-        el,
-        { y: 20, opacity: 0.75 },
-        {
-          y: 0,
-          opacity: 1,
-          duration: 0.5,
-          ease: 'power2.out',
-          scrollTrigger: { trigger: el, start: 'top 92%', once: true },
-        },
-      ),
-    )
-    return created
-  }
+  // Touch: no section-level animation at all, so no ScrollTrigger per section.
+  //
+  // A fling to the bottom of the page crosses every section at once, and each
+  // trigger is evaluated in that burst — the cost scales with how fast you
+  // scroll, which is why slow scrolling felt fine and a fast one stuttered.
+  // The content inside still animates in: useReveals drives those from an
+  // IntersectionObserver on touch, which the browser handles off the main
+  // thread. The section itself simply arrives.
+  if (!heavyMotionOK()) return created
 
   const hygiene = {
     onToggle: (self) => {

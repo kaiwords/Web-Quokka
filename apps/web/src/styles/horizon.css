@@ -1190,36 +1190,3 @@ html .deck > * {
   display: block; height: 100%; transform-origin: left; transform: scaleX(0);
   background: linear-gradient(90deg, var(--forest), var(--sun));
 }
-
-/* ---------- 22. PERF PROBE (diagnostic, ?perf=1 only) ---------- */
-/* Each .perf-no-* class switches off one suspect so a slow device can be
-   diagnosed by elimination. Nothing here applies unless PerfProbe has put the
-   class on <html>, and PerfProbe only mounts behind the query flag. */
-.perf-probe {
-  position: fixed; left: 8px; bottom: 8px; z-index: 300;
-  display: flex; flex-direction: column; gap: 6px;
-  padding: 8px 10px; border-radius: 12px;
-  background: #241608; color: #F7F1E6;
-  font: 600 12px/1.2 ui-monospace, monospace;
-}
-.perf-probe-read { display: flex; gap: 10px; align-items: baseline; }
-.perf-probe-read strong { font-size: 18px; }
-.perf-probe-btns { display: flex; flex-wrap: wrap; gap: 4px; }
-.perf-probe-btns button {
-  min-height: 32px; padding: 4px 8px; border-radius: 8px;
-  border: 1px solid rgba(247, 241, 230, .35);
-  background: transparent; color: inherit; font: inherit; cursor: pointer;
-}
-.perf-probe-btns button[data-on="off"] { background: #9A3412; border-color: #9A3412; }
-
-.perf-no-glow .bg-glow { display: none; }
-.perf-no-stars .stars { display: none; }
-.perf-no-blur .site-header,
-.perf-no-blur .menu,
-.perf-no-blur .chip,
-.perf-no-blur .form-card { -webkit-backdrop-filter: none; backdrop-filter: none; }
-.perf-no-shadow * { box-shadow: none !important; }
-.perf-no-anim *, .perf-no-anim *::before, .perf-no-anim *::after {
-  animation: none !important;
-  transition: none !important;
-}

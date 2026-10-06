@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { ScrollTrigger, motionOK } from '../lib/animation'
+import { ScrollTrigger, heavyMotionOK, motionOK } from '../lib/animation'
 
 const SELECTOR = '[data-reveal], [data-wipe], [data-split]'
 
@@ -31,6 +31,55 @@ export default function useReveals() {
     }
 
     const seen = new WeakSet()
+
+    // Touch: IntersectionObserver instead of ScrollTrigger.
+    //
+    // ScrollTrigger re-evaluates every trigger it owns on every scroll tick.
+    // That is unnoticeable while reading, but a fling to the bottom of the
+    // page crosses dozens of elements in a few hundred milliseconds, and the
+    // whole set is processed in that burst — which is exactly when the stutter
+    // shows up. IntersectionObserver is the browser's own primitive: it costs
+    // nothing per frame and reports asynchronously, so a fast scroll stays on
+    // the compositor. The reveal itself is a CSS transition either way, so
+    // this changes when `.is-in` lands, not how anything looks.
+    if (!heavyMotionOK()) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          let i = 0
+          entries.forEach((entry) => {
+            if (!entry.isIntersecting) return
+            const el = entry.target
+            if (!el.hasAttribute('data-wipe')) {
+              el.style.setProperty('--d', `${(Math.min(i, 6) * 0.08).toFixed(2)}s`)
+              i += 1
+            }
+            el.classList.add('is-in')
+            io.unobserve(el)
+          })
+        },
+        { rootMargin: '0px 0px -10% 0px' },
+      )
+
+      const watch = () => {
+        document.querySelectorAll(SELECTOR).forEach((el) => {
+          if (seen.has(el) || el.classList.contains('is-in')) return
+          seen.add(el)
+          if (el.hasAttribute('data-reveal')) {
+            el.style.setProperty('--dir', Math.random() < 0.5 ? '-1' : '1')
+          }
+          io.observe(el)
+        })
+      }
+
+      watch()
+      const moTouch = new MutationObserver(watch)
+      moTouch.observe(document.body, { childList: true, subtree: true })
+      return () => {
+        moTouch.disconnect()
+        io.disconnect()
+      }
+    }
+
     const triggers = []
 
     function scan() {

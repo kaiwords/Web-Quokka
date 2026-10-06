@@ -15,12 +15,17 @@ complete contract for Phase-2 page work: build ONLY from the primitives below.
 - **Touch gets the cheap path.** `heavyMotionOK()` is `motionOK()` minus
   coarse pointers, and it gates the two expensive things: inertia scrolling
   (`SmoothScroll` mounts no Lenis on touch, so the browser's own momentum
-  scrolling is used) and the scrubbed 3D fold (`initPageTurn` substitutes a
-  single cheap entrance per section). This is a feel decision as much as a
-  performance one: touch is direct manipulation, so scroll smoothing reads as
-  lag no matter how fast the device. Everything cheap — reveals, parallax,
-  counters, the quokkas — still runs everywhere. If you add a primitive that
-  scrubs per frame or pins, gate it on `heavyMotionOK()` too.
+  scrolling is used), the scrubbed 3D fold (`initPageTurn` does nothing on
+  touch — the section simply arrives), parallax, figure parallax and the
+  quokka's scrubbed hop. Reveals still run on touch, but `useReveals` drives
+  them from an IntersectionObserver there instead of ScrollTrigger: a fling
+  crosses dozens of elements in a burst, and ScrollTrigger evaluates every
+  trigger it owns on every scroll tick, so the cost scaled with scroll speed
+  (slow scrolling felt fine, a fast one stuttered). Touch is also direct
+  manipulation, so scroll smoothing reads as lag no matter how fast the
+  device. Rule of thumb: on touch, nothing may run per scroll frame — if you
+  add a primitive that scrubs, pins, or creates a ScrollTrigger per element,
+  gate it on `heavyMotionOK()` or give it an IntersectionObserver path.
 - **Cleanup is automatic** when you use the hook/components below — they wrap
   everything in a `gsap.context` scoped to the page and revert on unmount.
   If you hand-roll a timeline, create it inside `useScrollAnimations`'s
