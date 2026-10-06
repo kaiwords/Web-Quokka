@@ -22,6 +22,19 @@ export function motionOK() {
   )
 }
 
+/** True when the device can afford the *expensive* choreography — the scrubbed
+ *  3D page-turn and inertia scrolling.
+ *
+ *  Coarse pointers are excluded deliberately, and not because phones are slow:
+ *  touch is direct manipulation, so the page is expected to track the finger
+ *  and stop when it stops. Heavy scroll smoothing reads as lag there, however
+ *  cinematic it feels under a mouse wheel. Scrubbing two triggers per section
+ *  on every touch-scroll event costs real frames on top of that. Cheap motion
+ *  (reveals, parallax, the quokkas) still runs everywhere — see motionOK. */
+export function heavyMotionOK() {
+  return motionOK() && !window.matchMedia('(pointer: coarse)').matches
+}
+
 /* ---------- page-turn section transitions ---------- */
 
 /**
@@ -41,6 +54,26 @@ export function motionOK() {
 export function initPageTurn(el, { mode = 'fold' } = {}) {
   if (!el || !motionOK()) return []
   const created = []
+
+  // Touch: one cheap entrance per section instead of the fold — no scrub, no
+  // 3D layer, no pin. It ends at full opacity and starts only part-way faded,
+  // so a section is readable even if its trigger never fires.
+  if (!heavyMotionOK()) {
+    created.push(
+      gsap.fromTo(
+        el,
+        { y: 20, opacity: 0.75 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.5,
+          ease: 'power2.out',
+          scrollTrigger: { trigger: el, start: 'top 92%', once: true },
+        },
+      ),
+    )
+    return created
+  }
 
   const hygiene = {
     onToggle: (self) => {

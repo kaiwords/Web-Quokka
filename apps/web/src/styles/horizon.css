@@ -1103,6 +1103,13 @@ html .deck > * {
 /* The "stack" mode pins and gets covered, so it needs an opaque page. */
 .page-turn--stack { background: var(--bg); }
 
+/* Touch runs the cheap entrance instead of the fold (see initPageTurn), so
+   --pt-shade is never driven. Drop the overlay rather than leave an invisible
+   full-section layer stacked on every page. */
+@media (pointer: coarse) {
+  .page-turn::after { display: none; }
+}
+
 /* Anchors for the animated quokka inside a page-turn section. */
 .quokka-spot { position: absolute; z-index: 2; pointer-events: none; }
 .quokka-spot--peek { right: clamp(.5rem, 3vw, 3rem); bottom: -4px; }

@@ -12,6 +12,15 @@ complete contract for Phase-2 page work: build ONLY from the primitives below.
   (`src/lib/animation.js`) and becomes a no-op with content fully visible; the
   CSS side is killed by the global `prefers-reduced-motion` block. Never call
   GSAP directly without that gate.
+- **Touch gets the cheap path.** `heavyMotionOK()` is `motionOK()` minus
+  coarse pointers, and it gates the two expensive things: inertia scrolling
+  (`SmoothScroll` mounts no Lenis on touch, so the browser's own momentum
+  scrolling is used) and the scrubbed 3D fold (`initPageTurn` substitutes a
+  single cheap entrance per section). This is a feel decision as much as a
+  performance one: touch is direct manipulation, so scroll smoothing reads as
+  lag no matter how fast the device. Everything cheap — reveals, parallax,
+  counters, the quokkas — still runs everywhere. If you add a primitive that
+  scrubs per frame or pins, gate it on `heavyMotionOK()` too.
 - **Cleanup is automatic** when you use the hook/components below — they wrap
   everything in a `gsap.context` scoped to the page and revert on unmount.
   If you hand-roll a timeline, create it inside `useScrollAnimations`'s

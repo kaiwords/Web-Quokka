@@ -1,6 +1,6 @@
 import Lenis from 'lenis'
 import { useEffect } from 'react'
-import { gsap, ScrollTrigger, motionOK } from '../../lib/animation'
+import { gsap, ScrollTrigger, heavyMotionOK, motionOK } from '../../lib/animation'
 import { starField } from '../../lib/horizon'
 import { registerLenis, scrollOffset } from '../../lib/scroll'
 
@@ -19,6 +19,13 @@ import { registerLenis, scrollOffset } from '../../lib/scroll'
 export default function SmoothScroll() {
   useEffect(() => {
     if (!motionOK()) return undefined
+
+    // Touch devices keep the browser's own momentum scrolling: it is
+    // hardware-accelerated and tracks the finger exactly, which heavy
+    // smoothing cannot. Nothing else is lost — `scroll.js` falls back to
+    // native scrolling when no Lenis is registered, and in-page anchors fall
+    // back to the browser's jump, which honours html's scroll-padding-top.
+    if (!heavyMotionOK()) return undefined
 
     const lenis = new Lenis({
       lerp: 0.06,
