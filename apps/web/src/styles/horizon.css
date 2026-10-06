@@ -1137,19 +1137,20 @@ html .deck > * {
   .fab-btn--quote { box-shadow: 0 6px 16px -8px rgba(224, 162, 50, .7); }
   .plan--featured { box-shadow: 0 12px 26px -16px rgba(58, 90, 64, .32); }
 
-  /* The two decorative background layers are the most expensive things on the
-     page on a phone, and the least noticed on one.
-     The glows are three fixed, always-on-screen layers, each carrying a 90px
-     gaussian blur and each looping an animation that SCALES it — and scaling
-     a blurred layer forces its blur to be re-rasterised, continuously,
-     whether or not anyone is scrolling. Softening them was not enough, so on
-     touch they come off: at opacity .14-.26 under that blur they are a faint
-     tint on a small screen. Delete this rule to bring them back. */
-  .bg-glow { display: none; }
-
-  /* Same call for the constellation: a full-screen canvas whose particles are
-     barely visible on a phone, but whose layer the GPU pays for regardless. */
-  .stars { display: none; }
+  /* The three background glows are the most expensive thing on the page on a
+     phone, and the least noticed. Each is a fixed, always-on-screen layer
+     carrying a 90px gaussian blur, and each loops an animation that SCALES
+     it — scaling a blurred layer forces the blur to be re-rasterised, so this
+     ran continuously whether or not anyone was scrolling.
+     Stopping the drift lets the blur rasterise once and stay cached; the
+     gradients already fade to transparent at 62%, so a softer blur reads the
+     same. will-change goes too: with no animation it only pinned three
+     needless layers in GPU memory. */
+  .bg-glow {
+    animation: none;
+    filter: blur(50px);
+    will-change: auto;
+  }
 
   /* The grain sheet sat at inset:-50% — four viewports of noise texture held
      in memory to allow for drift it no longer does. */
