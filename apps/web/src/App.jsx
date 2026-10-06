@@ -1,4 +1,7 @@
 import { lazy, Suspense } from 'react'
+// Diagnostic only, behind ?perf=1 — lazy so it is never in a normal visitor's
+// bundle. See components/dev/PerfProbe.jsx.
+const PerfProbe = lazy(() => import('./components/dev/PerfProbe'))
 import { Outlet, Route, Routes } from 'react-router-dom'
 import BackgroundLayers from './components/horizon/BackgroundLayers'
 import CustomCursor from './components/horizon/CustomCursor'
@@ -46,6 +49,12 @@ export default function App() {
       <a className="skip-link" href="#main">
         Skip to content
       </a>
+
+      {typeof window !== 'undefined' && window.location.search.includes('perf=1') && (
+        <Suspense fallback={null}>
+          <PerfProbe />
+        </Suspense>
+      )}
 
       <BackgroundLayers />
       <CustomCursor />
