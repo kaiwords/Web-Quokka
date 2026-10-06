@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import { gsap, motionOK } from '../../lib/animation'
+import { gsap, heavyMotionOK, motionOK } from '../../lib/animation'
 import { cn } from '../../lib/utils'
 
 /**
@@ -41,6 +41,21 @@ export default function AnimatedQuokka({ variant = 'sit', side = 'right', size =
             duration: 0.9,
             ease: 'back.out(1.4)',
             scrollTrigger: { trigger: scene, start: 'top 70%', toggleActions: 'play none none reverse' },
+          },
+        )
+      } else if (variant === 'hop' && !heavyMotionOK()) {
+        // The scrubbed hop is a nine-tween timeline re-evaluated every scroll
+        // frame. On touch it becomes one hop on arrival: the quokka still
+        // bounds in, it just is not tied to the scrollbar.
+        gsap.fromTo(
+          el,
+          { xPercent: side === 'right' ? 40 : -40, opacity: 0 },
+          {
+            xPercent: 0,
+            opacity: 1,
+            duration: 0.7,
+            ease: 'back.out(1.5)',
+            scrollTrigger: { trigger: scene, start: 'top 85%', once: true },
           },
         )
       } else if (variant === 'hop') {

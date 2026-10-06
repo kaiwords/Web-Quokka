@@ -21,7 +21,13 @@ export default function BackgroundLayers() {
     const canvas = canvasRef.current
     if (!canvas || !canvas.getContext) return undefined
 
-    const reduceMotion = prefersReducedMotion()
+    // Touch devices get a single static frame, like reduced-motion users.
+    // The canvas covers the whole viewport, so an animated frame costs a
+    // full-screen clear + redraw (plus the neighbour-linking passes over
+    // every particle) — 60 times a second, the entire time someone is just
+    // reading. The constellation is decorative; a still one looks the same
+    // until you stare at it, and it hands those frames back to scrolling.
+    const reduceMotion = prefersReducedMotion() || window.matchMedia('(pointer: coarse)').matches
     const ctx = canvas.getContext('2d')
     const LINK = 130
     const REACH = 190

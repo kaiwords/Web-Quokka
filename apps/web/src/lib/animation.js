@@ -126,7 +126,10 @@ export function initPageTurn(el, { mode = 'fold' } = {}) {
  * drift up. Decorative layers only; keep |speed| ≤ 0.5.
  */
 export function initParallax(scope = document) {
-  if (!motionOK()) return []
+  // Scrubbed: recalculates and writes a transform on every scroll frame, so
+  // it is gated with the rest of the heavy motion. Headings simply sit still
+  // on touch, which nobody reads as missing.
+  if (!heavyMotionOK()) return []
   return Array.from(scope.querySelectorAll('[data-parallax]')).map((el) => {
     const speed = parseFloat(el.getAttribute('data-parallax')) || 0
     return gsap.fromTo(
@@ -152,7 +155,9 @@ export function initParallax(scope = document) {
  * `.figure-parallax` class (horizon.css) or any overflow-hidden wrapper.
  */
 export function initFigureParallax(scope = document) {
-  if (!motionOK()) return []
+  // Scrubbed, and it scales the media 1.16x to hide the drift — on touch that
+  // is a permanently upscaled image repainting per frame for no payoff.
+  if (!heavyMotionOK()) return []
   return Array.from(scope.querySelectorAll('[data-figure-parallax]')).flatMap((frame) => {
     const media = frame.querySelector('img, video')
     if (!media) return []
