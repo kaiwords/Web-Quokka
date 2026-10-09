@@ -728,6 +728,12 @@ h1, h2, h3 { line-height: 1.05; letter-spacing: -.01em; font-weight: 400; }
 .footer-cols a { transition: color .25s; }
 .footer-cols a:hover { color: var(--sun); }
 .footer-legal { font-size: var(--fs-xs); color: var(--muted); }
+/* Legal-row links (privacy policy, staff sign-in) on both footers: quiet
+   underlines that only pick up the accent on hover. */
+.footer-legal a, .site-footer-legal a {
+  text-decoration: underline; text-underline-offset: 2px; transition: color .25s;
+}
+.footer-legal a:hover, .site-footer-legal a:hover { color: var(--sun); }
 
 /* Newsletter signup (both footers) */
 .newsletter { display: grid; gap: .45rem; width: min(100%, 380px); }
@@ -1061,11 +1067,6 @@ html .deck > * {
 /* Honeypot wrapper: off-screen but still rendered and focusable-by-bots.
    `display: none` is the obvious approach and the one spam bots skip. */
 .field--hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
-
-/* Staff CRM link in the legal row: reachable for the team, underplayed for
-   everyone else. It is an internal tool, not a site destination. */
-.footer-staff-link { text-decoration: underline; text-underline-offset: 2px; transition: color .25s; }
-.footer-staff-link:hover { color: var(--sun); }
 
 /* The menu stays mounted so it can fade both ways from a single class. */
 .menu { visibility: hidden; transition: opacity .4s var(--ease), visibility .4s var(--ease); }

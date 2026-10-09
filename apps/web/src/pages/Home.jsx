@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import { Link } from 'react-router-dom'
 import SEO from '../components/layout/SEO'
 import AnimatedQuokka from '../components/anim/AnimatedQuokka'
 import PageTurnSection from '../components/anim/PageTurnSection'
@@ -428,7 +429,7 @@ export default function Home() {
             </Btn>
             <p className="footer-legal">
               © {new Date().getFullYear()} {SITE.name}. All rights reserved. Made with 🧡 in
-              Perth, WA.
+              Perth, WA. · <Link to="/privacy">Privacy Policy</Link>
             </p>
           </div>
         </PageTurnSection>

@@ -91,7 +91,7 @@ export default function HorizonFooter() {
           © {year} {SITE.name}. All rights reserved.
         </p>
         <p>
-          Made with 🧡 in Perth, Western Australia. ·{' '}
+          Made with 🧡 in Perth, Western Australia. · <Link to="/privacy">Privacy Policy</Link> ·{' '}
           <a href={PORTAL.login} className="footer-staff-link">
             Staff sign in
           </a>
