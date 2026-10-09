@@ -131,6 +131,11 @@ model Document {
   changeRequestId Int?
   suggestion      Suggestion?    @relation(fields: [suggestionId], references: [id], onDelete: Cascade)
   suggestionId    Int?
+  // An uploaded invoice PDF (e.g. generated in accounting software). The
+  // invoice's PDF endpoints serve this file when present instead of the
+  // generated one; the upload route keeps at most one per invoice.
+  invoice         Invoice?       @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  invoiceId       Int?
   createdAt       DateTime       @default(now())
 }
 
@@ -378,6 +383,7 @@ model Invoice {
   issueDate   DateTime  @default(now())
   dueDate     DateTime?
   paidAt      DateTime?
+  documents   Document[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }

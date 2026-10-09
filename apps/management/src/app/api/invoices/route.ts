@@ -21,7 +21,12 @@ export async function GET(req: NextRequest) {
       ...(sourceType ? { sourceType } : {}),
       ...(sourceId ? { sourceId: parseInt(sourceId) } : {}),
     },
-    include: { client: { select: { id: true, name: true, company: true } } },
+    include: {
+      client: { select: { id: true, name: true, company: true } },
+      // The uploaded invoice PDF, when one exists — lets the UI say which
+      // document the PDF link will actually serve.
+      documents: { select: { id: true, originalName: true }, orderBy: { createdAt: "desc" }, take: 1 },
+    },
     orderBy: { issueDate: "desc" },
   });
 

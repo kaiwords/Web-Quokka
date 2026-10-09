@@ -578,6 +578,8 @@ export interface Invoice {
   paidAt: string | null;
   createdAt: string;
   updatedAt: string;
+  /** The uploaded invoice PDF, when staff attached one (at most one). */
+  documents?: { id: number; originalName: string }[];
 }
 
 export interface Suggestion {
